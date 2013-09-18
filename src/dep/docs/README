@@ -1,0 +1,147 @@
+ JFern README
+--------------
+
+Copyright (C) 1998-2004 Mariusz Nowostawski and others.
+All Rights Reserved.
+
+---------
+realease:
+ binary jar file, sources, documentation, and related files.
+
+
+-------------------------
+This software is copyrighted and distributed under 
+LGPL Software License.
+Please read LICENSE before using this software.
+
+
+1. Purpose
+===========
+
+  JFern package provides simple framework for Petri Net modelling
+  and simulations. It gives the programmer  a Petri Net simulator 
+  fully integrated with the Java programming language.
+
+
+2. How to install it
+=====================
+
+  The package and related utilities are distributed in binary form 
+  as a jar file, which should be simply placed in the classpath of 
+  your application.  Refer to the javadoc generated API help files 
+  for more information about the API to the library.
+
+  The distribution also contains aditional dynamic compiler utility
+  library, which is LGPLed: compiler.jar
+  
+  To run examples with the dynamic compiler, you need to have 
+  tools.jar from your Java distribution (see your jdkXXX/lib/tools.jar) 
+  which is copyrighted by Sun Microsystems either:
+    - in your classpath
+    - in the ext directory of your JDK (extensions)
+    - in the lib directory of the JFern distribution
+  
+  
+  To run JFern Net Toolbox application, simply use:
+  
+      java -jar rakiura-jfern.jar
+  
+  
+  or in your IDE environment add all the JARs from lib into your CLASSPATH, 
+  and use as the entry class:
+  
+      java org.rakiura.cpn.gui.NetToolboxApplication 
+  
+  
+  
+
+3. Building it from sources
+============================
+
+  To build the library yourself you need to have a customized 
+  software package: ANT.
+ 
+  ANT is a  java-based build tool produced as a part of
+  Jakarta Apache project.      
+  You can download the ANT version from:
+  http://nzdis.otago.ac.nz/download/software/ant.tar.gz
+  Unpack it and follow the instructions how to install it.
+
+  The above package was modified by us, and the  original
+  software from ANT effort might not work for you "out of 
+  the box",  we suggest you use our provided  and patched 
+  version.
+
+
+  Once you have ANT installed and ready, simply type:
+    ant jar
+  to generate classes and pack them into a jar file. The jar file 
+  by default will be placed inside lib directory.
+
+
+4. Testing
+===========
+
+  The framework will allow you to perform built-in tests, but you
+  need to have installed JUnit testing framework. If you have junit.jar 
+  in your classpath (which can be obtained from: 
+     http://waitaki.otago.ac.nz/download/software/junit.jar)
+  you can simply type:
+     ant testall
+  and it will perform all buil-in testing suites. 
+
+  To test the dynamic compiler, copy the tools.jar from your JDK
+  to the lib of JFern, and run a Booking example as:
+  
+      java -classpath lib/rakiura-jfern.jar org.rakiura.cpn.example.booking.BookingTest biking swimming skiing
+
+  or, having lib/rakiura-jfern.jar in your classpath, just:
+  
+      java org.rakiura.cpn.example.booking.BookingTest biking swimming skiing
+
+  
+
+4. Support and contact information
+===================================
+
+  The end-user understands that the program was developed for
+  research purposes and is advised not to rely exclusively on 
+  the program for any reason.
+
+  To subscribe to the mailing-list check out lists on
+  http://sourceforge.net/mail/?group_id=16338  
+  
+
+  For more information visit the JFern web sites:
+    http://sourceforge.net/projects/jfern
+    http://www.rakiura.org/
+
+
+
+
+Notes for the 3.0.0 release
+===========================
+* API cleanup
+* full featured net editor and simulation environment
+  implemented.
+* multiple bugs fixed
+* some performance improvements
+
+
+
+
+Notes for the 2.1.0 release
+============================
+
+* GUI support for net visualization is provided.
+* Net Editor is not finished yet.
+* Partial matching and unification bugs fixed.
+* Net Generator bug (skiping output arc expressions) fixed.
+* Input arcs guards handling fixed.
+* Fusion places bugs fixed (hopefully!)
+
+
+
+--------
+Copyright (C) 2003 Mariusz Nowostawski and others.
+All rights reserved.

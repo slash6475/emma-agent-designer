@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Class-Path: graham-kirby-compiler.jar rakiura-jrio.jar bsh.jar kawa-1.9.1.jar clojure.jar
+Main-Class: org.rakiura.cpn.gui.NetToolboxApplication
+Specification-Title: Rakiura JFern Petri Net Simulator
+Specification-Version: 1.0
+Specification-Vendor: Rakiura [http://www.rakiura.org]
+Implementation-Title: rakiura-jfern
+Implementation-Version: 4.0.0
+Implementation-Vendor: Rakiura [http://www.rakiura.org]
+
+Name: org/rakiura/cpn
+

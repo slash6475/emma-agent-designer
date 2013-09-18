@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<moduleinfo 
+   name="rakiura-jfern" 
+   group="Development/Libraries" 
+   version="4.0.0">
+
+   <longname>Rakiura JFern Petri Net Simulator</longname>
+   <vendor href="http://www.rakiura.org">Rakiura Innovations</vendor>
+   <summary>Small Java-centric Petri Net Simulator</summary>
+   <copyright>Copyright (C) 1999-2009 by Mariusz Nowostawski and others.</copyright>
+   <packager href="mailto:support@rakiura.org">Rakiura</packager>
+
+   <dependencies>
+     <requires name="graham-kirby-compiler.1">
+       <download href="http://nzdis.otago.ac.nz/download/modules/graham-kirby-compiler.jar"/>
+     </requires>
+     <requires name="rakiura-jrio.0">
+       <download href="http://prdownloads.sourceforge.net/cirrus/rakiura-jrio.jar"/>
+     </requires>
+   </dependencies>
+
+   <executable/>
+
+   <jar-url href="http://prdownloads.sourceforge.net/jfern/rakiura-jfern.jar" />
+   <rak-url href="http://prdownloads.sourceforge.net/jfern/rakiura-jfern.rak" />
+
+</moduleinfo>
+
+
