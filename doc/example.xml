@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<subnet class="net">
+   <!-- TRANSITIONS ET NON-VIRTUAL PLACES IGNORÉES POUR LES SUBNETS CLASS="NET" !--> 
+   <subnets>
+      <subnet id="sub1" name="dfs" x="20px" y="20px" width="400px" height="300px">
+         <places>
+       	    <!--INCORRECT: X et Y ne correspondent pas au subnet contenant place7 et class="virtual" devrait être précisé !-->
+            <place id="place1" class="virtual" name="dsdf" x="40px" y="40px">
+               <virtualizedBy>place42</virtualizedBy>
+               <virtualize>place7</virtualize>
+               <!--IGNORÉ ! Place VIRTUELLE !-->
+               <data class="plop">
+                  <value>plop</value>
+               </data>
+               <!--VALEUR INCORRECTE, NE PEUT PAS ETRE MOINS RESTRICTIVE QUE PLACE7 !-->
+               <input>true</input>
+               <output>true</output>
+            </place>
+            <place id="place2" name="dsdf" x="40px" y="80px">
+               <!--INCORRECT: UNE PLACE NE PEUT VIRTUALISER PLUSIEURS PLACES, ET RECIPROQUEMENT, IGNORÉ !-->
+               <virtualizedBy>place42</virtualizedBy>
+               <virtualize>place7</virtualize>
+               <!--VALEUR NON IGNORÉE, LA PLACE N'EST PAS VIRTUELLE !-->
+               <data class="agent">
+                  <value>à préciser plus tard</value>
+               </data>
+               <input>true</input>
+               <output>true</output>
+            </place>
+            <place id="place3" name="coucou" x="80px" y="40px">
+               <virtualizedBy></virtualizedBy>
+               <!--La balise virtualize n'est nécessaire que pour la classe virtual !-->
+               <data class="local">
+                  <value>42</value>
+               </data>
+               <!--PAR DEFAUT, INPUT ET OUTPUT sont inherited (ou true sinon) !-->
+            </place>
+         </places>
+         <transitions>
+            <transition id="trans1" name="dfs" x="40px" y="80px">
+               <place>place2</place>
+               <condition>à préciser plus tard</condition>
+            </transition>
+         </transitions>
+         <arcs>
+            <arc id="arc1" class="input">
+               <place>place1</place>
+               <transition>trans1</transition>
+               <expression>à préciser plus tard</expression>
+            </arc>
+            <arc id="arc2" class="output">
+               <place>place1</place>
+               <transition>trans1</transition>
+               <expression>à préciser plus tard</expression>
+            </arc>
+            <!--ERREUR, UN ARC NE CONCERNE QUE DES P/T DU MEME SOUS RESEAU, ET CLASS PLOP N'EXISTE PAS !-->
+            <arc id="arc3" class="plop">
+               <place>place42</place>
+               <transition>trans1</transition>
+            </arc>
+         </arcs>
+         <subnets>
+            <subnet id="sub44" x="150px" y="150px" width="150px" height="150px">
+               <places>
+                  <place id="place7" x="180px" y="180px">
+                     <virtualizedBy>place1</virtualizedBy>
+                     <data class="system">
+                        <value></value> <!-- la valeur n'est pas inséré par le compilateur, IGNORÉ !-->
+                     </data>
+                     <input>false</input> <!--Les places systèmes ne peuvent être écrasé par les applis, false OBLIGATOIRE !-->
+                     <output>true</output>
+                  </place>
+               </places>
+            </subnet>
+         </subnets>
+      </subnet>
+      <subnet id="sub2" name="wfsd" x="210px" y="10px" width="200px" height="200px">
+      </subnet>
+   </subnets>
+   <transitions>
+   <!--SECTION VIDE, IGNORÉE SINON !-->
+   </transitions>
+   <places>
+      <place id="place42" class="virtual" name="vie" x="5px" y="5px">
+         <virtualizedBy>PLOP</virtualizedBy> <!--IGNORÉ !-->
+         <virtualize>place1</virtualize>
+         <input>false</input>
+         <output>true</output>
+      </place>
+   </places>
+</subnet>
