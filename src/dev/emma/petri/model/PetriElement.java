@@ -1,44 +1,25 @@
 package emma.petri.model;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
+import emma.petri.control.event.PetriEvent;
 import emma.petri.control.event.PetriEventListener;
 
 public abstract class PetriElement {
 	
 	private static int q=1;
 	private int id;
-	private String name;
 	private Set<PetriEventListener> listeners;
-	private Subnet parent;
-	private boolean isVirtualized;
-
-	public PetriElement(Subnet parent){
-		this("elmt"+q,parent);
-	}
 	
-	public PetriElement(String name, Subnet parent){
-		id=q++;
-		this.name=name;
-		this.parent=parent;
+	public PetriElement(){
+		this.id=q++;
 		this.listeners = new HashSet<PetriEventListener>();
-		isVirtualized = false;
 	}
 	
 	public int getID(){
 		return id;
-	}
-	
-	public String getName(){
-		return name;
-	}
-	
-	public Subnet getParent(){
-		return parent;
-	}
-	public void setName(String name){
-		this.name=name;
 	}
 	
 	@Override
@@ -60,39 +41,15 @@ public abstract class PetriElement {
 	
 	protected abstract void deleteLinks(PetriElement caller);
 	
-	public final void delete(PetriElement caller){
+	protected final void delete(PetriElement caller){
 		listeners.clear();
-		listeners=null;
 		this.deleteLinks(caller);
 	}
 	
-	public boolean isVirtualized(){
-		return isVirtualized;
-	}
-	
-	public final boolean isVirtualizeable(){
-		return (this instanceof Virtualizeable);
-	}
-	
-	public boolean isVirtual(){
-		return false;
-	}
-	
-	public final boolean virtualize(){
-		if(this.isVirtualizeable()){
-			if(!isVirtualized){
-				isVirtualized=true;
-				return true;
-			}
+	protected void notify(PetriEvent e){
+		Iterator<PetriEventListener> it = this.listeners.iterator();
+		while(it.hasNext()){
+			it.next().handle(e);
 		}
-		return false;
-	}
-	
-	public final boolean unvirtualize(){
-		if(isVirtualized){
-			isVirtualized=false;
-			((Virtualizeable) this).removeVirtualisation();
-		}
-		return false;
 	}
 }

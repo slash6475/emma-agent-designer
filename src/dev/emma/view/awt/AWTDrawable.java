@@ -7,6 +7,6 @@ import javax.swing.table.AbstractTableModel;
 import emma.petri.view.Drawable;
 
 public interface AWTDrawable extends Drawable{
-	public void draw(Graphics2D g);
+	public void draw(Graphics2D g,double zoom);
 	public AbstractTableModel getProperties();
 }

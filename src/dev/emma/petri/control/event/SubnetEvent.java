@@ -3,7 +3,6 @@ package emma.petri.control.event;
 import emma.petri.model.PetriElement;
 
 public class SubnetEvent extends PetriEvent {
-
 	/**
 	 * 
 	 */

@@ -2,7 +2,7 @@ package emma.petri.view;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -21,71 +21,65 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import emma.view.awt.AWTArcFigure;
 import emma.view.awt.AWTPlaceFigure;
 import emma.view.awt.AWTSubnetFigure;
+import emma.view.awt.AWTTransitionFigure;
 
 public class XMLParser {
 	private static DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 	private static TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	private static DocumentBuilder docBuilder;
 	private static Transformer transformer;
+	private Document doc;
+	private Hashtable<String,SubnetFigure> subTable;
+	private Hashtable<String,PlaceFigure> placeTable;
+	private Hashtable<String,TransitionFigure> transTable;
+	private Hashtable<String, ScopeFigure> scopeTable;
 	
 	public static void init() throws ParserConfigurationException, TransformerConfigurationException{
 		docBuilder = docFactory.newDocumentBuilder();
 		transformer = transformerFactory.newTransformer();
 	}
 	
-	private static Element getPlaceElement(Document doc,PlaceFigure p, int offsetX, int offsetY){
+	private Element getScopeElement(ScopeFigure s, int offsetX, int offsetY){
+		Element elmt = doc.createElement("scope");
+		elmt.setAttribute("id", String.valueOf(s.getID()));
+		elmt.setAttribute("name", s.getName());
+		elmt.setAttribute("x", String.valueOf(s.getX()-offsetX));
+		elmt.setAttribute("y", String.valueOf(s.getY()-offsetY));
+		
+		return elmt;
+	}
+	
+	
+	private Element getPlaceElement(PlaceFigure p, int offsetX, int offsetY){
 		Element elmt = doc.createElement("place");
-		Element virtualized = doc.createElement("virtualizedBy");
-		Element input = doc.createElement("input");
-		Element output = doc.createElement("output");
 		elmt.setAttribute("id", String.valueOf(p.getID()));
 		elmt.setAttribute("name", p.getName());
 		elmt.setAttribute("x", String.valueOf(p.getX()-offsetX));
 		elmt.setAttribute("y", String.valueOf(p.getY()-offsetY));
-		elmt.appendChild(virtualized);
-		if(p instanceof VirtualPlaceFigure){
-			Element virtualize = doc.createElement("virtualize");
-			elmt.appendChild(virtualize);
-			elmt.setAttribute("class", "virtual");
-			virtualize.appendChild(doc.createTextNode(String.valueOf(((VirtualPlaceFigure)p).getLinkedPlaceFigure().getID())));
-		}
-		else{
-			Element data = doc.createElement("data");
-			Element val = doc.createElement("value");
-			elmt.appendChild(data);
-			data.appendChild(val);
-			data.setAttribute("class", p.getPlace().getType());
-			if(p.getPlace().getData()!=null)val.appendChild(doc.createCDATASection(p.getPlace().getData().toString()));
-		}
-		elmt.appendChild(input);
-		elmt.appendChild(output);
-		input.appendChild(doc.createTextNode((p.getPlace().isInput())?"true":"false"));
-		output.appendChild(doc.createTextNode((p.getPlace().isOutput())?"true":"false"));
+		Element data = doc.createElement("data");
+		elmt.appendChild(data);
+		data.setAttribute("class", p.getPlace().getType());
+		if(p.getPlace().getData()!=null)data.appendChild(doc.createCDATASection(p.getPlace().getData().toString()));
+		elmt.setAttribute("input",p.getPlace().isInput()?"true":"false");
+		elmt.setAttribute("output",p.getPlace().isOutput()?"true":"false");
 		return elmt;
 	}
 	
-	private static Element getTransitionElement(Document doc,TransitionFigure t, int offsetX, int offsetY){
+	private Element getTransitionElement(TransitionFigure t, int offsetX, int offsetY){
 		Element elmt = doc.createElement("transition");
-		Element place = doc.createElement("place");
-		Element cond = doc.createElement("condition");
 		elmt.setAttribute("id", String.valueOf(t.getID()));
-		elmt.setAttribute("name", t.getName());
 		elmt.setAttribute("x", String.valueOf(t.getX()-offsetX));
 		elmt.setAttribute("y", String.valueOf(t.getY()-offsetY));
-		elmt.appendChild(place);
-		elmt.appendChild(cond);
-		//place.appendChild(doc.createTextNode(String.valueOf(t.getTransition().getPlace().getID())));
-		cond.appendChild(doc.createCDATASection(t.getTransition().getCondition()));
+		elmt.setAttribute("place",String.valueOf(t.getTransition().getPlace().getID()));
+		elmt.setAttribute("condition",t.getTransition().getCondition());
 		return elmt;
 	}
 	
-	private static Element getArcElement(Document doc,ArcFigure a){
+	private Element getArcElement(ArcFigure a){
 		Element elmt = doc.createElement("arc");
-		Element place = doc.createElement("place");
-		Element transition = doc.createElement("transition");
-		Element expr = doc.createElement("expression");
 		//TODO
 		elmt.setAttribute("id", String.valueOf(a.getID()));
 		if(a.getArc() instanceof emma.petri.model.InputArc){
@@ -94,71 +88,64 @@ public class XMLParser {
 		else{
 			elmt.setAttribute("class", "output");
 		}
-		elmt.appendChild(place);
-		elmt.appendChild(transition);
-		elmt.appendChild(expr);
-		place.appendChild(doc.createTextNode(String.valueOf(a.getPlaceFigure().getID())));
-		transition.appendChild(doc.createTextNode(String.valueOf(a.getTransitionFigure().getID())));
-		expr.appendChild(doc.createCDATASection(a.getArc().getExpression()));
+		elmt.setAttribute("place", String.valueOf(a.getPlaceFigure().getID()));
+		elmt.setAttribute("transition", String.valueOf(a.getTransitionFigure().getID()));
+		elmt.setAttribute("expression", a.getArc().getExpression());
 		return elmt;
 	}
 
-	private static Element getSubnetElement(Document doc,SubnetFigure sub, int offsetX, int offsetY){
+	private Element getSubnetElement(SubnetFigure sub, int offsetX, int offsetY){
 		Element elmt = doc.createElement("subnet");
 		Element places = doc.createElement("places");
 		Element transitions = doc.createElement("transitions");
 		Element arcs = doc.createElement("arcs");
 		Element subnets = doc.createElement("subnets");
-		
-		if(sub instanceof NetFigure){
-			elmt.setAttribute("class", "net");
-		}
-		else{
-			elmt.setAttribute("id", String.valueOf(sub.getID()));
-			elmt.setAttribute("name", sub.getName());
-			elmt.setAttribute("x", String.valueOf(sub.getX()-offsetX));
-			elmt.setAttribute("y", String.valueOf(sub.getY()-offsetY));
-			elmt.setAttribute("width", String.valueOf(sub.getWidth()));
-			elmt.setAttribute("height", String.valueOf(sub.getHeight()));
-		}
-		
+		elmt.setAttribute("id", String.valueOf(sub.getID()));
+		elmt.setAttribute("name", sub.getName());
+		elmt.setAttribute("x", String.valueOf(sub.getX()-offsetX));
+		elmt.setAttribute("y", String.valueOf(sub.getY()-offsetY));
+		elmt.setAttribute("width", String.valueOf(sub.getWidth()));
+		elmt.setAttribute("height", String.valueOf(sub.getHeight()));
+		/*
 		Iterator<SubnetFigure> is = sub.getSubnetFigures().iterator();
 		elmt.appendChild(subnets);
 		while(is.hasNext()){
-			subnets.appendChild(getSubnetElement(doc,is.next(),offsetX,offsetY));
+			subnets.appendChild(getSubnetElement(is.next(),offsetX,offsetY));
 		}
 		Iterator<PlaceFigure> ip = sub.getPlaceFigures().iterator();
 		elmt.appendChild(places);
 		while(ip.hasNext()){
-			places.appendChild(getPlaceElement(doc,ip.next(),offsetX,offsetY));
+			places.appendChild(getPlaceElement(ip.next(),offsetX,offsetY));
 		}
 		Iterator<TransitionFigure> it = sub.getTransitionFigures().iterator();
 		elmt.appendChild(transitions);
 		while(it.hasNext()){
-			transitions.appendChild(getTransitionElement(doc,it.next(),offsetX,offsetY));
+			transitions.appendChild(getTransitionElement(it.next(),offsetX,offsetY));
 		}
 		Iterator<ArcFigure> ia = sub.getArcFigures().iterator();
 		elmt.appendChild(arcs);
 		while(ia.hasNext()){
-			arcs.appendChild(getArcElement(doc,ia.next()));
-		}
+			arcs.appendChild(getArcElement(ia.next()));
+		}*/
 		return elmt;
 	}
 	
-	public static void saveSubnetFigureToXMLFile(SubnetFigure sub, File toFile) throws TransformerException{
-		Document doc = docBuilder.newDocument();
-		doc.appendChild(getSubnetElement(doc,sub,sub.getX(),sub.getY()));
+	public void saveSubnetFigureToXMLFile(SubnetFigure sub, File toFile) throws TransformerException{
+		doc = docBuilder.newDocument();
+		doc.appendChild(getSubnetElement(sub,sub.getX(),sub.getY()));
 		DOMSource source = new DOMSource(doc);
 		// write the content into xml file
 		StreamResult result = new StreamResult(toFile);
 		transformer.transform(source, result);
 	}
 	
-	public static SubnetFigure importAWTSubnetFigureFromXMLFile(int offsetX, int offsetY, File fromFile, SubnetFigure parent) throws SAXException, IOException{
+	public SubnetFigure importAWTSubnetFigureFromXMLFile(int offsetX, int offsetY, File fromFile, SubnetFigure parent) throws SAXException, IOException{
 		Document doc = docBuilder.parse(fromFile);
+		this.subTable=new Hashtable<String,SubnetFigure>();
+		this.placeTable=new Hashtable<String,PlaceFigure>();
+		this.transTable=new Hashtable<String,TransitionFigure>();
 		doc.getDocumentElement().normalize();
-		
-		return null;
+		return getAWTSubnetByElement(doc.getDocumentElement(),offsetX,offsetY,parent);
 	}
 	
 	private static int parseInt(String toParse){
@@ -170,62 +157,138 @@ public class XMLParser {
 		return 0;
 	}
 	
-	private static SubnetFigure getAWTSubnetByElement(Element elmt, int offsetX, int offsetY, SubnetFigure parent){
-		int x = offsetX+parseInt(elmt.getAttribute("x"));
+	private SubnetFigure getAWTSubnetByElement(Element elmt, int offsetX, int offsetY, SubnetFigure parent){
+		/*int x = offsetX+parseInt(elmt.getAttribute("x"));
 		int y = offsetY+parseInt(elmt.getAttribute("y"));
 		int width=parseInt(elmt.getAttribute("width"));
 		int height=parseInt(elmt.getAttribute("height"));
 		AWTSubnetFigure s = new AWTSubnetFigure(x,y,width,height,parent);
+		this.subTable.put(elmt.getAttribute("id"), s);
 		s.setName(elmt.getAttribute("name"));
-		if(s==null) return null;
 		NodeList childs = elmt.getChildNodes();
-		for(int i=0; i<childs.getLength(); i++){
+		//On quadruple la boucle pour assurer que l'on effectue l'insertion dans l'ordre
+		//On décale la boucle. Ainsi si le fichier est ecrit dans l'ordre, on ne parcours qu'une fois les boucles;
+		int i,dec;
+		dec=0;
+		for(i=0; i<childs.getLength(); i++){
 			Node n = childs.item(i);
 			NodeList subchilds = n.getChildNodes();
 			if(n.getNodeName().equals("subnets")){
 				for(int j=0; j<subchilds.getLength(); j++){
 					if(subchilds.item(j).getNodeType()==Node.ELEMENT_NODE){
-						s.addFigure(getAWTSubnetByElement((Element)subchilds.item(j),offsetX,offsetY,s));
-					}
-				}
-			}
-			else if(n.getNodeName().equals("places")){
-				for(int j=0; j<subchilds.getLength(); j++){
-					if(subchilds.item(j).getNodeType()==Node.ELEMENT_NODE){
-						s.addFigure(getAWTPlaceByElement((Element)subchilds.item(j),offsetX,offsetY,s));
-					}
-				}
-			}
-			else if(n.getNodeName().equals("transitions")){
-				for(int j=0; j<subchilds.getLength(); j++){
-					if(subchilds.item(j).getNodeType()==Node.ELEMENT_NODE){
-						//s.addFigure(getAWTTransitionByElement((Element)subchilds.item(j),offsetX,offsetY,p,s));
-					}
-				}
-			}
-			else if(n.getNodeName().equals("arcs")){
-				for(int j=0; j<subchilds.getLength(); j++){
-					if(subchilds.item(j).getNodeType()==Node.ELEMENT_NODE){
-						//s.addFigure(getAWTArcByElement((Element)subchilds.item(j),PlaceFigure p, TransitionFigure t,s));
+						//s.addFigure(getAWTSubnetByElement((Element)subchilds.item(j),offsetX,offsetY,s));
+						break;
 					}
 				}
 			}
 		}
-		return s;
+		dec=i+1;
+		for(i=dec; i<childs.getLength()+dec; i++){
+			Node n = childs.item(i%4);
+			NodeList subchilds = n.getChildNodes();
+			if(n.getNodeName().equals("places")){
+				for(int j=0; j<subchilds.getLength(); j++){
+					if(subchilds.item(j).getNodeType()==Node.ELEMENT_NODE){
+						PlaceFigure p = getAWTPlaceByElement((Element)subchilds.item(j),offsetX,offsetY,s); 
+						if(p!=null){
+							//s.addFigure(p);
+						}
+						break;
+					}
+				}
+			}
+		}
+		dec=i+1;
+		for(i=dec; i<childs.getLength()+dec; i++){
+			Node n = childs.item(i%4);
+			NodeList subchilds = n.getChildNodes();
+			if(n.getNodeName().equals("transitions")){
+				for(int j=0; j<subchilds.getLength(); j++){
+					if(subchilds.item(j).getNodeType()==Node.ELEMENT_NODE){
+						TransitionFigure t = getAWTTransitionByElement((Element)subchilds.item(j),offsetX,offsetY,s);
+						if(t!=null){
+							//s.addFigure(t);
+						}
+						break;
+					}
+				}
+			}
+		}
+		dec=i+1;
+		for(i=dec; i<childs.getLength()+dec; i++){
+			Node n = childs.item(i%4);
+			NodeList subchilds = n.getChildNodes();
+			if(n.getNodeName().equals("arcs")){
+				for(int j=0; j<subchilds.getLength(); j++){
+					if(subchilds.item(j).getNodeType()==Node.ELEMENT_NODE){
+						s.addFigure(getAWTArcByElement((Element)subchilds.item(j),s));
+						break;
+					}
+				}
+			}
+		}
+		return s;*/ return null;
 	}
 	
-	private static PlaceFigure getAWTPlaceByElement(Element elmt, int offsetX, int offsetY, SubnetFigure s){
+	private PlaceFigure getAWTPlaceByElement(Element elmt, int offsetX, int offsetY, SubnetFigure s){
 		int x = offsetX+parseInt(elmt.getAttribute("x"));
 		int y = offsetY+parseInt(elmt.getAttribute("y"));
-		
-		return null;
+		PlaceFigure p=null;
+		String input = elmt.getAttribute("input");
+		String output = elmt.getAttribute("output");
+		//p = new AWTPlaceFigure(x,y,s);
+		Element d = (Element)elmt.getElementsByTagName("data").item(0);
+			if(d!=null){
+				if(d.getAttribute("class").equals("local")){
+					p.getPlace().setType(emma.model.resources.Local.class);
+					p.getPlace().getData().post(d.getTextContent());
+				}
+				else if(d.getAttribute("class").equals("agent")){
+					p.getPlace().setType(emma.model.resources.Agent.class);
+					p.getPlace().getData().post(d.getTextContent());
+				}
+				else if(d.getAttribute("class").equals("system")){
+					p.getPlace().setType(emma.model.resources.System.class);
+				}
+			}
+		/*p.setName(elmt.getAttribute("name"));
+		placeTable.put(elmt.getAttribute("id"), p);
+		if(!input.equals("")){
+			p.getPlace().setInput((input.equals("false"))?false:true);
+		}
+		if(!output.equals("")){
+			p.getPlace().setOutput((output.equals("false"))?false:true);
+		}*/
+		return p;
 	}
 	
-	private static ArcFigure getAWTArcByElement(Element elmt, PlaceFigure p, TransitionFigure t, SubnetFigure s){
-		return null;
+	private ArcFigure getAWTArcByElement(Element elmt, SubnetFigure s){
+		ArcFigure a=null;
+		String place = elmt.getAttribute("place");
+		String trans = elmt.getAttribute("transition");
+		String expr = elmt.getAttribute("expression");
+		if(!(place.equals("") || trans.equals(""))){
+			a = new AWTArcFigure(placeTable.get(place), transTable.get(trans),(elmt.getAttribute("class").equals("output"))?false:true);
+			if(!expr.equals("")){
+				a.getArc().setExpression(expr);
+			}
+		}
+		return a;
 	}
 	
-	private static TransitionFigure getAWTTransitionFigure(Element elmt, int offsetX, int offsetY, PlaceFigure p, SubnetFigure s){
-		return null;
+	private TransitionFigure getAWTTransitionByElement(Element elmt, int offsetX, int offsetY, SubnetFigure s){
+		TransitionFigure t=null;
+		int x = offsetX+parseInt(elmt.getAttribute("x"));
+		int y = offsetY+parseInt(elmt.getAttribute("y"));
+		String place = elmt.getAttribute("place");
+		String cond = elmt.getAttribute("cond");
+		if(!place.equals("")){
+			//t = new AWTTransitionFigure(x, y, s, placeTable.get(place));
+			if(!cond.equals("")){
+				//t.getTransition().setCondition(cond);
+			}
+			transTable.put(elmt.getAttribute("id"), t);
+		}
+		return t;
 	}
 }

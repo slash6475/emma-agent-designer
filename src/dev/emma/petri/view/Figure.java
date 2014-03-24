@@ -7,21 +7,41 @@ public abstract class Figure implements Drawable, PetriEventListener{
 	private int x,y;
 	private int width;
 	private int height;
-	private boolean selected;
 	private PetriElement elmt;
 	private boolean notationsVisibility;
-	private SubnetFigure parent;
+	private Container parent;
+	private boolean selected;
 	
-	public Figure(int posX, int posY, int width, int height, SubnetFigure parent, PetriElement element){
+	public Figure(int posX, int posY, int width, int height, Container parent, PetriElement element){
 		this.x = posX;
 		this.y = posY;
 		this.width=width;
 		this.height=height;
-		this.selected=false;
-		this.parent = parent;
 		this.elmt=element;
+		this.parent=parent;
 		elmt.addListener(this);
 		notationsVisibility=true;
+		selected=false;
+	}
+
+	@Override
+	public boolean isSelected(){
+		return selected;
+	}
+	public boolean select(){
+		if(!selected){
+			selected=true;
+			return true;
+		}
+		return false;
+	}
+	@Override
+	public boolean unselect(){
+		if(selected){
+			selected=false;
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
@@ -66,7 +86,7 @@ public abstract class Figure implements Drawable, PetriEventListener{
 	}
 	
 	@Override
-	public SubnetFigure getParent(){
+	public Container getParent(){
 		return parent;
 	}
 	
@@ -106,17 +126,6 @@ public abstract class Figure implements Drawable, PetriEventListener{
 	protected abstract void deleteLinks(Drawable caller);
 	
 	@Override
-	public boolean isSelected(){
-		return selected;
-	}
-	
-	@Override
-	public boolean select(boolean s){
-		selected=s;
-		return true;
-	}
-	
-	@Override
 	public boolean getNotationsVisibility(){
 		return notationsVisibility;
 	}
@@ -125,20 +134,5 @@ public abstract class Figure implements Drawable, PetriEventListener{
 	public boolean switchNotationsVisibility(){
 		notationsVisibility=!notationsVisibility;
 		return true;
-	}
-	public boolean isVirtualized(){
-		return elmt.isVirtualized();
-	}
-	
-	public final boolean isVirtualizeable(){
-		return elmt.isVirtualizeable();
-	}
-	
-	public final boolean isVirtual(){
-		return elmt.isVirtual();
-	}
-	
-	public boolean createVirtualization(){
-		return false;
 	}
 }

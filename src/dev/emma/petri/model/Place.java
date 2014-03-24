@@ -8,20 +8,21 @@ import java.util.Set;
 import emma.model.resources.Resource;
 
 @SuppressWarnings("rawtypes")
-public class Place  extends PT implements Virtualizeable{
-	
+public class Place  extends PT{
+	private static int q=0;
 	private Set<Token> tokens;
 	private Resource res;
 	private boolean input,output;
-	private VirtualPlace virtual;
+	private String name;
+
 	
-	public Place(Subnet s){
+	public Place(Scope s){
 		super(s);
+		name="p"+(q++);
 		s.add(this);
 		res=null;
 		input=true;
 		output=true;
-		virtual=null;
 		tokens = new HashSet<Token>();
 	}
 	
@@ -65,12 +66,11 @@ public class Place  extends PT implements Virtualizeable{
 		}
 		getOutputArcs().clear();
 		this.removeAllTokens();
-		this.unvirtualize();
 	}
 	
 	public String getType(){
 		if(res!=null){
-			return res.getClass().toString();
+			return res.getClass().getSimpleName();
 		}
 		return "NULL";
 	}
@@ -100,35 +100,18 @@ public class Place  extends PT implements Virtualizeable{
 	
 	public boolean setInput(boolean b){
 		input=b;
-		if(isVirtualized() && !b){
-			if(virtual.isInput()){
-				virtual.setInput(false);
-			}
-		}
 		return true;
 	}
 	
 	public boolean setOutput(boolean b){
 		output=b;
-		if(isVirtualized() && !b){
-			if(virtual.isOutput()){
-				virtual.setOutput(false);
-			}
-		}
 		return true;
+	}	
+	public String getName(){
+		return name;
 	}
 	
-	public boolean setVirtualization(VirtualPlace p){
-		if(this.virtualize()){
-			virtual=p;
-			return true;
-		}
-		return false;
-	}
-	
-	@Override
-	public void removeVirtualisation(){
-		virtual.delete(this);
-		virtual=null;
+	public void setName(String name){
+		this.name = name;
 	}
 }

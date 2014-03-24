@@ -1,98 +1,112 @@
 package emma.petri.view;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
-import emma.view.awt.AWTSubnetFigure;
+import emma.petri.control.event.PetriEvent;
+import emma.petri.model.Net;
 
-public abstract class NetFigure extends SubnetFigure{
+public abstract class NetFigure extends Figure implements Container{
 
+	private Set<SubnetFigure> subnets;
 	public NetFigure() {
-		super(0, 0, 10000, 10000, null);
+		super(0, 0, 1200, 900, null,new Net());
 		super.switchNotationsVisibility();
+		this.subnets = new HashSet<SubnetFigure>();
+	}
+
+	public Net getNet(){
+		return (Net)getElement();
+	}
+
+	public Set<SubnetFigure> getSubnetFigures() {
+		return subnets;
+	}
+	
+	@Override
+	public void handle(PetriEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public void minimize(){
-		return;
-	}
-	
-	@Override
-	public boolean moveBy(int x, int y, boolean b) {
+	public boolean resize(int x, int y, int width, int height) {
+		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	@Override
-	public boolean select(boolean s){
-		return false;
+	public void resetSizeExtremum() {
+		// TODO Auto-generated method stub
+		
 	}
-	
+
 	@Override
-	public boolean switchNotationsVisibility(){
-		return false;
+	public void minimize() {
+		// TODO Auto-generated method stub
+		
 	}
-	
+
 	@Override
-	public void switchCollapse(){
-		return;
+	public int getMaxX() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
-	
+
 	@Override
-	public boolean allowObjectPosition(int x, int y, int width, int height, Drawable toIgnore){
-		if(x<20 || y<20){
-			return false;
-		}
+	public int getMaxY() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getMinX2() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getMinY2() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean addTransitionFigure(int x, int y) {
+		int width = PlaceFigure.getDefaultWidth();
+		int height = PlaceFigure.getDefaultHeight()+TransitionFigure.getDefaultHeight()+5;
 		Iterator<SubnetFigure> is = subnets.iterator();
 		while(is.hasNext()){
 			SubnetFigure f = is.next();
-			if(f!=toIgnore){
-				if((x<=f.getX()-20 && x+width>=f.getX()+20) || (f.getX()<=x-20 && f.getX()+f.getWidth()>=x+20)){
-					if((y<=f.getY()-20 && y+height>=f.getY()+20) || (f.getY()<=y-20 && f.getY()+f.getHeight()>=y+20)){
-						return false;
-					}
+			if(x>=f.getX() && x+width<=f.getX()+f.getWidth()){
+				if(y>=f.getY() && y+height<=f.getY()+f.getHeight()){
+					return f.addTransitionFigure(x, y);
 				}
 			}
 		}
-		return true;
+		return false;
 	}
-	
-	public boolean addPlaceFigure(int posX, int posY) {
-		int posX2 = posX+PlaceFigure.getDefaultWidth();
-		int posY2 = posY+PlaceFigure.getDefaultHeight();
-		
-		Iterator<SubnetFigure> it = getSubnetFigures().iterator();
-		while(it.hasNext()){
-			AWTSubnetFigure s = (AWTSubnetFigure)it.next();
-			int originX = s.getX();
-			int originY = s.getY();
-			int endX = originX+s.getWidth();
-			int endY = originY+s.getHeight();
-			//On cherche une inclusion...
-			if(posX>=originX && posX2<=endX && posY>=originY && posY2<=endY){
-				return s.addPlaceFigure(posX,posY);	
+
+	@Override
+	public boolean addPlaceFigure(int x, int y) {
+		int width = PlaceFigure.getDefaultWidth();
+		int height = PlaceFigure.getDefaultHeight();
+		Iterator<SubnetFigure> is = subnets.iterator();
+		while(is.hasNext()){
+			SubnetFigure f = is.next();
+			if(x>=f.getX() && x+width<=f.getX()+f.getWidth()){
+				if(y>=f.getY() && y+height<=f.getY()+f.getHeight()){
+					return f.addPlaceFigure(x, y);
+				}
 			}
 		}
 		return false;
 	}
-	
-	public boolean addTransitionFigure(int x, int y) {
-		int posX2 = x+TransitionFigure.getDefaultWidth();
-		int posY2 = y+TransitionFigure.getDefaultHeight();
-		Iterator<SubnetFigure> it = getSubnetFigures().iterator();
-		while(it.hasNext()){
-			AWTSubnetFigure s = (AWTSubnetFigure)it.next();
-			int originX = s.getX();
-			int originY = s.getY();
-			int endX = originX+s.getWidth();
-			int endY = originY+s.getHeight();
-			//On cherche une inclusion...
-			if(x>=originX && posX2<=endX && y>=originY && posY2<=endY){
-				return s.addTransitionFigure(x, y);
-			}
-		}
-		return false;
-	}
-	
-	public boolean addArcFigure(int originX, int originY, int endX, int endY){
+
+
+	@Override
+	public boolean addArcFigure(int originX, int originY, int endX, int endY) {
 		int x,y,width,height;
 		Iterator<SubnetFigure> it = getSubnetFigures().iterator();
 		if(originX>endX){
@@ -119,19 +133,99 @@ public abstract class NetFigure extends SubnetFigure{
 		}
 		return false;
 	}
-	
+
 	@Override
-	protected final PlaceFigure createPlaceFigure(int x, int y){
-		return null;
+	public boolean addScopeFigure(int x, int y, int width, int height) {
+		Iterator<SubnetFigure> is = subnets.iterator();
+		while(is.hasNext()){
+			SubnetFigure f = is.next();
+			if(x>=f.getX() && x+width<=f.getX()+f.getWidth()){
+				if(y>=f.getY() && y+height<=f.getY()+f.getHeight()){
+					return f.addScopeFigure(x, y, width, height);
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean addSubnetFigure(int x, int y, int width, int height) {
+		if(this.allowObjectPosition(x, y, width, height)){
+			return subnets.add(this.createSubnetFigure(x, y, width, height));
+		}
+		return false;
 	}
 	
 	@Override
-	protected final TransitionFigure createTransitionFigure(int x, int y, PlaceFigure p){
+	public Drawable getDrawable(int x, int y) {
+		Iterator<SubnetFigure> is = subnets.iterator();
+		while(is.hasNext()){
+			SubnetFigure f = is.next();
+			if(x>=f.getX() && x<=f.getX()+f.getWidth()){
+				if(y>=f.getY() && y<=f.getY()+f.getHeight()){
+					return f.getDrawable(x, y);
+				}
+			}
+		}
 		return null;
+	}
+
+	@Override
+	public PlaceFigure getPlaceFigure(int x, int y) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TransitionFigure getTransitionFigure(int x, int y) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void deleteLinks(Drawable caller) {
+		// TODO Auto-generated method stub		
+	}	
+	@Override
+	public boolean moveBy(int x, int y, boolean b) {
+		return false;
 	}
 	
 	@Override
-	protected final ArcFigure createArcFigure(PlaceFigure p, TransitionFigure t, boolean input){
-		return null;
+	public boolean switchNotationsVisibility(){
+		return false;
 	}
+	
+	@Override
+	public boolean allowObjectPosition(int x, int y, int width, int height) {
+		// TODO Auto-generated method stub
+		return this.allowObjectPosition(x, y, width, height, null);
+	}
+	
+	@Override
+	public boolean allowObjectPosition(int x, int y, int width, int height, Drawable toIgnore){
+		if(x<20 || y<20){
+			return false;
+		}
+		Iterator<SubnetFigure> is = subnets.iterator();
+		while(is.hasNext()){
+			SubnetFigure f = is.next();
+			if(f!=toIgnore){
+				if(x+width>=f.getX()-20 && x<=f.getX()+f.getWidth()+20){
+					if(y+height>=f.getY()-20 && y<=f.getY()+f.getHeight()+20){
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	@Override
+	public void resetSizeExtremum(Figure f){
+		
+		this.minimize();
+	}
+
+	protected abstract SubnetFigure createSubnetFigure(int x, int y, int width, int height);
 }
