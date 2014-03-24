@@ -279,7 +279,7 @@ public abstract class ScopeFigure extends Figure implements ScopeListener, Conta
 	
 	public boolean addTransitionFigure(int x, int y) {
 		PlaceFigure p = this.createPlaceFigure(x, y);
-		p.getPlace().setType(emma.model.resources.Agent.class);
+		p.getPlace().setType(emma.model.resources.A.class);
 		if(this.addFigure(p)){
 			TransitionFigure t = createTransitionFigure(x,y+p.getHeight()+5,p);
 			if(this.addFigure(t)){

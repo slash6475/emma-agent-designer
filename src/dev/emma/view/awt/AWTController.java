@@ -102,7 +102,6 @@ public class AWTController implements MouseListener,MouseMotionListener,KeyListe
 	public void keyPressed(KeyEvent e){
 		switch(e.getKeyCode()){
 		case KeyEvent.VK_V:
-			p.virtualizeSelection();
 			break;
 		case KeyEvent.VK_S:
 			saveFile();

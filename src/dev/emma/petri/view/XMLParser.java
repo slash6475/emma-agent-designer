@@ -240,15 +240,15 @@ public class XMLParser {
 		Element d = (Element)elmt.getElementsByTagName("data").item(0);
 			if(d!=null){
 				if(d.getAttribute("class").equals("local")){
-					p.getPlace().setType(emma.model.resources.Local.class);
+					p.getPlace().setType(emma.model.resources.L.class);
 					p.getPlace().getData().post(d.getTextContent());
 				}
 				else if(d.getAttribute("class").equals("agent")){
-					p.getPlace().setType(emma.model.resources.Agent.class);
+					p.getPlace().setType(emma.model.resources.A.class);
 					p.getPlace().getData().post(d.getTextContent());
 				}
 				else if(d.getAttribute("class").equals("system")){
-					p.getPlace().setType(emma.model.resources.System.class);
+					p.getPlace().setType(emma.model.resources.S.class);
 				}
 			}
 		/*p.setName(elmt.getAttribute("name"));
