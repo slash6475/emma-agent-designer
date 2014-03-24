@@ -447,7 +447,7 @@ public class AWTController implements MouseListener,MouseMotionListener,KeyListe
 				save.setEnabled(false);
 				if(p.getSelection() instanceof AWTPlaceFigure){
 					AWTPlaceFigure pl = (AWTPlaceFigure)p.getSelection();
-					if(pl.getPlace().getData() instanceof emma.model.resources.Agent){
+					if(pl.getPlace().getData() instanceof emma.model.resources.A){
 						del.setEnabled(false);
 					}
 					else{

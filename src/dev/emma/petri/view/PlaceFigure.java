@@ -82,7 +82,7 @@ public abstract class PlaceFigure extends Figure implements PlaceListener{
 	
 	@Override
 	public void delete(){
-		if(!(getPlace().getData() instanceof emma.model.resources.Agent)){
+		if(!(getPlace().getData() instanceof emma.model.resources.A)){
 			super.delete();
 		}
 	}

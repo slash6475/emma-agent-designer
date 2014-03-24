@@ -11,7 +11,7 @@ public class Transition extends PT{
 		super(s);
 		s.add(this);
 		this.place=p;
-		place.setType(emma.model.resources.Agent.class);
+		place.setType(emma.model.resources.A.class);
 		test="true";
 	}
 	

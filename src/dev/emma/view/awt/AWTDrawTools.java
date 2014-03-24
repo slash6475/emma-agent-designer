@@ -109,13 +109,13 @@ public class AWTDrawTools {
 		if(res==null){
 			g.setColor(pNullColor);
 		}
-		else if(res instanceof emma.model.resources.Local){
+		else if(res instanceof emma.model.resources.L){
 			g.setColor(pLocalColor);
 		}
-		else if(res instanceof emma.model.resources.Agent){
+		else if(res instanceof emma.model.resources.A){
 			g.setColor(tColor);
 		}
-		else if(res instanceof emma.model.resources.System){
+		else if(res instanceof emma.model.resources.S){
 			g.setColor(pSysColor);
 		}
 		if(p.isVirtual()){

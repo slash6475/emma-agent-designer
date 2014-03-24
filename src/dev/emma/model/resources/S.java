@@ -1,7 +1,12 @@
 package emma.model.resources;
 
-public class Local implements Resource {
-
+public class S implements Resource {
+	private String name = "";
+	
+	public S(String name){
+		this.name = name;
+	}
+	
 	@Override
 	public String get() {
 		// TODO Auto-generated method stub
@@ -18,6 +23,12 @@ public class Local implements Resource {
 	public void delete() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return name;
 	}
 
 }
