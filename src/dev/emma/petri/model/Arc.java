@@ -14,7 +14,7 @@ public abstract class Arc extends PetriElement{
 	 * @param p : la place de l'arc. t : la transition de l'arc.
 	 */
 	public Arc(Place p,Transition t){
-		super(t.getParent());
+		super();
 		place=p;
 		transition=t;
 		expr="";

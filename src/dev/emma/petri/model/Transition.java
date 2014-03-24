@@ -7,11 +7,10 @@ public class Transition extends PT{
 	private String test;
 	private Place place;
 	
-	public Transition(Subnet s, Place p){
+	public Transition(Scope s, Place p){
 		super(s);
 		s.add(this);
 		this.place=p;
-		place.setType(emma.model.resources.Agent.class);
 		test="true";
 	}
 	

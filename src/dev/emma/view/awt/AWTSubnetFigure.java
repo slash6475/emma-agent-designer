@@ -5,74 +5,64 @@ import java.util.Iterator;
 
 import javax.swing.table.AbstractTableModel;
 
+import emma.petri.control.event.PetriEvent;
 import emma.petri.view.ArcFigure;
+import emma.petri.view.NetFigure;
 import emma.petri.view.PlaceFigure;
+import emma.petri.view.ScopeFigure;
 import emma.petri.view.SubnetFigure;
 import emma.petri.view.TransitionFigure;
 
 public class AWTSubnetFigure extends SubnetFigure implements AWTDrawable{
 	
-	public AWTSubnetFigure(int posX, int posY, int width, int height, SubnetFigure parent) {
+	public AWTSubnetFigure(int posX, int posY, int width, int height, NetFigure parent) {
 		super(posX, posY, width, height,parent);
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
-		g.clearRect(getX(), getY(), getWidth(),getHeight());
+	public void draw(Graphics2D g, double zoom) {
 		//On print le subnet
 		if(!isCollapsed()){
-			AWTDrawTools.drawSubnet(g,this);
-			Iterator<PlaceFigure> itP = places.iterator();
-			Iterator<TransitionFigure> itT = transitions.iterator();
+			AWTDrawTools.drawSubnet(g,zoom,this);
+			Iterator<ScopeFigure> itS = scopes.iterator();
 			Iterator<ArcFigure> itA = arcs.iterator();
-			Iterator<SubnetFigure> itS = this.getSubnetFigures().iterator();
 			while(itS.hasNext()){
-				((AWTDrawable)itS.next()).draw(g);
-			}
-			while(itP.hasNext()){
-				((AWTDrawable)itP.next()).draw(g);
-			}
-			while(itT.hasNext()){
-				((AWTDrawable)itT.next()).draw(g);
+				((AWTDrawable)itS.next()).draw(g,zoom);
 			}
 			while(itA.hasNext()){
-				((AWTDrawable)itA.next()).draw(g);
+				((AWTDrawable)itA.next()).draw(g,zoom);
 			}
-		}
+		}/*
 		else{
 			int x = getX()+((getWidth()-TransitionFigure.getDefaultWidth())/2);
 			int y = getY()+((getHeight()-TransitionFigure.getDefaultHeight())/2);
-			AWTDrawTools.drawTransition(g, x, y,TransitionFigure.getDefaultWidth(),TransitionFigure.getDefaultHeight(),true);
+			AWTDrawTools.drawTransition(g,zoom, x, y,TransitionFigure.getDefaultWidth(),TransitionFigure.getDefaultHeight(),true);
 			if(isSelected()){
-				AWTDrawTools.drawRectSelection(g,getX(),getY(),getWidth(),getHeight());
+				AWTDrawTools.drawRectSelection(g,zoom,getX(),getY(),getWidth(),getHeight());
 			}
-		}
+		}*/
 	}
 	
 	@Override
 	public AbstractTableModel getProperties() {
 		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected SubnetFigure createSubnetFigure(int x, int y, int width, int height) {
-		// TODO Auto-generated method stub
-		return new AWTSubnetFigure(x,y,width,height,this);
-	}
-
-	@Override
-	protected PlaceFigure createPlaceFigure(int x, int y) {
-		return new AWTPlaceFigure(x,y,this);
-	}
-	@Override
-	protected TransitionFigure createTransitionFigure(int x, int y, PlaceFigure p) {
-		return new AWTTransitionFigure(x, y, this, p);
+		return new AWTSubnetTableModel(this);
 	}
 
 	@Override
 	protected ArcFigure createArcFigure(PlaceFigure p, TransitionFigure t, boolean input) {
 		// TODO Auto-generated method stub
 		return new AWTArcFigure(p,t,input);
+	}
+
+	@Override
+	public void handle(PetriEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected ScopeFigure createScopeFigure(int x, int y, int width, int height){
+		return new AWTScopeFigure(x, y, width, height, this);
 	}
 }

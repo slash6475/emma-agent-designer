@@ -8,25 +8,24 @@ package emma.view.awt;
 /**/
 import javax.swing.table.AbstractTableModel;
 
-import emma.petri.model.Place;
-import emma.petri.view.PlaceFigure;
+import emma.petri.model.Transition;
+import emma.petri.view.TransitionFigure;
 
-class AWTPlaceTableModel extends AbstractTableModel {
+class AWTTransitionTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 3978989890098771506L;
 	
 	final String[] columnNames = { "Attribute", "Value" };
 	final Object[][] data;
-	final PlaceFigure place;
+	final Transition trans;
 
-	AWTPlaceTableModel(PlaceFigure placeFigure) {
-		this.place = placeFigure;
-		Place p = place.getPlace();
+	AWTTransitionTableModel(TransitionFigure transitionFigure) {
+		this.trans = transitionFigure.getTransition();
 		this.data = new Object[][] {
-			{ "Figure", "Place" },
-			{ "Name", p.getName() },
-			{ "Type", p.getType() },
-			{ "Scope", p.getParent().getName() }
+			{ "Figure", "Transition" },
+			{ "Parent", trans.getParent().getName() },
+			{ "Place", trans.getPlace().getName() },
+			{ "Condition", trans.getCondition() }
 		};
 	}
 
@@ -51,19 +50,23 @@ class AWTPlaceTableModel extends AbstractTableModel {
 		if(col==0){
 			return false;
 		}
-		if(row==1){
+		if(row==3){
 			return true;
 		}
 		return false;
 	}
 
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		this.place.setName((String) aValue);
+		switch(rowIndex){
+		case 3:
+			trans.setCondition((String)aValue);
+		default:	
+			break;
+		}
 		this.data[rowIndex][columnIndex] = aValue;
 		fireTableCellUpdated(rowIndex, columnIndex);
 	}
 	
 	public void rowSelected(int row) {
-		//no need to do anything
 	}
 }

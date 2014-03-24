@@ -1,32 +1,26 @@
-//This is copyrighted source file, part of Rakiura JFern package.
-//See the file LICENSE for copyright information and the terms and conditions
-//for copying, distributing and modifications of Rakiura JFern package.
-//Copyright (C) 1999-2009 by Mariusz Nowostawski and others.
-
 package emma.view.awt;
 
-/**/
 import javax.swing.table.AbstractTableModel;
 
-import emma.petri.model.Place;
-import emma.petri.view.PlaceFigure;
+import emma.petri.model.Scope;
+import emma.petri.view.ScopeFigure;
 
-class AWTPlaceTableModel extends AbstractTableModel {
+class AWTScopeTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 3978989890098771506L;
 	
 	final String[] columnNames = { "Attribute", "Value" };
 	final Object[][] data;
-	final PlaceFigure place;
+	final Scope sub;
 
-	AWTPlaceTableModel(PlaceFigure placeFigure) {
-		this.place = placeFigure;
-		Place p = place.getPlace();
+	AWTScopeTableModel(ScopeFigure s) {
+		this.sub = s.getScope();
 		this.data = new Object[][] {
-			{ "Figure", "Place" },
-			{ "Name", p.getName() },
-			{ "Type", p.getType() },
-			{ "Scope", p.getParent().getName() }
+			{ "Figure", "Subnet" },
+			{ "Name", sub.getName() },
+			{ "Parent", sub.getParent().getName() },
+			{ "Places", sub.getPlaces().size() },
+			{ "Transitions", sub.getTransitions().size() }
 		};
 	}
 
@@ -58,12 +52,17 @@ class AWTPlaceTableModel extends AbstractTableModel {
 	}
 
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		this.place.setName((String) aValue);
+		switch(rowIndex){
+		case 1:
+			sub.setName((String)aValue);
+			break;
+		default:	
+			break;
+		}
 		this.data[rowIndex][columnIndex] = aValue;
 		fireTableCellUpdated(rowIndex, columnIndex);
 	}
 	
 	public void rowSelected(int row) {
-		//no need to do anything
 	}
 }

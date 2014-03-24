@@ -7,9 +7,11 @@ public abstract class PT extends PetriElement {
 
 	private Set<InputArc> inArcs;
 	private Set<OutputArc> outArcs;
-
-	public PT(Subnet s){
-		super(s);
+	private Scope parent;
+	
+	public PT(Scope s){
+		super();
+		this.parent = s;
 		this.inArcs = new HashSet<InputArc>();
 		this.outArcs = new HashSet<OutputArc>();
 	}
@@ -38,4 +40,7 @@ public abstract class PT extends PetriElement {
 		return inArcs;
 	}
 	
+	public Scope getParent(){
+		return parent;
+	}
 }

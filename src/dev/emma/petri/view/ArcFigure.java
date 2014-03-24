@@ -1,11 +1,11 @@
 package emma.petri.view;
 
-import emma.petri.control.event.ArcListener;
+import emma.petri.control.event.InputArcListener;
 import emma.petri.model.Arc;
 import emma.petri.model.InputArc;
 import emma.petri.model.OutputArc;
 
-public abstract class ArcFigure extends Figure implements ArcListener{
+public abstract class ArcFigure extends Figure implements InputArcListener{
 	private boolean input;
 	private PlaceFigure place;
 	private TransitionFigure transition;
@@ -14,7 +14,7 @@ public abstract class ArcFigure extends Figure implements ArcListener{
 	private int anchorX1, anchorX2, anchorY1, anchorY2;
 	
 	public ArcFigure(PlaceFigure p, TransitionFigure t, boolean input){
-		super(0,0,0,0,t.getParent(),(input)?new InputArc(p.getPlace(),t.getTransition()):new OutputArc(p.getPlace(),t.getTransition()));
+		super(0,0,0,0,t.getParent().getParent(),(input)?new InputArc(p.getPlace(),t.getTransition()):new OutputArc(p.getPlace(),t.getTransition()));
 		this.input=input;
 		this.place=p;
 		this.transition=t;
@@ -73,6 +73,7 @@ public abstract class ArcFigure extends Figure implements ArcListener{
 	public TransitionFigure getTransitionFigure(){
 		return transition;
 	}
+	
 	public Arc getArc(){
 		return (Arc)getElement();
 	}
@@ -113,7 +114,7 @@ public abstract class ArcFigure extends Figure implements ArcListener{
 			place.removeArcFigure(this);
 		}
 		if(!(caller instanceof SubnetFigure)){
-			getParent().removeFigure(this);
+			((SubnetFigure)getParent()).removeFigure(this);
 		}
 	}
 	

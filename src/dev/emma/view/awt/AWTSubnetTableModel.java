@@ -8,25 +8,23 @@ package emma.view.awt;
 /**/
 import javax.swing.table.AbstractTableModel;
 
-import emma.petri.model.Place;
-import emma.petri.view.PlaceFigure;
+import emma.petri.model.Subnet;
+import emma.petri.view.SubnetFigure;
 
-class AWTPlaceTableModel extends AbstractTableModel {
+class AWTSubnetTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 3978989890098771506L;
 	
 	final String[] columnNames = { "Attribute", "Value" };
 	final Object[][] data;
-	final PlaceFigure place;
+	final Subnet sub;
 
-	AWTPlaceTableModel(PlaceFigure placeFigure) {
-		this.place = placeFigure;
-		Place p = place.getPlace();
+	AWTSubnetTableModel(SubnetFigure subnetFigure) {
+		this.sub = subnetFigure.getSubnet();
 		this.data = new Object[][] {
-			{ "Figure", "Place" },
-			{ "Name", p.getName() },
-			{ "Type", p.getType() },
-			{ "Scope", p.getParent().getName() }
+			{ "Figure", "Subnet" },
+			{ "Name", sub.getName() },
+			{ "Scopes", sub.getScopes().size() }
 		};
 	}
 
@@ -58,12 +56,17 @@ class AWTPlaceTableModel extends AbstractTableModel {
 	}
 
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		this.place.setName((String) aValue);
+		switch(rowIndex){
+		case 1:
+			sub.setName((String)aValue);
+			break;
+		default:	
+			break;
+		}
 		this.data[rowIndex][columnIndex] = aValue;
 		fireTableCellUpdated(rowIndex, columnIndex);
 	}
 	
 	public void rowSelected(int row) {
-		//no need to do anything
 	}
 }

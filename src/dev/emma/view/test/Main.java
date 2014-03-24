@@ -1,30 +1,26 @@
 package emma.view.test;
 
-import javax.swing.SwingUtilities;
+import java.awt.EventQueue;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 
 import emma.petri.view.XMLParser;
-import emma.view.PetriViewer;
-import emma.view.awt.AWTController;
-import emma.view.awt.AWTPetriCanvas;
+import emma.view.awt.AWTDrawTools;
 
 public class Main {
 	public static void main(String[] args){
 		new Console();
 		try {
 			XMLParser.init();
-		} catch (TransformerConfigurationException
-				| ParserConfigurationException e) {
-			// TODO Auto-generated catch block
+			AWTDrawTools.init();
+		} catch (TransformerConfigurationException | ParserConfigurationException e) {
 			e.printStackTrace();
 		}
-		SwingUtilities.invokeLater(new Runnable(){
+		EventQueue.invokeLater(new Runnable(){
 			public void run(){
 				AWTController control = new AWTController();
-				PetriViewer window = new PetriSwingWindow(control);
-				AWTPetriCanvas canvas = new AWTPetriCanvas(control);
-				window.setCanvas(canvas);
+				AWTPetriWindow window = new AWTPetriWindow(control);
 				window.setVisible(true);
 			}
 		});

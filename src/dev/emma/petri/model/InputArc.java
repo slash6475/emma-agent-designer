@@ -1,5 +1,6 @@
 package emma.petri.model;
 
+
 /**
  * Dérive de la classe abstraite Arc Modélise un arc place -> transition
  * @author  pierrotws
