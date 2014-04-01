@@ -6,9 +6,14 @@ import emma.model.nodes.Network;
 
 
 public class CoapProxy extends CoapServer {
-
+	final static String networkName = "NetworkCollector";
+	
 	public CoapProxy() throws SocketException{
-		this.addResource(new Network("network"));
+		this.addResource(new Network(networkName));
+	}
+	
+	public Network getNetwork(){
+		return (Network) this.getResource(networkName);
 	}
 	
 }

@@ -1,7 +1,7 @@
 package emma.model.resources;
 
 
-public class A implements Resource {
+public class A extends Resource {
 	private String name = "";
 	
 	public A(String name){
@@ -17,12 +17,14 @@ public class A implements Resource {
 	@Override
 	public void post(String s) {
 		// TODO Auto-generated method stub
+		notifier.fireListener(this);
 		
 	}
 
 	@Override
 	public void delete() {
 		// TODO Auto-generated method stub
+		notifier.fireListener(this);
 		
 	}
 

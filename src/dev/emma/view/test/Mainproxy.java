@@ -1,15 +1,10 @@
 package emma.view.test;
 
-import java.beans.XMLEncoder;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashSet;
-
-
 import emma.control.coap.CoapProxy;
 import emma.control.http.HttpRegistry;
-import emma.model.nodes.Node;
-import emma.tools.BoundedSet;
+import emma.model.nodes.Network;
+import emma.view.NetworkViewer;
 
 public class Mainproxy {
 
@@ -21,8 +16,11 @@ public class Mainproxy {
 
 		
 		// TODO Auto-generated method stub
-		(new CoapProxy()).connect();
+		CoapProxy coap_server = new CoapProxy();
+		coap_server.connect();
+		Network net = coap_server.getNetwork();
+		new NetworkViewer(net);
+		
 		(new HttpRegistry()).connect();
 	}
-
 }
