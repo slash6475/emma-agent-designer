@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import emma.petri.control.event.NameChangedEvent;
+import emma.petri.control.listener.SubnetListener;
+
 /**
  * Sous réseau de Petri
  * 
@@ -12,10 +15,15 @@ import java.util.Set;
  */
 public class Subnet extends PetriElement{
 	
-	private static int q=1;
+	private static int q=0;
 	private Set<Scope> scopes;
+	private Set<SubnetListener> subls;
 	private String name;
 	private Net parent;
+	
+	public Subnet(Net parent){
+		this(parent,"sub"+q);
+	}
 	
 	public Subnet(Net parent, String name){
 		super();
@@ -24,9 +32,7 @@ public class Subnet extends PetriElement{
 		scopes=new HashSet<Scope>();
 		this.name=name;
 		parent.add(this);
-	}
-	public Subnet(Net parent){
-		this(parent,"sub"+q);
+		this.subls = new HashSet<SubnetListener>();
 	}
 	
 	public Set<Scope> getScopes(){
@@ -40,6 +46,7 @@ public class Subnet extends PetriElement{
 			it.next().delete(this);
 		}
 		scopes.clear();
+		subls.clear();
 	}
 	
 
@@ -49,8 +56,14 @@ public class Subnet extends PetriElement{
 	
 	public void setName(String name){
 		this.name = name;
+		NameChangedEvent e = new NameChangedEvent(this);
+		Iterator<SubnetListener> it = subls.iterator();
+		while(it.hasNext()){
+			it.next().notify(e);
+		}
 	}
 	
+
 	public boolean add(Scope scope) {
 		return scopes.add(scope);
 	}
@@ -58,8 +71,12 @@ public class Subnet extends PetriElement{
 	public boolean remove(Scope scope) {
 		return scopes.remove(scope);
 	}
-	
+
 	public Net getParent(){
 		return parent;
+	}
+	
+	public void addListener(SubnetListener l){
+		subls.add(l);
 	}
 }

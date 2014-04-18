@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import emma.petri.control.event.NameChangedEvent;
+import emma.petri.control.listener.ScopeListener;
+
 public class Scope extends PetriElement{
 
 	private static int q=1;
@@ -11,6 +14,7 @@ public class Scope extends PetriElement{
 	private Set<Place> places;
 	private Set<Transition> transitions;
 	private String name;
+	private Set<ScopeListener> scls;
 	
 	public Scope(Subnet parent){
 		this(parent,"scp"+q);
@@ -24,6 +28,7 @@ public class Scope extends PetriElement{
 		this.transitions=new HashSet<Transition>();
 		this.parent=parent;
 		parent.add(this);
+		scls = new HashSet<ScopeListener>();
 	}
 
 	public Subnet getParent(){
@@ -59,10 +64,16 @@ public class Scope extends PetriElement{
 		while(it.hasNext()){
 			it.next().delete(this);
 		}
+		scls.clear();
 	}
 	
 	public void setName(String name){
-		this.name=name;
+		this.name = name;
+		NameChangedEvent e = new NameChangedEvent(this);
+		Iterator<ScopeListener> it = scls.iterator();
+		while(it.hasNext()){
+			it.next().notify(e);
+		}
 	}
 	
 	public String getName(){
@@ -77,5 +88,9 @@ public class Scope extends PetriElement{
 	public Set<Transition> getTransitions() {
 		// TODO Auto-generated method stub
 		return transitions;
+	}
+
+	public void addListener(ScopeListener l){
+		scls.add(l);
 	}
 }

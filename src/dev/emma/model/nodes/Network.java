@@ -1,9 +1,15 @@
 package emma.model.nodes;
+
+import java.beans.XMLDecoder;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import javax.swing.event.EventListenerList;
 
 import ch.ethz.inf.vs.californium.coap.DELETERequest;
 import ch.ethz.inf.vs.californium.coap.GETRequest;
@@ -12,29 +18,23 @@ import ch.ethz.inf.vs.californium.coap.PUTRequest;
 import ch.ethz.inf.vs.californium.coap.registries.CodeRegistry;
 import ch.ethz.inf.vs.californium.endpoint.resources.LocalResource;
 
-import org.apache.log4j.Logger;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import emma.model.nodes.Node;
+import emma.model.resources.L;
 import emma.model.resources.Resource;
-import emma.tools.Notifier;
 
 public class Network extends LocalResource {
-	
-	private static Logger logger = Logger.getLogger(Network.class);
-	
+	private String prefix = "bbbb::";
 	private Set<Node> nodes;
 	private String nsURI = "";
 	
 	public Network(String resourceIdentifier) {
 		super(resourceIdentifier);
 		this.nodes = new HashSet<Node>();
-	}
-
-	private Notifier notifier = new Notifier();
-	public Notifier getNotifier(){
-		return notifier;
 	}
 	
 	/*
@@ -54,14 +54,13 @@ public class Network extends LocalResource {
 
 	@Override
 	public void performPUT(PUTRequest request) {
-		String payload 	= request.getPayloadString().replace("\0", "");
 		JSONObject Obj;
 		JSONArray resources, routes, neighbors;
 		
 		String ip		= request.getPeerAddress().toString();
+		String payload 	= request.getPayloadString();
 
-		logger.debug("[REQUEST] PUT /"+this.getName()+" from: " +ip + " Payload length :"+payload.length());
-
+		//System.out.println("From: " +ip + "\nPayload:" + payload);
 		/*
 		 * JSON Serialization and request validation
 		 */
@@ -73,8 +72,7 @@ public class Network extends LocalResource {
 			nsURI		= Obj.getString("ns-uri");
 			}
 		catch(Exception e){
-			logger.warn("JSON Serialization\nRequest from  " + ip +"\n" + e.getMessage() + "\n" + payload);
-			
+			System.out.println("**ERROR** JSON Serialization\nRequest from  " + ip +"\n" + e.getMessage());
 			request.respond(CodeRegistry.RESP_METHOD_NOT_ALLOWED);
 			return;
 		}
@@ -83,25 +81,14 @@ public class Network extends LocalResource {
 		 * Looking for node if it already exist
 		 * If its type is different, it is remove
 		 */
-		
-		
 		Node node = getNode(ip);
 		if(node != null){
 			if(!node.getNsURI().equals(nsURI)){
 					this.nodes.remove(node);
 					node = new Node(ip, nsURI);
-					node.getNotifier().addListener(this.notifier.getListeners());
-					this.nodes.add(node);
-					notifier.fireListener(this);
 			}
 		}
-		else {
-			node = new Node(ip, nsURI);
-			node.getNotifier().addListener(this.notifier.getListeners());
-			this.nodes.add(node);
-			notifier.fireListener(this);
-		}
-
+		else node = new Node(ip, nsURI);
 		/*
 		 * Resource list update
 		 */
@@ -114,59 +101,47 @@ public class Network extends LocalResource {
 			Resource r = node.getResource(resourcePath[0], resourcePath[1]);
 			if(r == null){
 				if(!node.addResource(resourcePath[0], resourcePath[1])){
-					logger.warn("Services "+ resourcePath[0] + " should not exist on this node " + nsURI);
+					System.out.println("** WARNING ** Services "+ resourcePath[0] + " should not exist on this node " + nsURI);
 					continue ;
 				}
 			}
 		}
 		/*
 		 * Neighbors list update
-		 */
+		 */		
 		for(int i=0; i < neighbors.length(); i++){
 			String ipN = neighbors.getString(i);
 			if(node.getNeighbor(ipN) == null){
 				Node n = this.getNode(ipN);
 				if(n == null){
 					n = new Node(ipN);
-					n.getNotifier().addListener(this.notifier.getListeners());
-					this.nodes.add(n);
-					notifier.fireListener(this);
 				}
 				if(!node.addNeighbor(n)){
-					logger.error("Unable to add neighbor " + ipN);
-				} 
+					System.out.println("**WARNING** Unable to add neighbor" + ipN);
+				}
 			}
 		}
 		/*
-		 * Routes list update 
+		 * Routes list update => Il faut gérer des pairs !
 		 */
 			
 		for(int i=0; i < routes.length(); i++){
 			JSONObject r = routes.getJSONObject(i);
-			String ipN = JSONObject.getNames(r)[0];
+			String ipN = r.getNames(r)[0];
 			
 			if(node.getRoute(ipN) == null){
 				Node n1 = this.getNode(ipN);
 				Node n2 = this.getNode(r.getString(ipN));
-				if(n1 == null){
-					n1 = new Node(ipN);
-					n1.getNotifier().addListener(this.notifier.getListeners());
-					this.nodes.add(n1);
-					notifier.fireListener(this);					
-				}
-				if(n2 == null){
-					n2 = new Node(r.getString(ipN));
-					n2.getNotifier().addListener(this.notifier.getListeners());
-					this.nodes.add(n2);
-					notifier.fireListener(this);					
-				}
+				if(n1 == null)	n1 = new Node(ipN);
+				if(n2 == null)	n2 = new Node(r.getString(ipN));
 				
 				if(!node.addRoutes(n1, n2)){
-					logger.error("Unable to add route " + n1.getIp() + " from " + n2.getIp());
+					System.out.println("**WARNING** Unable to add route " + n1.getIp() + " from " + n2.getIp());
 				}
 			}
 		}
 		
+		System.out.println(node.toJSON().toString());
 		request.respond(CodeRegistry.RESP_CONTENT);
 	}
 
@@ -183,24 +158,12 @@ public class Network extends LocalResource {
 	
 	public Node getNode(String ip){
 		Node node = null;
-		
-		String[] t = ip.split("]");
-		ip = t[0].replace("[","");
-		ip = ip.replace("::", ":0:0:0:");
-		
 		Iterator<Node> itr = this.nodes.iterator();
 		while(itr.hasNext()){
 			node = itr.next();
-			String[] ips = node.getIps();
-			for(int i=0; i < ips.length; i++ ){
-				if(ips[i].equals(ip))
-					return node;
-			}
+			if(node.getIp().equals(ip))
+				break;
 		}
-		return null;
+		return node;
 	}
-	
-	public Node[] getNodes(){
-		return this.nodes.toArray(new Node[0]);
-		}
 }

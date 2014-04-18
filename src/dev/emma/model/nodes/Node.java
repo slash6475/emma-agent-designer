@@ -6,48 +6,31 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
+import ch.ethz.inf.vs.californium.coap.registries.CodeRegistry;
 import emma.model.resources.Resource;
 import emma.tools.BoundedHashMap;
 import emma.tools.BoundedSet;
-import emma.tools.Notifier;
 
 
 public class Node {
 	
 	private static int defaultsize = 5;
-	private static int COAP_PORT = 5683;
-	private static String PREFIX = "aaaa";
 	
-	private HashSet<String> ip = new <String>HashSet();
-	private int port;
+	private String ip;
 	private String nsURI;
 	private HashMap<String, String> properties = new HashMap<>();
 	
 	private BoundedSet<Node> neighbors;
 	private BoundedHashMap<Node, Node> routes;
 	private ResourceServices resources;
-
-	private Notifier notifier = new Notifier();
-	private static Logger logger = Logger.getLogger(Network.class);
-	
-	public Notifier getNotifier(){
-		return notifier;
-	}
 	
 	private class ResourceServices{
 		private HashMap<String,BoundedSet<Resource>> res;
@@ -100,34 +83,11 @@ public class Node {
 	}
 	
 	public Node(String ip,  String nsURI){
-		String[] t = ip.split("]");		
-		t[0] = t[0].replace("[","");
-		t[0] = t[0].replace("::", ":0:0:0:");
-		
-		this.ip.add(t[0]);
-		
-		if(t[0].contains(PREFIX))
-			this.ip.add(t[0].replace(PREFIX, "fe80"));
-		
-		else if (t[0].contains("fe80"))
-			this.ip.add(t[0].replace("fe80",PREFIX));
-		
-		
-		if(t.length > 1){
-			t = t[1].split(":");
-			this.port = Integer.parseInt(t[1]);			
-		}
-		else this .port = COAP_PORT;
-		
+		this.ip = ip;
 		this.nsURI = (nsURI);
-		logger.info("New node " + ip);
 		
-		if(nsURI == ""){
-			resources   = new ResourceServices();
-			routes		= new BoundedHashMap<Node,Node>(0);
-			neighbors	= new BoundedSet<>(0);
+		if(nsURI == "")
 			return;
-			}
 		
 		BufferedReader br = null;
 		String objJSONString = "";
@@ -153,110 +113,62 @@ public class Node {
 	}
 	
 	public String getIp() {
-		String[] t = ip.toArray(new String[0]);
-		Arrays.sort(t);		
-		return (String) t[0];
-	}
-	
-	public String[] getIps() {
-		String[] t = ip.toArray(new String[0]);
-		Arrays.sort(t);
-		return (String[]) t;
+		return ip;
 	}
 
-	public int getPort(){
-		return port;
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
+
 	
 	public Node getNeighbor(String ip){
-		ip = ip.replace("::", ":0:0:0:");
-		Iterator<Node> it = this.neighbors.iterator();
+		Iterator it = this.neighbors.iterator();
 		while(it.hasNext()){
-			Node node =  it.next();
-			String[] ips = node.getIps();
-			for (int i=0; i < ips.length; i++){
-				if(ips[i].equals(ip))
-					return node;
-			}
-			
+			Node node = (Node) it.next();
+			if (node.getIp().equals(ip))
+				return node;
 		}
 		return null;
 	}
 	
 	public boolean addNeighbor(Node n){
-		if(this.neighbors.add(n)){
-			logger.debug("Add neighbor " + n.getIp() +" of node " + this.getIp());
-			this.notifier.fireListener(this);
-			return true;
-		}
-		return false;
+		return this.neighbors.add(n);
 	}
 	
 	public Entry<Node, Node> getRoute(String ip){
-		Iterator<Entry<Node, Node>> it = this.routes.entrySet().iterator();
-
-		ip = ip.replace("::", ":0:0:0:");
+		Iterator it = this.routes.entrySet().iterator();
 		while(it.hasNext()){
-			Entry<Node, Node> pair = it.next();
+			Entry<Node, Node> pair = (Entry<Node, Node>) it.next();
 			Node node = pair.getKey();
-			
-			String[] ips = node.getIps();
-			for (int i=0; i < ips.length; i++)
-				if(ips[i].equals(ip))
-					return pair;
+			if (node.getIp().equals(ip))
+				return pair;
 		}
 		return null;
 	}
 	
 	public boolean addRoutes(Node to, Node from){
-		if(this.routes.put(to, from) != null){
-			logger.debug("Add routes on node "+getIp()+" to " + to.getIp() +" from " + from.getIp());
-			this.notifier.fireListener(this);
-			return true;
-		}
-		return false;
+		return this.routes.put(to, from) != null ? true: false;
 	}
 	
 	public boolean addResourceType(String name) throws ClassNotFoundException{
-		if(addResourceType(name, defaultsize)){
-			this.notifier.fireListener(this);
-			logger.debug("Add resourceType " + name +" on node " + this.getIp());
-			return true;
-		}
-		return false;
+		return addResourceType(name, defaultsize);
 	}
 	
 	public boolean addResourceType(String name, int size) throws ClassNotFoundException{
-		if(resources.addType(name, size)){
-			this.notifier.fireListener(this);
-			logger.debug("Add resource type " +name +" on node " + this.getIp());
-			return true;			
-		}
-		return false;
+		return resources.addType(name, size);
 	}
 	
 	public boolean addResource(Resource r){
-		if(resources.add(r)){
-			logger.debug("Add resource type " +r.getName() +" on node " + this.getIp());
-			r.getNotifier().addListener(this.notifier.getListeners());
-			this.notifier.fireListener(this);
-			return true;
-		}
-		return false;
+		return resources.add(r);
 	}
 	
 	public boolean addResource(String type, String rName){
 		if (rName == "" || type == "") return false;
-		logger.debug("Add resource " +type + "/" +rName+" on node " + this.getIp());
 		try {
 			type = "emma.model.resources." + type;
-			Constructor<Resource> Resourcetype = ((Constructor<Resource>) Class.forName(type).getDeclaredConstructor(String.class));
+			Constructor<Resource> Resourcetype = (Constructor<Resource>) Class.forName(type).getDeclaredConstructor(String.class);
 			Resource r = (Resource) Resourcetype.newInstance(rName);
-			if(resources.add(r)){
-				this.notifier.fireListener(this);
-				return true;				
-			}
-			else return false;
+			return resources.add(r);
 			
 		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
 			// TODO Auto-generated catch block
@@ -267,7 +179,9 @@ public class Node {
 		} 
 		return false;
 	}
-		
+	
+
+	
 	public void fromJSON(JSONObject obj) throws ClassNotFoundException, JSONException{
 		
 		JSONObject properties = obj.getJSONObject("properties");
@@ -280,7 +194,7 @@ public class Node {
 		resources   = new ResourceServices();
 		routes		= new BoundedHashMap<Node,Node>(Integer.parseInt(this.properties.get("MAX_ROUTES")));
 		neighbors	= new BoundedSet<>(Integer.parseInt(this.properties.get("MAX_NEIGHBORS")));
-
+		
 		JSONArray resourcesJSON 	= obj.getJSONArray("services");
 		for (int i = 0; i < resourcesJSON.length(); i++){
 			JSONObject o = resourcesJSON.getJSONObject(i);
@@ -297,9 +211,9 @@ public class Node {
 		if(this.properties != null){
 			JSONObject objProperties = new JSONObject();
 			obj.put("properties", objProperties);
-			Iterator<Entry<String, String>> it = this.properties.entrySet().iterator();
+			Iterator it = this.properties.entrySet().iterator();
 			while(it.hasNext()){
-				Entry<String,String> pair = it.next();
+				Entry<String,String> pair = (Entry<String, String>) it.next();
 				objProperties.put(pair.getKey(), pair.getValue());
 			}			
 		}
@@ -374,16 +288,6 @@ public class Node {
 		return null;
 	}
 
-	public ArrayList<String> getResourceRoots(){
-		ArrayList<String> roots = new ArrayList<String>();
-		Iterator<Entry<String, BoundedSet<Resource>>> it = this.resources.iterator();
-		while(it.hasNext()){
-			Entry<String,BoundedSet<Resource>> pair = it.next();
-			roots.add(pair.getKey());
-		}
-		return roots;
-	}
-	
 	public String getNsURI() {
 		return nsURI;
 	}
