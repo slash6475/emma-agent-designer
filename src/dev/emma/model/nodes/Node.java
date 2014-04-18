@@ -11,15 +11,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import emma.model.resources.Resource;
 import emma.tools.BoundedHashMap;
@@ -33,7 +30,7 @@ public class Node {
 	private static int COAP_PORT = 5683;
 	private static String PREFIX = "aaaa";
 	
-	private HashSet<String> ip = new <String>HashSet();
+	private HashSet<String> ip = new HashSet<String>();
 	private int port;
 	private String nsURI;
 	private HashMap<String, String> properties = new HashMap<>();
@@ -153,13 +150,13 @@ public class Node {
 	}
 	
 	public String getIp() {
-		String[] t = ip.toArray(new String[0]);
+		String[] t = this.ip.toArray(new String[0]);
 		Arrays.sort(t);		
 		return (String) t[0];
 	}
 	
 	public String[] getIps() {
-		String[] t = ip.toArray(new String[0]);
+		String[] t = this.ip.toArray(new String[0]);
 		Arrays.sort(t);
 		return (String[]) t;
 	}
@@ -250,7 +247,7 @@ public class Node {
 		logger.debug("Add resource " +type + "/" +rName+" on node " + this.getIp());
 		try {
 			type = "emma.model.resources." + type;
-			Constructor<Resource> Resourcetype = ((Constructor<Resource>) Class.forName(type).getDeclaredConstructor(String.class));
+			Constructor<?> Resourcetype = (Class.forName(type).getDeclaredConstructor(String.class));
 			Resource r = (Resource) Resourcetype.newInstance(rName);
 			if(resources.add(r)){
 				this.notifier.fireListener(this);
@@ -259,10 +256,8 @@ public class Node {
 			else return false;
 			
 		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			System.out.println("**WARNING** Root resource " + type + " unknown");
 		} 
 		return false;
@@ -271,9 +266,9 @@ public class Node {
 	public void fromJSON(JSONObject obj) throws ClassNotFoundException, JSONException{
 		
 		JSONObject properties = obj.getJSONObject("properties");
-		Iterator it = properties.keys();
+		Iterator<?> it = properties.keys();
 		while(it.hasNext()){
-			String key = (String) it.next();
+			String key = it.next().toString();
 			this.properties.put(key, properties.getString(key));
 		}
 		
@@ -308,9 +303,9 @@ public class Node {
 		 */
 		if(this.neighbors != null){
 			JSONArray objNeighbors = new JSONArray();
-			Iterator itn = this.neighbors.iterator();
+			Iterator<Node> itn = this.neighbors.iterator();
 			while(itn.hasNext()){
-				Node n = (Node) itn.next();
+				Node n = itn.next();
 				objNeighbors.put(n.getIp());
 			}		
 			obj.put("neighbors", objNeighbors);	
@@ -321,10 +316,10 @@ public class Node {
 		if(this.routes != null){
 			JSONArray objRoutes = new JSONArray();
 			obj.put("routes", objRoutes);
-			Iterator it = this.routes.entrySet().iterator();
+			Iterator<Entry<Node, Node>> it = this.routes.entrySet().iterator();
 			while(it.hasNext()){
 				JSONObject objroute = new JSONObject();
-				Entry<Node, Node> pair = (Entry<Node, Node>) it.next();
+				Entry<Node, Node> pair = it.next();
 				objroute.put(pair.getKey().getIp(), pair.getValue().getIp());
 				objRoutes.put(objroute);
 			}
@@ -356,7 +351,6 @@ public class Node {
 			}
 			obj.put("services", resourcesJSON);	
 		}
-
 		return obj;
 	}
 	

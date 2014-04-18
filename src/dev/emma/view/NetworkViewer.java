@@ -1,9 +1,11 @@
 package emma.view;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.JFrame;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 
@@ -15,7 +17,7 @@ import emma.tools.Listener;
 
 
 
-public class NetworkViewer extends JFrame implements Listener{
+public class NetworkViewer extends JPanel implements Listener{
 
 	/**
 	 * 
@@ -29,13 +31,10 @@ public class NetworkViewer extends JFrame implements Listener{
 	public NetworkViewer(Network net){
 		super();
 		this.network = net;
+	    this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		this.jtree 	 = new NetworkViewerJTree(net.getName());
-		setTitle("Network Viewer");    
-	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    this.add(jtree);
-	    pack();
+	    this.add(jtree);        
 	    setVisible(true);
-	    setSize(400,400);
 	    
 	    net.getNotifier().addListener(this);
 	}

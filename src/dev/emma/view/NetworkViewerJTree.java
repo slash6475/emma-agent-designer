@@ -27,10 +27,10 @@ public class NetworkViewerJTree extends JPanel {
 
 	private DefaultTreeModel treeModel;
 	public NetworkViewerJTree(String networkName){
-		network = new DefaultMutableTreeNode(networkName);
-	    treeModel = new DefaultTreeModel(network);
+		network 	= new DefaultMutableTreeNode(networkName);
+	    treeModel 	= new DefaultTreeModel(network);
 
-	    tree = new JTree(treeModel);
+	    tree 		= new JTree(treeModel);
 
 	    tree.getSelectionModel().setSelectionMode
         (TreeSelectionModel.SINGLE_TREE_SELECTION);

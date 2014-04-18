@@ -3,8 +3,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.swing.event.EventListenerList;
-
 import ch.ethz.inf.vs.californium.coap.DELETERequest;
 import ch.ethz.inf.vs.californium.coap.GETRequest;
 import ch.ethz.inf.vs.californium.coap.POSTRequest;
@@ -51,7 +49,7 @@ public class Network extends LocalResource {
 		String rsp = "coucou ohoh \n";
 		request.respond(CodeRegistry.RESP_CONTENT, rsp);
 	}
-
+	
 	@Override
 	public void performPUT(PUTRequest request) {
 		String payload 	= request.getPayloadString().replace("\0", "");
@@ -61,7 +59,7 @@ public class Network extends LocalResource {
 		String ip		= request.getPeerAddress().toString();
 
 		logger.debug("[REQUEST] PUT /"+this.getName()+" from: " +ip + " Payload length :"+payload.length());
-
+logger.debug("ICI " + payload);
 		/*
 		 * JSON Serialization and request validation
 		 */
@@ -75,7 +73,7 @@ public class Network extends LocalResource {
 		catch(Exception e){
 			logger.warn("JSON Serialization\nRequest from  " + ip +"\n" + e.getMessage() + "\n" + payload);
 			
-			request.respond(CodeRegistry.RESP_METHOD_NOT_ALLOWED);
+			request.respond(CodeRegistry.RESP_BAD_REQUEST);
 			return;
 		}
 		
