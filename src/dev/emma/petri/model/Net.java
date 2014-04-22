@@ -1,31 +1,35 @@
 package emma.petri.model;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
-public class Net extends PetriElement {
+import emma.petri.control.listener.NetListener;
 
-	private Set<Subnet> subnets;
+public class Net extends PetriElement {
 	
-	public Net(){
-		subnets=new HashSet<Subnet>();
+	private Set<Subnet> subs;
+	private Set<NetListener> nls;
+	
+	public Net() {
+		super();
+		subs = new HashSet<Subnet>();
+		nls = new HashSet<NetListener>();
 	}
-	
+
 	@Override
 	protected void deleteLinks(PetriElement caller) {
-		Iterator<Subnet> it = subnets.iterator();
-		while(it.hasNext()){
-			it.next().delete(this);
-		}
+		nls.clear();
+	}
 
+	public boolean add(Subnet subnet) {
+		return subs.add(subnet);
 	}
-	
-	public boolean add(Subnet s){
-		return subnets.add(s);
+
+	public void addListener(NetListener l) {
+		nls.add(l);
 	}
-	
-	public boolean remove(Subnet s){
-		return subnets.remove(s);
+
+	public Set<Subnet> getSubnets() {
+		return subs;
 	}
 }

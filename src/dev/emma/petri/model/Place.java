@@ -1,11 +1,15 @@
 package emma.petri.model;
 
+import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import emma.model.resources.Resource;
+import emma.petri.control.event.NameChangedEvent;
+import emma.petri.control.event.StateChangedEvent;
+import emma.petri.control.listener.PlaceListener;
 
 @SuppressWarnings("rawtypes")
 public class Place  extends PT{
@@ -14,7 +18,7 @@ public class Place  extends PT{
 	private Resource res;
 	private boolean input,output;
 	private String name;
-
+	private Set<PlaceListener> pls;
 	
 	public Place(Scope s){
 		super(s);
@@ -24,6 +28,7 @@ public class Place  extends PT{
 		input=true;
 		output=true;
 		tokens = new HashSet<Token>();
+		pls = new HashSet<PlaceListener>();
 	}
 	
 	public Set<Token> getTokens(){
@@ -66,6 +71,7 @@ public class Place  extends PT{
 		}
 		getOutputArcs().clear();
 		this.removeAllTokens();
+		pls.clear();
 	}
 	
 	public String getType(){
@@ -77,7 +83,12 @@ public class Place  extends PT{
 	
 	public boolean setType(Class<? extends Resource> c){
 		try {
-			res = c.getConstructor().newInstance();
+			res = c.getConstructor(String.class).newInstance(this.getName());
+			Iterator<PlaceListener> it = pls.iterator();
+			StateChangedEvent e = new StateChangedEvent(this);
+			while(it.hasNext()){
+				it.next().notify(e);
+			}
 			return true;
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
@@ -113,5 +124,30 @@ public class Place  extends PT{
 	
 	public void setName(String name){
 		this.name = name;
+		NameChangedEvent e = new NameChangedEvent(this);
+		Iterator<PlaceListener> it = pls.iterator();
+		while(it.hasNext()){
+			it.next().notify(e);
+		}
+	}
+
+	public void addListener(PlaceListener l){
+		pls.add(l);
+	}
+
+	public Color getDataColor() {
+		if(res==null){
+			return Color.gray;
+		}
+		else if(res instanceof emma.model.resources.A){
+			return Color.blue;
+		}
+		else if(res instanceof emma.model.resources.L){
+			return Color.yellow;
+		}
+		else if(res instanceof emma.model.resources.S){
+			return Color.red;
+		}
+		return Color.gray;
 	}
 }

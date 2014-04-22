@@ -12,7 +12,6 @@ public class BoundedSet<E> extends HashSet<E> {
 	
 	@Override
 	public boolean add(E obj){
-		boolean ret = (this.size() < maxSize) ? super.add(obj) : false;
-		return ret; 
+		return (this.size() < maxSize)?super.add(obj):false;
 	}
 }

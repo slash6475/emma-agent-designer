@@ -21,13 +21,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import emma.view.awt.AWTArcFigure;
-import emma.view.awt.AWTPlaceFigure;
-import emma.view.awt.AWTSubnetFigure;
-import emma.view.awt.AWTTransitionFigure;
-
 public class XMLParser {
-	private static DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+	/*private static DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 	private static TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	private static DocumentBuilder docBuilder;
 	private static Transformer transformer;
@@ -48,7 +43,6 @@ public class XMLParser {
 		elmt.setAttribute("name", s.getName());
 		elmt.setAttribute("x", String.valueOf(s.getX()-offsetX));
 		elmt.setAttribute("y", String.valueOf(s.getY()-offsetY));
-		
 		return elmt;
 	}
 	
@@ -126,7 +120,7 @@ public class XMLParser {
 		elmt.appendChild(arcs);
 		while(ia.hasNext()){
 			arcs.appendChild(getArcElement(ia.next()));
-		}*/
+		}
 		return elmt;
 	}
 	
@@ -158,7 +152,7 @@ public class XMLParser {
 	}
 	
 	private SubnetFigure getAWTSubnetByElement(Element elmt, int offsetX, int offsetY, SubnetFigure parent){
-		/*int x = offsetX+parseInt(elmt.getAttribute("x"));
+		int x = offsetX+parseInt(elmt.getAttribute("x"));
 		int y = offsetY+parseInt(elmt.getAttribute("y"));
 		int width=parseInt(elmt.getAttribute("width"));
 		int height=parseInt(elmt.getAttribute("height"));
@@ -227,7 +221,7 @@ public class XMLParser {
 				}
 			}
 		}
-		return s;*/ return null;
+		return s;
 	}
 	
 	private PlaceFigure getAWTPlaceByElement(Element elmt, int offsetX, int offsetY, SubnetFigure s){
@@ -258,7 +252,7 @@ public class XMLParser {
 		}
 		if(!output.equals("")){
 			p.getPlace().setOutput((output.equals("false"))?false:true);
-		}*/
+		}/
 		return p;
 	}
 	
@@ -268,7 +262,7 @@ public class XMLParser {
 		String trans = elmt.getAttribute("transition");
 		String expr = elmt.getAttribute("expression");
 		if(!(place.equals("") || trans.equals(""))){
-			a = new AWTArcFigure(placeTable.get(place), transTable.get(trans),(elmt.getAttribute("class").equals("output"))?false:true);
+			//a = new AWTArcFigure(placeTable.get(place), transTable.get(trans),(elmt.getAttribute("class").equals("output"))?false:true);
 			if(!expr.equals("")){
 				a.getArc().setExpression(expr);
 			}
@@ -290,5 +284,5 @@ public class XMLParser {
 			transTable.put(elmt.getAttribute("id"), t);
 		}
 		return t;
-	}
+	}*/
 }
