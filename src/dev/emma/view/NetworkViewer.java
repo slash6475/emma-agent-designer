@@ -50,7 +50,7 @@ public class NetworkViewer extends JPanel implements Listener{
 	 * Update node list of the JTree view
 	 */
 	private void networkChanged(Network net){
-		Node[] nodes = net.getNodes();
+		Node[] nodes = net.getNodesArray();
 		boolean found = false;
 
 		for(int i=0; i < nodes.length; i++){

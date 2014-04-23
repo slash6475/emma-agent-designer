@@ -198,7 +198,11 @@ logger.debug("ICI " + payload);
 		return null;
 	}
 	
-	public Node[] getNodes(){
-		return this.nodes.toArray(new Node[0]);
-		}
+	public Set<Node> getNodes(){
+		return this.nodes;
+	}
+	
+	public Node[] getNodesArray(){
+		return (Node[])this.nodes.toArray();
+	}
 }
