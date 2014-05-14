@@ -6,8 +6,12 @@ import java.util.List;
 import emma.model.nodes.Network;
 import emma.petri.model.Net;
 
+
 public abstract class AbstractMapper implements Mapper {
 
+	public AbstractMapper(){
+	}
+	
 	@Override
 	public final List<Mapping> getAllMappings(Network netwk, Net pNet)
 			throws MappingNotFoundException {

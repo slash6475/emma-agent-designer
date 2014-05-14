@@ -1,4 +1,4 @@
-package emma.view;
+package emma.petri.view;
 
 import emma.view.swing.petri.Figure;
 

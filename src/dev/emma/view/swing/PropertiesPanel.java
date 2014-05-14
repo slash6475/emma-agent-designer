@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 
-import emma.view.PropertiesView;
+import emma.petri.view.PropertiesView;
 import emma.view.swing.petri.table.PlaceTableModel;
 
 public class PropertiesPanel extends DesktopFrame implements PropertiesView{

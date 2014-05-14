@@ -8,9 +8,9 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import emma.view.ControlMode;
-import emma.view.FigureHandler;
-import emma.view.PropertiesView;
+import emma.petri.view.ControlMode;
+import emma.petri.view.FigureHandler;
+import emma.petri.view.PropertiesView;
 import emma.view.swing.petri.Figure;
 import emma.view.swing.petri.PlaceFigure;
 import emma.view.swing.petri.SwingPetriFigure;

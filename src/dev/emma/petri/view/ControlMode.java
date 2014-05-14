@@ -1,4 +1,4 @@
-package emma.view;
+package emma.petri.view;
 
 public enum ControlMode {
 	SELECT,

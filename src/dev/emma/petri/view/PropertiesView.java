@@ -1,4 +1,4 @@
-package emma.view;
+package emma.petri.view;
 
 import javax.swing.table.TableModel;
 

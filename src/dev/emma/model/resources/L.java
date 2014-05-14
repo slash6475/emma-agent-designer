@@ -1,10 +1,9 @@
 package emma.model.resources;
 
 public class L extends Resource {
-	private String name = "";
 	
 	public L(String name){
-		this.name = name;
+		super(name);
 	}
 	
 	@Override
@@ -28,9 +27,7 @@ public class L extends Resource {
 	}
 
 	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return name;
+	public boolean isDymamic() {
+		return true;
 	}
-
 }

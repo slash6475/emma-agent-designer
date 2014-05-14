@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import emma.view.FigureHandler;
+import emma.petri.view.FigureHandler;
 import emma.view.img.Resources;
 
 public class Toolbar extends DesktopFrame {

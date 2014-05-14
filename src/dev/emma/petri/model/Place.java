@@ -124,6 +124,9 @@ public class Place  extends PT{
 	
 	public void setName(String name){
 		this.name = name;
+		if(res!=null){
+			res.setName(name);
+		}
 		NameChangedEvent e = new NameChangedEvent(this);
 		Iterator<PlaceListener> it = pls.iterator();
 		while(it.hasNext()){

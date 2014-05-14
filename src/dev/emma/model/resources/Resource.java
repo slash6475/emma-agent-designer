@@ -2,23 +2,30 @@ package emma.model.resources;
 
 import emma.tools.Notifier;
 
-public class Resource {
+public abstract class Resource {
 	
+	private String name;
+	
+	public Resource(String name){
+		this.name=name;
+	}
 	protected Notifier notifier = new Notifier();
 	public Notifier getNotifier(){
 		return notifier;
 	}
 	
+	public void setName(String name){	
+		this.name=name;
+	}
+	
 	public String getName(){
-		return "";	
+		return name;	
 	}
-	public String get(){
-		return "";
-	}
-	public void post(String s){
-		;
-	}
-	public void delete(){
-		;
-	}
+	public abstract String get();
+	
+	public abstract void post(String s);
+	
+	public abstract void delete();
+	
+	public abstract boolean isDymamic();
 }
