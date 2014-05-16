@@ -1,22 +1,32 @@
 package emma.model.resources;
 
-public class L extends Resource {
+/**
+ * Class representing Local resources 
+ * @author pierrotws
+ *
+ */
+public class L extends AbstractResource {
+	
+	public int value;
 	
 	public L(String name){
 		super(name);
+		this.value=0;
 	}
 	
 	@Override
 	public String get() {
-		// TODO Auto-generated method stub
-		return null;
+		return String.valueOf(value);
 	}
 
 	@Override
 	public void post(String s) {
-		// TODO Auto-generated method stub
-		notifier.fireListener(this);
-		
+		try{
+			value=Integer.parseInt(s);
+			notifier.fireListener(this);
+		} catch(NumberFormatException e){
+			
+		}
 	}
 
 	@Override
@@ -24,10 +34,5 @@ public class L extends Resource {
 		// TODO Auto-generated method stub
 		notifier.fireListener(this);
 		
-	}
-
-	@Override
-	public boolean isDymamic() {
-		return true;
 	}
 }

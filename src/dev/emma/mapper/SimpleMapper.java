@@ -8,14 +8,14 @@ import emma.model.nodes.Network;
 import emma.petri.model.Net;
 import emma.petri.model.Scope;
 import emma.petri.model.Subnet;
-
-public class SimpleMapper extends AbstractMapper {
-	
-	@Override
-	public double scoreMapping(Mapping m) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+/**
+ * Simple implementation of Mapper interface
+ * This class will unpack nodes from netwk and scopes from Net,
+ * then call the PBSolver
+ * @author pierrotws
+ *
+ */
+public class SimpleMapper implements Mapper {
 
 	@Override
 	public Mapping getMapping(Network netwk, Net pNet) throws MappingNotFoundException {

@@ -2,23 +2,40 @@ package emma.tools;
 
 import java.util.HashMap;
 
-public class BoundedHashMap<E, E2> extends HashMap<E, E2>{
+/**
+ * HashMap with a max Size
+ * @author pierrotws
+ *
+ * @param <K> Key class
+ * @param <V> Value class
+ */
+public class BoundedHashMap<K, V> extends HashMap<K, V> implements BoundedCollection{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7621301656339486127L;
 	private int maxSize;
 	
+	/**
+	 * Unique constructor
+	 * @param size max size of this HashMap
+	 */
 	public BoundedHashMap (int size){
 		super();
 		this.maxSize = size;
 	}
 	
 	@Override
-	
-	public E2 put(E key, E2 value){
+	public V put(K key, V value){
 		if(this.size() < maxSize){
-			E2 e = super.put(key, value);
-			return value;
+			return super.put(key, value);
 		}
 		return null;
-		//return (this.size() < maxSize)?super.put(key, value):null;
+	}
+
+	@Override
+	public int getMaxSize() {
+		return maxSize;
 	}
 
 }

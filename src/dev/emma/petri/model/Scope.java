@@ -93,4 +93,8 @@ public class Scope extends PetriElement{
 	public void addListener(ScopeListener l){
 		scls.add(l);
 	}
+	
+	public Set<ScopeListener> getListeners(){
+		return scls;
+	}
 }

@@ -42,4 +42,8 @@ public class OutputArc extends Arc {
 	public void addListener(OutputArcListener l){
 		oals.add(l);
 	}
+	
+	public Set<OutputArcListener> getListeners(){
+		return oals;
+	}
 }

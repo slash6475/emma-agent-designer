@@ -42,4 +42,8 @@ public class InputArc extends Arc {
 	public void addListener(InputArcListener l){
 		ials.add(l);
 	}
+	
+	public Set<InputArcListener> getListeners(){
+		return ials;
+	}
 }

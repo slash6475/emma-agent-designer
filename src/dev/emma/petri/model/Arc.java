@@ -18,6 +18,7 @@ public abstract class Arc extends PetriElement{
 		place=p;
 		transition=t;
 		expr="";
+		p.getParent().getParent().add(this);
 	}
 	
 	/** 

@@ -17,6 +17,7 @@ public class Subnet extends PetriElement{
 	
 	private static int q=0;
 	private Set<Scope> scopes;
+	private Set<Arc> arcs;
 	private Set<SubnetListener> subls;
 	private String name;
 	private Net parent;
@@ -30,6 +31,7 @@ public class Subnet extends PetriElement{
 		q++;
 		this.parent=parent;
 		scopes=new HashSet<Scope>();
+		arcs=new HashSet<Arc>();
 		this.name=name;
 		parent.add(this);
 		this.subls = new HashSet<SubnetListener>();
@@ -45,6 +47,7 @@ public class Subnet extends PetriElement{
 		while(it.hasNext()){
 			it.next().delete(this);
 		}
+		arcs.clear();
 		scopes.clear();
 		subls.clear();
 	}
@@ -68,15 +71,31 @@ public class Subnet extends PetriElement{
 		return scopes.add(scope);
 	}
 	
+	public boolean add(Arc a){
+		return arcs.add(a);
+	}
+	
 	public boolean remove(Scope scope) {
 		return scopes.remove(scope);
 	}
 
+	public boolean remove(Arc a){
+		return arcs.remove(a);
+	}
+	
 	public Net getParent(){
 		return parent;
 	}
 	
 	public void addListener(SubnetListener l){
 		subls.add(l);
+	}
+
+	public Set<SubnetListener> getListeners(){
+		return subls;
+	}
+	
+	public Set<Arc> getArcs() {
+		return arcs;
 	}
 }

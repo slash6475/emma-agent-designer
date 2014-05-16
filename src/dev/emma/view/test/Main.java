@@ -2,6 +2,7 @@ package emma.view.test;
 
 import java.awt.EventQueue;
 
+import emma.view.swing.Console;
 import emma.view.swing.PetriWindow;
 import emma.view.swing.SwingController;
 

@@ -4,21 +4,28 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import emma.petri.view.ControlMode;
 import emma.petri.view.FigureHandler;
 import emma.petri.view.PropertiesView;
+import emma.petri.view.XMLParser;
 import emma.view.swing.petri.Figure;
 import emma.view.swing.petri.PlaceFigure;
+import emma.view.swing.petri.SubnetFigure;
 import emma.view.swing.petri.SwingPetriFigure;
 import emma.view.swing.petri.SwingPetriSimpleElement;
 import emma.view.swing.petri.TransitionFigure;
 
 public class SwingController implements FigureHandler{
-
+	private boolean xml;
 	private ControlMode mode;
 	private PropertiesView properties;
 	private JPopupMenu contextMenu;
@@ -29,17 +36,28 @@ public class SwingController implements FigureHandler{
 	private JMenuItem importsub;
 	private JMenuItem save;
 	private JMenuItem del;
-	//private JFileChooser fileChooser;
+	private JFileChooser fileChooser;
 	private Figure fig;
 	private Point origin;
 	private SwingPetriSimpleElement lastSelected;
 	private Figure focusFigure;
+	private XMLParser parser;
 	
 	public SwingController(){
 		mode=ControlMode.SELECT;
 		lastSelected=null;
 		focusFigure=null;
-		//fileChooser = new JFileChooser();
+		try {
+			parser = new XMLParser();
+			xml=true;
+		} catch (TransformerConfigurationException
+				| ParserConfigurationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			xml=false;
+		}
+		
+		fileChooser = new JFileChooser();
 		contextMenu = new JPopupMenu();
 		place = new JMenuItem("Add place");
         trans = new JMenuItem("Add transition");
@@ -90,7 +108,7 @@ public class SwingController implements FigureHandler{
         save.addActionListener(new ActionListener(){
         	@Override
 			public void actionPerformed(ActionEvent e) {
-				//saveFile();
+				saveFile();
 			}
         });
         del.addActionListener(new ActionListener(){
@@ -100,7 +118,23 @@ public class SwingController implements FigureHandler{
 			}
         });
     }
-	
+	private void saveFile(){
+		if(fileChooser.showSaveDialog(null)==JFileChooser.APPROVE_OPTION){
+			String path = fileChooser.getSelectedFile().toString();
+			if(!path.endsWith(".epnf")){
+				path=path.concat(".epnf");
+			}
+			File file = new File(path);
+			if(!file.exists()){
+				try {
+					parser.saveSubnetToXMLFile(((SubnetFigure)fig).getSubnet(), file);
+				} catch (TransformerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 	private void addFigure(ControlMode m){
 		switch(m){
 		case INSERT_PLACE:
@@ -177,8 +211,8 @@ public class SwingController implements FigureHandler{
 		trans.setEnabled(f.isTransitionContainer());
 		scope.setEnabled(f.isScopeContainer());
 		sub.setEnabled(f.isSubnetContainer());
-		importsub.setEnabled(f.isSubnetContainer());
-		save.setEnabled(f.isSubnetContainer() || f.isScopeContainer());
+		importsub.setEnabled(f.isSubnetContainer() && xml);
+		save.setEnabled(f.isScopeContainer() && xml);
 		del.setEnabled(f instanceof SwingPetriFigure);
 		contextMenu.show((Component) f, x, y);
 	}

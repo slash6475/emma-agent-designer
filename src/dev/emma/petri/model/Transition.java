@@ -16,7 +16,7 @@ public class Transition extends PT{
 		super(s);
 		s.add(this);
 		this.place=p;
-		place.setType(emma.model.resources.A.class);
+		place.setType(emma.model.resources.tomap.A.class);
 		test="true";
 		tls = new HashSet<TransitionListener>();
 	}
@@ -53,5 +53,9 @@ public class Transition extends PT{
 	
 	public void addListener(TransitionListener l){
 		tls.add(l);
+	}
+	
+	public Set<TransitionListener> getListeners(){
+		return tls;
 	}
 }

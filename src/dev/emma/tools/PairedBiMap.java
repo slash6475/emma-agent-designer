@@ -1,5 +1,13 @@
 package emma.tools;
 
+/**
+ * BiMap with 2 keys
+ * @author pierrotws
+ *
+ * @param <A> First key
+ * @param <B> Second key
+ * @param <C> Value
+ */
 public class PairedBiMap<A,B,C> extends BiMap<Pair<A,B>,C>{
 	/**
 	 * 

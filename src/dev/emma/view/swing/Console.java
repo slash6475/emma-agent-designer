@@ -1,12 +1,17 @@
-package emma.view.test;
+package emma.view.swing;
 
 import java.io.*;
 import java.awt.*;
- import java.awt.event.*;
- import javax.swing.*;
+import java.awt.event.*;
+import javax.swing.*;
 
- public class Console extends WindowAdapter implements WindowListener,  ActionListener, Runnable
- {
+/**
+ * Creates a window displaying the Standard Output
+ * Just have to instanciate it
+ * @author pierrotws
+ *
+ */
+public class Console extends WindowAdapter implements WindowListener,  ActionListener, Runnable {
 	private JFrame frame;
 	private JTextArea textArea;
 	private Thread reader;

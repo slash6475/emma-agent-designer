@@ -1,13 +1,12 @@
 package emma.petri.view;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Hashtable;
 import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -17,141 +16,225 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+
+import emma.petri.control.listener.*;
+import emma.petri.model.Arc;
+import emma.petri.model.InputArc;
+import emma.petri.model.OutputArc;
+import emma.petri.model.Place;
+import emma.petri.model.Scope;
+import emma.petri.model.Subnet;
+import emma.petri.model.Transition;
+import emma.view.swing.petri.NetFigure;
+import emma.view.swing.petri.SubnetFigure;
+import emma.view.swing.petri.SwingPetriFigure;
 
 public class XMLParser {
-	/*private static DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-	private static TransformerFactory transformerFactory = TransformerFactory.newInstance();
-	private static DocumentBuilder docBuilder;
-	private static Transformer transformer;
+	private DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+	private TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	private DocumentBuilder docBuilder;
+	private Transformer transformer;
 	private Document doc;
-	private Hashtable<String,SubnetFigure> subTable;
-	private Hashtable<String,PlaceFigure> placeTable;
-	private Hashtable<String,TransitionFigure> transTable;
-	private Hashtable<String, ScopeFigure> scopeTable;
+	private Element layout;
 	
-	public static void init() throws ParserConfigurationException, TransformerConfigurationException{
+	public XMLParser() throws ParserConfigurationException, TransformerConfigurationException{
 		docBuilder = docFactory.newDocumentBuilder();
 		transformer = transformerFactory.newTransformer();
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 	}
 	
-	private Element getScopeElement(ScopeFigure s, int offsetX, int offsetY){
+	private Element getSubnetElement(Subnet sub){
+		Element elmt = doc.createElement("subnet");
+		Iterator<SubnetListener> it = sub.getListeners().iterator();
+		while(it.hasNext()){
+			SubnetListener l = it.next();
+			if(l instanceof SwingPetriFigure){
+				SwingPetriFigure fig = (SwingPetriFigure) l;
+				Element figElmt = doc.createElement("subnet_figure");
+				figElmt.setAttribute("id", "swing"+sub.getID());
+				figElmt.setAttribute("class", "swing");
+				figElmt.setAttribute("x", String.valueOf(fig.getX()));
+				figElmt.setAttribute("y", String.valueOf(fig.getY()));
+				figElmt.setAttribute("width", String.valueOf(fig.getWidth()));
+				figElmt.setAttribute("height", String.valueOf(fig.getHeight()));
+				layout.appendChild(figElmt);
+			}
+		}
+		elmt.setAttribute("id", String.valueOf(sub.getID()));
+		elmt.setAttribute("name", sub.getName());
+		Element scopes = doc.createElement("scopes");
+		Iterator<Scope> itScope = sub.getScopes().iterator();
+		while(itScope.hasNext()){
+			scopes.appendChild(this.getScopeElement(itScope.next()));
+		}
+		elmt.appendChild(scopes);
+		Element arcs = doc.createElement("arcs");
+		Iterator<Arc> itArc = sub.getArcs().iterator();
+		while(itArc.hasNext()){
+			arcs.appendChild(this.getArcElement(itArc.next()));
+		}
+		elmt.appendChild(arcs);
+		return elmt;
+	}
+	
+	private Element getScopeElement(Scope s){
 		Element elmt = doc.createElement("scope");
+		Iterator<ScopeListener> it = s.getListeners().iterator();
+		while(it.hasNext()){
+			ScopeListener l = it.next();
+			if(l instanceof SwingPetriFigure){
+				SwingPetriFigure fig = (SwingPetriFigure) l;
+				Element figElmt = doc.createElement("scope_figure");
+				figElmt.setAttribute("id", "swing"+s.getID());
+				figElmt.setAttribute("class", "swing");
+				figElmt.setAttribute("x", String.valueOf(fig.getX()));
+				figElmt.setAttribute("y", String.valueOf(fig.getY()));
+				figElmt.setAttribute("width", String.valueOf(fig.getWidth()));
+				figElmt.setAttribute("height", String.valueOf(fig.getHeight()));
+				layout.appendChild(figElmt);
+			}
+		}
 		elmt.setAttribute("id", String.valueOf(s.getID()));
 		elmt.setAttribute("name", s.getName());
-		elmt.setAttribute("x", String.valueOf(s.getX()-offsetX));
-		elmt.setAttribute("y", String.valueOf(s.getY()-offsetY));
+		
+		Element places = doc.createElement("places");
+		Iterator<Place> itPlace = s.getPlaces().iterator();
+		while(itPlace.hasNext()){
+			places.appendChild(this.getPlaceElement(itPlace.next()));
+		}
+		elmt.appendChild(places);
+		Element transitions = doc.createElement("transitions");
+		Iterator<Transition> itTransition = s.getTransitions().iterator();
+		while(itTransition.hasNext()){
+			transitions.appendChild(this.getTransitionElement(itTransition.next()));
+		}
+		elmt.appendChild(transitions);	
 		return elmt;
 	}
 	
 	
-	private Element getPlaceElement(PlaceFigure p, int offsetX, int offsetY){
+	private Element getPlaceElement(Place p){
 		Element elmt = doc.createElement("place");
+		Iterator<PlaceListener> it = p.getListeners().iterator();
+		while(it.hasNext()){
+			PlaceListener l = it.next();
+			if(l instanceof SwingPetriFigure){
+				SwingPetriFigure fig = (SwingPetriFigure) l;
+				Element figElmt = doc.createElement("place_figure");
+				figElmt.setAttribute("id", "swing"+p.getID());
+				figElmt.setAttribute("class", "swing");
+				figElmt.setAttribute("x", String.valueOf(fig.getX()));
+				figElmt.setAttribute("y", String.valueOf(fig.getY()));
+				figElmt.setAttribute("width", String.valueOf(fig.getWidth()));
+				figElmt.setAttribute("height", String.valueOf(fig.getHeight()));
+				layout.appendChild(figElmt);
+			}
+		}
 		elmt.setAttribute("id", String.valueOf(p.getID()));
 		elmt.setAttribute("name", p.getName());
-		elmt.setAttribute("x", String.valueOf(p.getX()-offsetX));
-		elmt.setAttribute("y", String.valueOf(p.getY()-offsetY));
-		Element data = doc.createElement("data");
-		elmt.appendChild(data);
-		data.setAttribute("class", p.getPlace().getType());
-		if(p.getPlace().getData()!=null)data.appendChild(doc.createCDATASection(p.getPlace().getData().toString()));
-		elmt.setAttribute("input",p.getPlace().isInput()?"true":"false");
-		elmt.setAttribute("output",p.getPlace().isOutput()?"true":"false");
+		if(p.getData()!=null){
+			Element data = doc.createElement("data");
+			data.setAttribute("class", p.getType());
+			data.appendChild(doc.createCDATASection(p.getData().toString()));
+			elmt.appendChild(data);
+		}
+		elmt.setAttribute("input",p.isInput()?"true":"false");
+		elmt.setAttribute("output",p.isOutput()?"true":"false");
 		return elmt;
 	}
 	
-	private Element getTransitionElement(TransitionFigure t, int offsetX, int offsetY){
+	private Element getTransitionElement(Transition t){
 		Element elmt = doc.createElement("transition");
+		Iterator<TransitionListener> it = t.getListeners().iterator();
+		while(it.hasNext()){
+			TransitionListener l = it.next();
+			if(l instanceof SwingPetriFigure){
+				SwingPetriFigure fig = (SwingPetriFigure) l;
+				Element figElmt = doc.createElement("transition_figure");
+				figElmt.setAttribute("id", "swing"+t.getID());
+				figElmt.setAttribute("class", "swing");
+				figElmt.setAttribute("x", String.valueOf(fig.getX()));
+				figElmt.setAttribute("y", String.valueOf(fig.getY()));
+				figElmt.setAttribute("width", String.valueOf(fig.getWidth()));
+				figElmt.setAttribute("height", String.valueOf(fig.getHeight()));
+				layout.appendChild(figElmt);
+			}
+		}
 		elmt.setAttribute("id", String.valueOf(t.getID()));
-		elmt.setAttribute("x", String.valueOf(t.getX()-offsetX));
-		elmt.setAttribute("y", String.valueOf(t.getY()-offsetY));
-		elmt.setAttribute("place",String.valueOf(t.getTransition().getPlace().getID()));
-		elmt.setAttribute("condition",t.getTransition().getCondition());
+		elmt.setAttribute("place",String.valueOf(t.getPlace().getID()));
+		elmt.setAttribute("condition",t.getCondition());
 		return elmt;
 	}
 	
-	private Element getArcElement(ArcFigure a){
+	private Element getArcElement(Arc a){
 		Element elmt = doc.createElement("arc");
-		//TODO
 		elmt.setAttribute("id", String.valueOf(a.getID()));
-		if(a.getArc() instanceof emma.petri.model.InputArc){
+		if(a instanceof InputArc){
 			elmt.setAttribute("class", "input");
+			Iterator<InputArcListener> it = ((InputArc)a).getListeners().iterator();
+			while(it.hasNext()){
+				InputArcListener l = it.next();
+				if(l instanceof SwingPetriFigure){
+					SwingPetriFigure fig = (SwingPetriFigure) l;
+					Element figElmt = doc.createElement("inputarc_figure");
+					figElmt.setAttribute("id", "swing"+a.getID());
+					figElmt.setAttribute("class", "swing");
+					figElmt.setAttribute("x", String.valueOf(fig.getX()));
+					figElmt.setAttribute("y", String.valueOf(fig.getY()));
+					figElmt.setAttribute("width", String.valueOf(fig.getWidth()));
+					figElmt.setAttribute("height", String.valueOf(fig.getHeight()));
+					layout.appendChild(figElmt);
+				}
+			}
 		}
 		else{
 			elmt.setAttribute("class", "output");
+			Iterator<OutputArcListener> it = ((OutputArc)a).getListeners().iterator();
+			while(it.hasNext()){
+				OutputArcListener l = it.next();
+				if(l instanceof SwingPetriFigure){
+					SwingPetriFigure fig = (SwingPetriFigure) l;
+					Element figElmt = doc.createElement("outputarc_figure");
+					figElmt.setAttribute("id", "swing"+a.getID());
+					figElmt.setAttribute("class", "swing");
+					figElmt.setAttribute("x", String.valueOf(fig.getX()));
+					figElmt.setAttribute("y", String.valueOf(fig.getY()));
+					figElmt.setAttribute("width", String.valueOf(fig.getWidth()));
+					figElmt.setAttribute("height", String.valueOf(fig.getHeight()));
+					layout.appendChild(figElmt);
+				}
+			}
 		}
-		elmt.setAttribute("place", String.valueOf(a.getPlaceFigure().getID()));
-		elmt.setAttribute("transition", String.valueOf(a.getTransitionFigure().getID()));
-		elmt.setAttribute("expression", a.getArc().getExpression());
-		return elmt;
-	}
-
-	private Element getSubnetElement(SubnetFigure sub, int offsetX, int offsetY){
-		Element elmt = doc.createElement("subnet");
-		Element places = doc.createElement("places");
-		Element transitions = doc.createElement("transitions");
-		Element arcs = doc.createElement("arcs");
-		Element subnets = doc.createElement("subnets");
-		elmt.setAttribute("id", String.valueOf(sub.getID()));
-		elmt.setAttribute("name", sub.getName());
-		elmt.setAttribute("x", String.valueOf(sub.getX()-offsetX));
-		elmt.setAttribute("y", String.valueOf(sub.getY()-offsetY));
-		elmt.setAttribute("width", String.valueOf(sub.getWidth()));
-		elmt.setAttribute("height", String.valueOf(sub.getHeight()));
-		/*
-		Iterator<SubnetFigure> is = sub.getSubnetFigures().iterator();
-		elmt.appendChild(subnets);
-		while(is.hasNext()){
-			subnets.appendChild(getSubnetElement(is.next(),offsetX,offsetY));
-		}
-		Iterator<PlaceFigure> ip = sub.getPlaceFigures().iterator();
-		elmt.appendChild(places);
-		while(ip.hasNext()){
-			places.appendChild(getPlaceElement(ip.next(),offsetX,offsetY));
-		}
-		Iterator<TransitionFigure> it = sub.getTransitionFigures().iterator();
-		elmt.appendChild(transitions);
-		while(it.hasNext()){
-			transitions.appendChild(getTransitionElement(it.next(),offsetX,offsetY));
-		}
-		Iterator<ArcFigure> ia = sub.getArcFigures().iterator();
-		elmt.appendChild(arcs);
-		while(ia.hasNext()){
-			arcs.appendChild(getArcElement(ia.next()));
-		}
+		elmt.setAttribute("place", String.valueOf(a.getPlace().getID()));
+		elmt.setAttribute("transition", String.valueOf(a.getTransition().getID()));
+		elmt.setAttribute("expression", a.getExpression());
 		return elmt;
 	}
 	
-	public void saveSubnetFigureToXMLFile(SubnetFigure sub, File toFile) throws TransformerException{
+	public void saveSubnetToXMLFile(Subnet sub, File toFile) throws TransformerException{
 		doc = docBuilder.newDocument();
-		doc.appendChild(getSubnetElement(sub,sub.getX(),sub.getY()));
+		Element save = doc.createElement("save");
+		layout = doc.createElement("layout");
+		save.appendChild(this.getSubnetElement(sub));
+		save.appendChild(layout);
+		doc.appendChild(save);
 		DOMSource source = new DOMSource(doc);
 		// write the content into xml file
 		StreamResult result = new StreamResult(toFile);
 		transformer.transform(source, result);
 	}
-	
-	public SubnetFigure importAWTSubnetFigureFromXMLFile(int offsetX, int offsetY, File fromFile, SubnetFigure parent) throws SAXException, IOException{
+	/*
+	public SubnetFigure importSubnetFigureFromXMLFile(NetFigure parent, File fromFile) throws SAXException, IOException{
 		Document doc = docBuilder.parse(fromFile);
 		this.subTable=new Hashtable<String,SubnetFigure>();
 		this.placeTable=new Hashtable<String,PlaceFigure>();
 		this.transTable=new Hashtable<String,TransitionFigure>();
-		doc.getDocumentElement().normalize();
+		Element save = doc.getDocumentElement().normalize();
 		return getAWTSubnetByElement(doc.getDocumentElement(),offsetX,offsetY,parent);
 	}
-	
-	private static int parseInt(String toParse){
-		try{
-			return Integer.parseInt(toParse);
-		}
-		catch(NumberFormatException e){
-		}
-		return 0;
-	}
-	
-	private SubnetFigure getAWTSubnetByElement(Element elmt, int offsetX, int offsetY, SubnetFigure parent){
+	/*
+	private SubnetFigure getSubnetByElement(Element elmt, int offsetX, int offsetY, SubnetFigure parent){
 		int x = offsetX+parseInt(elmt.getAttribute("x"));
 		int y = offsetY+parseInt(elmt.getAttribute("y"));
 		int width=parseInt(elmt.getAttribute("width"));

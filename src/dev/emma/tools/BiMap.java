@@ -2,6 +2,13 @@ package emma.tools;
 
 import java.util.HashMap;
 
+/**
+ * Bidirectional HashMap<K,V> and <V,K>
+ * @author pierrotws
+ *
+ * @param <K> Key Class
+ * @param <V> Value Class
+ */
 public class BiMap<K, V> extends HashMap<K, V> {
 	/**
 	 * 
@@ -25,7 +32,10 @@ public class BiMap<K, V> extends HashMap<K, V> {
 		this.inverse().put(value, key);
 		return super.put(key, value);
 	}
-	
+	/**
+	 * 
+	 * @return the inverse HashMap<V,K>
+	 */
 	public HashMap<V, K> inverse(){
 		return inverse;
 	}

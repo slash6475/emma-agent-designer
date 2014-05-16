@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import emma.model.resources.Resource;
+import emma.model.resources.tomap.ResourceToMap;
 import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.event.StateChangedEvent;
 import emma.petri.control.listener.PlaceListener;
@@ -15,7 +15,7 @@ import emma.petri.control.listener.PlaceListener;
 public class Place  extends PT{
 	private static int q=0;
 	private Set<Token> tokens;
-	private Resource res;
+	private ResourceToMap res;
 	private boolean input,output;
 	private String name;
 	private Set<PlaceListener> pls;
@@ -81,7 +81,7 @@ public class Place  extends PT{
 		return "NULL";
 	}
 	
-	public boolean setType(Class<? extends Resource> c){
+	public boolean setType(Class<? extends ResourceToMap> c){
 		try {
 			res = c.getConstructor(String.class).newInstance(this.getName());
 			Iterator<PlaceListener> it = pls.iterator();
@@ -97,7 +97,7 @@ public class Place  extends PT{
 		return false;
 	}
 	
-	public Resource getData(){
+	public ResourceToMap getData(){
 		return res;
 	}
 
@@ -152,5 +152,9 @@ public class Place  extends PT{
 			return Color.red;
 		}
 		return Color.gray;
+	}
+	
+	public Set<PlaceListener> getListeners(){
+		return pls;
 	}
 }

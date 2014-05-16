@@ -1,7 +1,12 @@
 package emma.model.resources;
 
+/**
+ * Class representing Agent resources 
+ * @author pierrotws
+ *
+ */
 
-public class A extends Resource {
+public class A extends AbstractResource {
 	
 	public A(String name){
 		super(name);
@@ -9,8 +14,7 @@ public class A extends Resource {
 	
 	@Override
 	public String get() {
-		// TODO Auto-generated method stub
-		return null;
+		return "TODO -> Agent get function";
 	}
 
 	@Override
@@ -22,13 +26,6 @@ public class A extends Resource {
 
 	@Override
 	public void delete() {
-		// TODO Auto-generated method stub
 		notifier.fireListener(this);
-		
-	}
-
-	@Override
-	public boolean isDymamic() {
-		return true;
 	}
 }

@@ -1,6 +1,13 @@
 package emma.model.resources;
 
-public class S extends Resource {
+/**
+ * Class representing System resources
+ * The only "static" resource
+ * (determined by hardware and not by software)
+ * @author pierrotws
+ *
+ */
+public class S extends AbstractResource {
 	
 	public S(String name){
 		super(name);
@@ -8,27 +15,18 @@ public class S extends Resource {
 	
 	@Override
 	public String get() {
-		// TODO Auto-generated method stub
-		return null;
+		return "";
 	}
 
 	@Override
 	public void post(String s) {
 		// TODO Auto-generated method stub
 		notifier.fireListener(this);
-		
 	}
 
 	@Override
 	public void delete() {
 		// TODO Auto-generated method stub
 		notifier.fireListener(this);
-		
 	}
-
-	@Override
-	public boolean isDymamic() {
-		return false;
-	}
-
 }

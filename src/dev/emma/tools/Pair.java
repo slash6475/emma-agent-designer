@@ -1,5 +1,10 @@
 package emma.tools;
 
+/**
+ * Class representing a couple (a,b) of A,B objects
+ * @author pierrotws
+ *
+ */
 public class Pair<A, B> {
     private A first;
     private B second;
@@ -33,10 +38,17 @@ public class Pair<A, B> {
     	return false;
     }
 
+    /**
+     * 
+     * @return first element of the couple
+     */
     public A getFirst() {
     	return first;
     }
-
+    /**
+     * 
+     * @return second element of the couple
+     */
     public B getSecond() {
     	return second;
     }

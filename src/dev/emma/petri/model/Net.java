@@ -4,7 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import emma.petri.control.listener.NetListener;
-
+/**
+ * Modélise un Petri réseau de Petri
+ * C'est un ensemble de sous-réseau
+ * @author pierrotws
+ *
+ */
 public class Net extends PetriElement {
 	
 	private Set<Subnet> subs;
@@ -31,5 +36,9 @@ public class Net extends PetriElement {
 
 	public Set<Subnet> getSubnets() {
 		return subs;
+	}
+	
+	public Set<NetListener> getListeners(){
+		return nls;
 	}
 }

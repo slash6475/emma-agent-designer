@@ -2,7 +2,7 @@ package emma.view.swing.petri.table;
 
 import javax.swing.table.AbstractTableModel;
 
-import emma.model.resources.Resource;
+import emma.model.resources.tomap.ResourceToMap;
 import emma.petri.model.Place;
 
 public class PlaceTableModel extends AbstractTableModel {
@@ -29,7 +29,8 @@ public class PlaceTableModel extends AbstractTableModel {
 				{ "Name", p.getName() },
 				{ "Parent", p.getParent().getName() },
 				{ "Type", p.getData().getClass().getSimpleName()},
-				{ "Value", p.getData().get()}
+				{ "Value", p.getData().get()},
+				{ "IsImported",p.getData().isImported()}
 			};
 		}
 	}
@@ -66,10 +67,7 @@ public class PlaceTableModel extends AbstractTableModel {
 		if(col==0){
 			return false;
 		}
-		if(row==1){
-			return true;
-		}
-		else if(p.getData()==null && row==3){
+		else if(row!=2){
 			return true;
 		}
 		return false;
@@ -84,7 +82,7 @@ public class PlaceTableModel extends AbstractTableModel {
 			break;
 		case 3:
 			try {
-				p.setType((Class<? extends Resource>) Class.forName("emma.model.resources."+aValue));
+				p.setType((Class<? extends ResourceToMap>) Class.forName("emma.model.resources.tomap."+aValue));
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}

@@ -1,5 +1,10 @@
 package emma.mapper;
 
+/**
+ * Exception thrown when No Mapping was found
+ * @author pierrotws
+ *
+ */
 public class MappingNotFoundException extends Exception {
 
 	/**
