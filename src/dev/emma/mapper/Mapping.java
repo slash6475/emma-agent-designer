@@ -5,8 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import emma.model.nodes.Node;
-import emma.model.resources.Resource;
-import emma.tools.Pair;
+import emma.model.resources.tomap.ResourceToMap;
 
 /**
  * Class representing a Mapping
@@ -15,7 +14,7 @@ import emma.tools.Pair;
  * @author pierrotws
  *
  */
-public class Mapping extends HashMap<Node,List<Resource>>{
+public class Mapping extends HashMap<Node,List<ResourceToMap>>{
 	/**
 	 * 
 	 */
@@ -24,13 +23,14 @@ public class Mapping extends HashMap<Node,List<Resource>>{
 	public Mapping(){
 		super();
 	}
+	
 	/**
 	 * 
 	 * @param n a node key
 	 * @param r a resource
 	 * @return true if r should be mapped on n, false otherwise
 	 */
-	public boolean contains(Node n, Resource r){
+	public boolean contains(Node n, ResourceToMap r){
 		return this.get(n).contains(r);
 	}
 	
@@ -40,22 +40,14 @@ public class Mapping extends HashMap<Node,List<Resource>>{
 	 * @param r a resource to add to n
 	 * @return true if adding r to n succeed, false otherwise
 	 */
-	public boolean add(Node n, Resource r){
+	public boolean add(Node n, ResourceToMap r){
 		if(this.containsKey(n)){
 			return this.get(n).add(r);
 		}
 		else{
-			List<Resource> list = new ArrayList<>();
+			List<ResourceToMap> list = new ArrayList<>();
 			list.add(r);
 			return (this.put(n, list)==list);
 		}
-	}
-	/**
-	 * 
-	 * @param the pair (n,r) n the node, r a resource to add to n.
-	 * @return true if adding r to n succeed, false otherwise
-	 */
-	public boolean add(Pair<Node,Resource> p){
-		return add(p.getFirst(),p.getSecond());
 	}
 }

@@ -4,9 +4,7 @@ import java.awt.Frame;
 import java.io.IOException;
 import java.net.SocketException;
 
-import emma.control.http.HttpRegistry;
 import emma.model.nodes.Network;
-import emma.view.AgentLauncher;
 import emma.view.NetworkViewer;
 
 

@@ -1,13 +1,16 @@
 package emma.mapper;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
+import emma.mapper.mapobj.MapperNode;
+import emma.mapper.mapobj.MapperScope;
 import emma.model.nodes.Network;
 import emma.petri.model.Net;
 import emma.petri.model.Scope;
 import emma.petri.model.Subnet;
+
 /**
  * Simple implementation of Mapper interface
  * This class will unpack nodes from netwk and scopes from Net,
@@ -19,12 +22,14 @@ public class SimpleMapper implements Mapper {
 
 	@Override
 	public Mapping getMapping(Network netwk, Net pNet) throws MappingNotFoundException {
-		List<Scope> list = new ArrayList<>();
+		Set<MapperNode> mNodes = MapperNode.getMapperNodes(netwk.getNodes());
+		Set<Scope> scopes = new HashSet<>();
 		Iterator<Subnet> it = pNet.getSubnets().iterator();
 		while(it.hasNext()){
-			list.addAll(it.next().getScopes());
+			scopes.addAll(it.next().getScopes());
 		}
-		PBSolver pbo = new PBSolver(netwk.getNodes(),list);
+		Set<MapperScope> mScopes = MapperScope.getMapperScopes(mNodes, scopes);
+		PBSolver pbo = new PBSolver(mNodes,mScopes);
 		return pbo.solve();
 	}
 }

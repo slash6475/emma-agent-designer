@@ -1,11 +1,12 @@
 package emma.view.test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import emma.mapper.Mapping;
 import emma.mapper.MappingNotFoundException;
 import emma.mapper.PBSolver;
+import emma.mapper.mapobj.MapperNode;
+import emma.mapper.mapobj.MapperScope;
 import emma.model.nodes.Node;
 import emma.model.resources.tomap.A;
 import emma.model.resources.tomap.L;
@@ -21,21 +22,19 @@ import emma.petri.model.Transition;
 
 public class MappingTest {
 	public static void main(String[] args){
-		List<Node> nodes = feedNodes();
-		List<Scope> scopes = feedScopes();
 		PBSolver solver;
-		Mapping m;
 		try {
+			Set<MapperNode> nodes = MapperNode.getMapperNodes(feedNodes());
+			Set<MapperScope> scopes = MapperScope.getMapperScopes(nodes, feedScopes());
 			solver = new PBSolver(nodes, scopes);
-			m = solver.solve();
-			
+			solver.solve();
 		} catch (MappingNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private static List<Node> feedNodes(){
-		List<Node> nodes = new ArrayList<>();
+	private static Set<Node> feedNodes(){
+		Set<Node> nodes = new HashSet<>();
 		Node n1 = new Node("0001");
 		try {
 			n1.addResourceType("L");
@@ -80,8 +79,8 @@ public class MappingTest {
 		return nodes;
 	}
 	
-	private static List<Scope> feedScopes(){
-		List<Scope> scopes = new ArrayList<>();
+	private static Set<Scope> feedScopes(){
+		Set<Scope> scopes = new HashSet<>();
 		Net net = new Net();
 		Subnet sub = new Subnet(net);
 		Scope s = new Scope(sub);
@@ -94,6 +93,7 @@ public class MappingTest {
 		Place p2 = new Place(s);
 		p2.setType(S.class);
 		p2.setName("systest");
+		p2.getData().setImport(true);
 		Place p3 = new Place(s2);
 		p3.setType(L.class);
 		p3.setName("dest");
