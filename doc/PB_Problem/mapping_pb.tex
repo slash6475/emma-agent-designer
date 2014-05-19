@@ -1,0 +1,120 @@
+\documentclass[11pt,a4paper]{article} %classe article
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage[french]{babel}
+
+\title{Mapping, une optimisation Pseudo-Booléenne}
+
+\author{Pierre Sauvage}
+\begin{document}
+\maketitle
+\section{Introduction}
+//TODO
+\section{Exposé du problème}
+
+On cherche à effectuer $ \delta $ déploiements avec  $ \delta_{min} \leq \delta \leq \delta_{max} $\\
+On a un ensemble de nœuds possédant des ressources typés. On a un ensemble de scopes possédants des ressources typés que l'on chercher à mapper.
+Toutes les transitions possèdent des arcs de sorties.\\
+Ces arcs ont les caractéristiques suivantes :
+\begin{itemize}
+\item Une fréquence (entier) $f$ d'utilisation sur une période donnée (ou une approximation de fréquence)
+\item Un poids (entier) $p$ correspondant au nombre de paquets nécessaire pour envoyer la payload.
+\end{itemize}
+On considère donc le coût par arc de sortie $a$ de $s_1$ vers un scope $s_2$:
+\[
+	{c_a} = f \times p
+\]
+On note l'ensemble $A_{s_1,s_2}$ des arcs d'un scope $s_1$ vers un scope $s_2$\\
+On peut donc déterminer, $\forall s1,s2 \in S$ le coût total:
+\[
+c_{s_1,s_2} = \smashoperator{\sum_{a \in A_{s_1,s_2}}}{c_a}
+\]
+\textit{Les arcs sont orientés : $A_{s_1,s_2} \neq A_{s_2,s_1}$ donc $c_{s_1,s_2} \neq c_{s_2,s_1}$}\\\\
+On peut classer les ressources d'un Scope dans deux catégories :
+\begin{itemize}
+\item Les ressources propres. Ce sont des ressources qui sont créés et utilisés par le scope que l'on souhaite mapper.
+\item Les ressources d'import. Ce sont par exemple des ressources métiers (propre au nœud), ou des ressources propres à un autre scope (d'un précédent mapping, généralement).
+\end{itemize}
+Un scope $s$ est mappable sur un nœud $n$ si et seulement si :
+\begin{itemize}
+\item Le nœud $n$ possède une ressource libre de même type pour toute ressource propre.
+\item Le nœud $n$ possède une ressource de même nom et de même type pour toute ressource d'import.
+\end{itemize}
+Les ressources de type "S" ne peuvent pas être créés par un scope, ce sont donc toujours des ressources d'import.\\
+On cherche à minimiser : \begin{itemize}
+\item $\delta_{max} - \delta$
+\item la fonction de coût total.
+\end{itemize}
+
+\section{Formalisation}
+\textit{Pour l'instant, on fixe $\delta: \delta_{min} = \delta_{max}$}
+\subsection{Approfondissement}
+\textit{Notre problème de mapping est une variante du problème du sac à dos (sac à dos multiple, sac à dos à choix multiple).}\\
+Soit $N$ l'ensemble des $n$ Nœuds $\{N_1,...,N_n\}$\\
+Soit $S$ l'ensemble des $m$ Scopes $\{S_1,...,S_m\}$\\\\
+Un type est une paire nom/ensemble
+On définit $K$ l'ensemble des types, $|K|=k$.\\
+Une ressource est un triplet composé de :
+\begin{itemize}
+\item Son nom
+\item Le nom de son type
+\item Sa valeur, élément de l'ensemble définit par son type
+\end{itemize}
+On appelle une ressource libre une ressource dont le nom est $\emptyset$.\\\\
+$\forall n \in N$, on définit $R_n$ l'ensemble des ressources. $R_n$ admet un unique partitionnement par type admettant au plus $k$ éléments. On notera $\dot{r}$, une ressource libre, et $\dot{R^j_n}$ l'ensemble des ressources libres de type $j$. On notera $\overline{r}$ une ressource existante, et $\overline{R^j_n}$ l'ensemble des ressources existantes de type $j$.\\\\
+$\forall s \in S$, on définit:\begin{itemize}
+\item $ M(s) \in \mathbb{N}^+ $, la multiplicité du scope 
+\item $\dot{R_s}$ l'ensemble des ressources propres admettant au plus $k$ partitions $\{\dot{R^1_s},...,\dot{R^k_s}\}$.
+\item $\overline{R_s}$ l'ensemble des ressources d'import admettant au plus $k$ partitions\\\\
+\end{itemize}
+Un scope $s$ est dit mappable sur un nœud $n$ si et seulement si $\forall i \in K$:\begin{itemize}
+\item $\forall \dot{r_1} \in \dot{R_s^i}, \exists \dot{r_2} \in \dot{R_n^i}$
+\item $\forall \overline{r_1} \in \overline{R_s^i}, \exists \overline{r_2} \in \overline{R_n^i}$, tel que $\overline{r_1} = \overline{r_2}$\\
+\end{itemize}
+
+\textit{On appelle mapping l'opération qui consiste à associer $d$ nœuds à un scope de multiplicité $d$. Le scope doit être mappable sur chacun des $d$ nœuds}\\\\
+Les nœuds forment un réseau. Le graphe des nœuds est potentiellement orienté (communication unidirectionnelle). On associe donc à ce graphe une matrice de distance. On écrira chaque cellule $d_{l,c}$. Ainsi $d_{n_1,n_2}$ représente la métrique entre $n_1$ et $n_2$. Si et seulement si le graphe est non-orienté, alors $\forall n_1,n_2 \in N : d_{n_1,n_2} = d_{n_2,n_1}$.\\
+Dans le système EMMA, chaque nœud possède une table de routage aux dimensions finies. Cela implique qu'un nœud ne peut pas toujours communiqué avec un autre, et ce quelque soit la métrique. On définit la convention suivante : lorsqu'un nœud $n_1$ ne peut communiquer avec un nœud $n_2$, on associe une valeur clé $\lambda \in N^-$ à l'entrée $d_{n_1,n_2}$ de la matrice de distance.\\\\
+$\forall s \in S$, on définit $N_s \subseteq N$ tel que $\forall n \in N_s, \forall i \in K$:\begin{itemize}
+\item $|\dot{R_s^i}| \leq |\dot{R_n^i}|$
+\item $\forall \overline{r_1} \in \overline{R_s^i}, \exists \overline{r_2} \in \overline{R_n^i}$, tel que $\overline{r_1} = \overline{r_2}$
+\end{itemize}
+Si $\exists s$ tel que $N_s = \emptyset$ alors il n'y a pas de solution.\\\\
+On définit $\forall s \in S, \forall n \in N_s$ :
+\begin{itemize}
+\item $M(s)$ booléens $x_{s,1}^n,...,x_{s,M(s)}^n \in X$
+\item $\forall i \in K, \forall r \in \dot{R_s^i}$, $M(s)$ booléens $y_{r,1}^n,...,y_{r,M(s)}^n \in Y$\\
+\end{itemize}
+On remarque rapidement que :
+\[|X| = \sum_{s \in S} M(s) \times |N_s|\]
+\[|Y| = \sum_{s \in S} M(s) \times |\dot{R_s}| \times |N_s|\]
+\subsection{Formulation}
+On définit l'optimisation pseudo-booléenne à $|X|+|Y|$ littéraux :
+\[
+	\mbox{min }z(X) = \sum_{s \in S}\sum_{n \in N_s}\sum_{s' \in S}\sum_{n' \in N_{s'}}c_{s,s'} d_{n,n'}\sum_{k=1}^{M(s)}\sum_{k'=1}^{M(s')}x_{s,k}^n x_{s',k'}^{n'}
+\]
+On impose alors les contraintes suivantes :
+\begin{equation}
+\forall s \in S : \sum_{n \in N_s}\sum_{k=1}^{M(s)}x_{s,k}^n= \delta \times M(s)
+\end{equation}
+\begin{equation}
+\sum_{s \in S}\sum_{n \in N_s}\sum_{s' \in S}\hspace{1ex}\smashoperator{\sum_{\substack{n' \in N_{s'} \\ d_{n,n'}=\lambda}}}{c_{s,s'} \sum_{k=1}^{M(s)}\sum_{k'=1}^{M(s')}x_{s,k}^n x_{s',k'}^{n'}} = 0
+\end{equation}
+\begin{equation}
+\forall s \in S : \sum_{k=1}^{M(s)}\sum_{n \in N_s}[x_{s,k}^n \smashoperator{\prod_{r \in \dot{R_s}}} y_{r,k}^n \vee \neg x_{s,k}^n\smashoperator{\prod_{r \in \dot{R_s}}} \neg y_{r,k}^n] = M(s) \times |N_s|
+\end{equation}
+\begin{equation}
+\forall n \in N, \forall i \in K, \smashoperator{\sum_{\substack{s \in S,\\n \in N_s}}}\sum_{k=1}^{M(s)}\sum_{r \in \dot{R_s^i}} y_{r,k}^n \leq |\dot{R_n^i}|
+\end{equation}
+
+\begin{description}
+\item[(1)] Le nombre de map du scope équivaut au nombre de déploiement par la multiplicité du scope.
+\item[(2)] Si un scope $s$ mappé sur un nœud $n$ possédant des arcs de sorties vers un scope $s'$ mappé sur $n'$. $({c_{s,s'} x_s^n  x_{s'}^{n'}}>0)$ alors $n$ doit pouvoir communiquer avec $n'$ $(d_{n,n'} \neq \lambda)$. Donc, la somme des coûts des paires de scopes ne pouvant communiquer doit être nulle.
+\item[(3)] L'état des $k\up{e}$ ressources d'un scope sur un nœud est \textbf{équivalent} à l'état du $k\up{e}$ scope sur le nœud.
+\item[(4)] Pour tout type, la quantité de ressources de ce type mappées sur un nœud ne doit pas dépasser la quantité disponible (le nombre de ressources libres) de ce nœud.
+\end{description}
+\end{document}
