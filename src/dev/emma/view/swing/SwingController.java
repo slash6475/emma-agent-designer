@@ -243,11 +243,13 @@ public class SwingController implements FigureHandler{
 	}
 	
 	public void putFocusOn(Figure f){
-		if(focusFigure!=null){
-			focusFigure.leaveFocus();
+		if(f!=focusFigure){
+			if(focusFigure!=null){
+				focusFigure.leaveFocus();
+			}
+			focusFigure = f;
+			focusFigure.getFocus();
+			properties.setProperties(focusFigure.getProperties());
 		}
-		focusFigure = f;
-		focusFigure.getFocus();
-		properties.setProperties(focusFigure.getProperties());
 	}
 }

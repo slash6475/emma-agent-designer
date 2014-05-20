@@ -6,8 +6,6 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -16,9 +14,12 @@ import javax.swing.tree.TreeSelectionModel;
 import org.apache.log4j.Logger;
 
 import emma.model.nodes.Network;
-import emma.model.nodes.Node;
 
 public class NetworkViewerJTree extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7555400852371126749L;
 	private DefaultMutableTreeNode network;
 	private JTree tree;
 	private static Logger logger = Logger.getLogger(Network.class);

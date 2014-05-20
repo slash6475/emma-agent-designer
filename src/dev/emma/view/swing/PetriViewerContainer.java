@@ -17,7 +17,7 @@ public class PetriViewerContainer extends DesktopFrame{
 	private PropertiesPanel borderPanel;
 	public PetriViewerContainer(SwingController c){
 		super("Petri Viewer",true, false, true,true);
-		FixedDesktopPane dPane = new FixedDesktopPane();
+		FixedDesktopPane dPane = new FixedDesktopPane(this);
 		this.setContentPane(dPane);
 		this.setSize(600, 440);
 		this.control=c;

@@ -25,8 +25,6 @@ import emma.petri.model.Place;
 import emma.petri.model.Scope;
 import emma.petri.model.Subnet;
 import emma.petri.model.Transition;
-import emma.view.swing.petri.NetFigure;
-import emma.view.swing.petri.SubnetFigure;
 import emma.view.swing.petri.SwingPetriFigure;
 
 public class XMLParser {
@@ -97,7 +95,7 @@ public class XMLParser {
 		}
 		elmt.setAttribute("id", String.valueOf(s.getID()));
 		elmt.setAttribute("name", s.getName());
-		
+		elmt.setAttribute("multiplicity", s.getMultiplicity());
 		Element places = doc.createElement("places");
 		Iterator<Place> itPlace = s.getPlaces().iterator();
 		while(itPlace.hasNext()){

@@ -90,6 +90,7 @@ public class MappingTest {
 		p = new Place(s);
 		p.setType(L.class);
 		p.setName("ltest");
+		s.setMultiplicity("3");
 		Place p2 = new Place(s);
 		p2.setType(S.class);
 		p2.setName("systest");

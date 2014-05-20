@@ -1,8 +1,9 @@
 package emma.view.swing.petri;
 
+import emma.view.swing.DrawableContainer;
 import emma.view.swing.FixedDesktopPane;
 
-public abstract class SwingPetriContainer extends SwingPetriFigure{
+public abstract class SwingPetriContainer extends SwingPetriFigure implements DrawableContainer{
 
 	/**
 	 * 
@@ -12,7 +13,8 @@ public abstract class SwingPetriContainer extends SwingPetriFigure{
 	public SwingPetriContainer(String name, int x, int y, int width, int height,
 			boolean maximizable, boolean iconifiable, Figure parent) {
 		super(name, x, y, width, height, true, maximizable, iconifiable,parent);
-		this.setContentPane(new FixedDesktopPane());
+		this.setContentPane(new FixedDesktopPane(this));
 		
 	}
+	
 }

@@ -17,6 +17,7 @@ public class ScopeTableModel extends AbstractTableModel {
 		this.data = new Object[][] {
 			{ "Figure", "Scope" },
 			{ "Name", sub.getName() },
+			{ "Multiplicity",sub.getMultiplicity() },
 			{ "Parent", sub.getParent().getName() },
 			{ "Places", sub.getPlaces().size() },
 			{ "Transitions", sub.getTransitions().size() }
@@ -55,7 +56,7 @@ public class ScopeTableModel extends AbstractTableModel {
 		if(col==0){
 			return false;
 		}
-		if(row==1){
+		if(row==1 || row==2){
 			return true;
 		}
 		return false;
@@ -68,6 +69,8 @@ public class ScopeTableModel extends AbstractTableModel {
 		case 1:
 			sub.setName((String)aValue);
 			break;
+		case 2:
+			sub.setMultiplicity((String)aValue);
 		default:	
 			break;
 		}

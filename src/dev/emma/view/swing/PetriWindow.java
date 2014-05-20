@@ -1,11 +1,12 @@
 package emma.view.swing;
 
+import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
-public class PetriWindow extends JFrame {
+public class PetriWindow extends JFrame implements DrawableContainer{
 	
 	private static final long serialVersionUID = 6098483712279657780L;
 	
@@ -14,7 +15,7 @@ public class PetriWindow extends JFrame {
 	public PetriWindow(SwingController control){
 		super();
 		this.setTitle("Petri (Test) Viewer");
-		this.pane = new FixedDesktopPane();
+		this.pane = new FixedDesktopPane(this);
 		this.pane.setBackground(this.getBackground());
 		this.setContentPane(pane);
 		this.setSize(640, 480);
@@ -32,5 +33,9 @@ public class PetriWindow extends JFrame {
 	@Override
 	public void setVisible(boolean b){
 		super.setVisible(b);
+	}
+
+	@Override
+	public void addPainting(Graphics g) {
 	}
 }

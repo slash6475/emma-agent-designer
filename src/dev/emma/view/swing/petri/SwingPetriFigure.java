@@ -19,7 +19,7 @@ public abstract class SwingPetriFigure extends DesktopFrame implements Figure{
 	 */
 	private static final long serialVersionUID = -818690048054725558L;
 
-	private SwingController control;
+	protected SwingController control;
 	protected int x,y,width,height;
 	private Figure parent;
 	private boolean isFocus;

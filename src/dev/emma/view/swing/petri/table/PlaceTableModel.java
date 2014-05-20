@@ -86,6 +86,11 @@ public class PlaceTableModel extends AbstractTableModel {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
+		case 4:
+			
+			break;
+		case 5:
+			break;
 		default:	
 			break;
 		}

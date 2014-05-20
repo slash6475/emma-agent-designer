@@ -17,8 +17,8 @@ public class ArcTableModel extends AbstractTableModel {
 		this.arc = s;
 		this.data = new Object[][] {
 			{ "Figure", "Arc" },
-			{ "Place", arc.getPlace() },
-			{ "Transition", arc.getTransition() },
+			{ "Place", arc.getPlace().getName() },
+			{ "Transition", arc.getTransition().getPlace().getName() },
 			{ "Type", (arc instanceof InputArc)?"Input":"Output"},
 			{ "Expression", arc.getExpression()}
 		};

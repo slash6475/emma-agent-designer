@@ -37,7 +37,7 @@ public class PBSolver {
 	 * (for example, the list of possible nodes for a scope is empty), or PBSolver was unable to create a PBOFile.
 	 */
 	public PBSolver(Set<MapperNode> nodes, Set<MapperScope> scopes) throws MappingNotFoundException{
-		this.counter=0;
+		this.counter = 0;
 		this.nodes = nodes;
 		this.scopes = scopes;
 		this.pboFile =  "MAP_"+System.currentTimeMillis();

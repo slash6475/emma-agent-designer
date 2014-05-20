@@ -139,19 +139,7 @@ public class Place  extends PT{
 	}
 
 	public Color getDataColor() {
-		if(res==null){
-			return Color.gray;
-		}
-		else if(res instanceof emma.model.resources.A){
-			return Color.blue;
-		}
-		else if(res instanceof emma.model.resources.L){
-			return Color.yellow;
-		}
-		else if(res instanceof emma.model.resources.S){
-			return Color.red;
-		}
-		return Color.gray;
+		return(res==null)?Color.gray:res.getColor();
 	}
 	
 	public Set<PlaceListener> getListeners(){

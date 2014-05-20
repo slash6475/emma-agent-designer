@@ -4,6 +4,7 @@ import java.awt.Component;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultCellEditor;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -11,13 +12,15 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 
 import emma.petri.view.PropertiesView;
+import emma.tools.ClassFounder;
 import emma.view.swing.petri.table.PlaceTableModel;
 
 public class PropertiesPanel extends DesktopFrame implements PropertiesView{
 	private static final long serialVersionUID = -3252042432305047846L;
 	
 	private JTable table;
-	private JComboBox<String> placeTypes;
+	private static JComboBox<String> placeTypes = new JComboBox<String>(ClassFounder.getClassesSimpleName("emma.model.resources.tomap"));
+	
 	public PropertiesPanel(SwingController control){
 		super("Element Properties",true, false, false,true);
 		this.setSize(200,200);
@@ -25,10 +28,6 @@ public class PropertiesPanel extends DesktopFrame implements PropertiesView{
 		table.setVisible(false);
 		this.getContentPane().add(table);
 		control.setPropertiesView(this);
-
-		this.placeTypes = new JComboBox<String>();
-		this.placeTypes.addItem(emma.model.resources.L.class.getSimpleName());
-		this.placeTypes.addItem(emma.model.resources.S.class.getSimpleName());
 	}
 	
 	@Override
@@ -38,11 +37,8 @@ public class PropertiesPanel extends DesktopFrame implements PropertiesView{
 		}
 		else{
 			table.setModel(data);
-			if(data instanceof PlaceTableModel && data.getRowCount()==4){
-				table.getColumnModel().getColumn(1).setCellEditor(new CellEditor(true));
-			}
-			else{
-				table.getColumnModel().getColumn(1).setCellEditor(new CellEditor(false));
+			if(data instanceof PlaceTableModel){
+				table.getColumnModel().getColumn(1).setCellEditor(new CellEditor());
 			}
 			table.setVisible(true);
 		}
@@ -56,14 +52,9 @@ public class PropertiesPanel extends DesktopFrame implements PropertiesView{
 		private static final long serialVersionUID = -280797455779869064L;
 		
 		private static final DefaultCellEditor classic = new DefaultCellEditor(new JTextField());
-	    private static final DefaultCellEditor place = new DefaultCellEditor(new JComboBox<String>(new String[]{emma.model.resources.L.class.getSimpleName(),emma.model.resources.S.class.getSimpleName()}));
+	    private static final DefaultCellEditor place = new DefaultCellEditor(placeTypes);
+	    private static final DefaultCellEditor chbox = new DefaultCellEditor(new JCheckBox());
 	    private DefaultCellEditor lastSelected;
-
-	    private boolean isNullPlace;
-	    
-	    public CellEditor(boolean isNullPlace){
-	    	this.isNullPlace=isNullPlace;
-	    }
 	    
 	    @Override
 	    public Object getCellEditorValue(){
@@ -73,8 +64,11 @@ public class PropertiesPanel extends DesktopFrame implements PropertiesView{
 	    @Override
 	    public Component getTableCellEditorComponent(JTable table,
 	            Object value, boolean isSelected, int row, int column) {
-	        if(isNullPlace && row == 3){
+	        if(row == 3){
 	        	lastSelected=place;
+	        }
+	        else if(row == 5){
+        		lastSelected=chbox;
 	        }
 	        else{
 	        	lastSelected=classic;

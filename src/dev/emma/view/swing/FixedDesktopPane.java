@@ -14,11 +14,19 @@ public class FixedDesktopPane extends JDesktopPane{
 	 */
 	private static final long serialVersionUID = -5301180545449790388L;
 
-	public FixedDesktopPane(){
+	private DrawableContainer parent;
+	
+	public FixedDesktopPane(DrawableContainer f){
 		super();
+		this.parent = f;
 		this.setDesktopManager(new FixedDesktopManager());
 	}
 	
+	@Override
+	public void paint(java.awt.Graphics g){
+		super.paint(g);
+		parent.addPainting(g);
+	}
 	
 	private class FixedDesktopManager extends DefaultDesktopManager{
 		/**

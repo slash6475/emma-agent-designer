@@ -1,8 +1,10 @@
 package emma.view.swing;
 
+import java.awt.Graphics;
+
 import javax.swing.JInternalFrame;
 
-public class DesktopFrame extends JInternalFrame{
+public class DesktopFrame extends JInternalFrame implements DrawableContainer{
 
 	/**
 	 * 
@@ -16,5 +18,9 @@ public class DesktopFrame extends JInternalFrame{
 	}
 	public DesktopFrame(String name){
 		this(name,true,true,true,true);
+	}
+	@Override
+	public void addPainting(Graphics g) {
+		
 	}
 }

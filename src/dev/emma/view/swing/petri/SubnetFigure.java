@@ -15,7 +15,6 @@ import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.listener.SubnetListener;
 import emma.petri.model.PetriElement;
 import emma.petri.model.Subnet;
-import emma.view.swing.FixedDesktopPane;
 import emma.view.swing.petri.table.SubnetTableModel;
 
 public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
@@ -36,38 +35,26 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 		this.sub.addListener(this);
 		this.arcs = new HashSet<ArcFigure>();
 		arcHandler=new ArcHandler();
-		this.setContentPane(new ContentPane(arcHandler));
+		this.getContentPane().addMouseListener(arcHandler);
+		this.getContentPane().addMouseMotionListener(arcHandler);
 	}
 	
-	@SuppressWarnings("serial")
-	private class ContentPane extends FixedDesktopPane{
-		public ContentPane(ArcHandler arcHandler){
-			super();
-			this.addMouseListener(arcHandler);
-			this.addMouseMotionListener(arcHandler);
-		}
-		
-		@Override
-		public void paint(Graphics g){
-			super.paint(g);
-			Iterator<ArcFigure> it = arcs.iterator();
-			while(it.hasNext()){
-				it.next().paintComponent(g);
-			}
+	@Override
+	public void addPainting(Graphics g){
+		Iterator<ArcFigure> it = arcs.iterator();
+		while(it.hasNext()){
+			it.next().paintComponent(g);
 		}
 	}
 	
 	private void selectArc(Point point) {
-		if(selectedArc!=null){
-			selectedArc.leaveFocus();
-			selectedArc=null;
-		}
+		selectedArc=null;
 		Iterator<ArcFigure> it = arcs.iterator();
 		while(it.hasNext()){
 			ArcFigure a = it.next();
 			if(a.isInBounds(point)){
 				selectedArc=a;
-				selectedArc.getFocus();
+				control.putFocusOn(a);
 				return;
 			}
 		}
@@ -162,5 +149,9 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 
 	public ArcHandler getArcHandler(){
 		return arcHandler;
+	}
+	
+	public boolean hasSelectedArc(){
+		return (selectedArc!=null);
 	}
 }

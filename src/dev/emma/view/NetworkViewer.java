@@ -1,13 +1,11 @@
 package emma.view;
-import java.awt.Dimension;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-
-import org.apache.log4j.Logger;
 
 import emma.model.nodes.Network;
 import emma.model.nodes.Node;
@@ -24,13 +22,13 @@ public class NetworkViewer extends JPanel implements Listener{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Network network = null;
+	//private Network network = null;
 	private NetworkViewerJTree jtree;
-	private static Logger logger = Logger.getLogger(Network.class);
+	//private static Logger logger = Logger.getLogger(Network.class);
 	
 	public NetworkViewer(Network net){
 		super();
-		this.network = net;
+		//this.network = net;
 	    this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		this.jtree 	 = new NetworkViewerJTree(net.getName());
 	    this.add(jtree);        

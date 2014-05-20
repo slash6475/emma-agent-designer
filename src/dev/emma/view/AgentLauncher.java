@@ -1,7 +1,5 @@
 package emma.view;
 
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
@@ -15,13 +13,11 @@ import java.text.NumberFormat;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -85,7 +81,8 @@ public class AgentLauncher extends JPanel{
 		method.addItem("POST");
 		method.addItem("DELETE");
 		method.setUI(new BasicComboBoxUI() {
-            protected JButton createArrowButton() {
+            @SuppressWarnings("serial")
+			protected JButton createArrowButton() {
                 return new JButton() {
                     public int getWidth() {
                         return 0;
@@ -101,7 +98,8 @@ public class AgentLauncher extends JPanel{
         ip.addItem("127.0.0.1");
         ip.setEditable(true);
         ip.setUI(new BasicComboBoxUI() {
-            protected JButton createArrowButton() {
+            @SuppressWarnings("serial")
+			protected JButton createArrowButton() {
                 return new JButton() {
                     public int getWidth() {
                         return 0;

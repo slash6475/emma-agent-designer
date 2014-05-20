@@ -1,5 +1,7 @@
 package emma.model.resources.tomap;
 
+import java.awt.Color;
+
 public class L extends emma.model.resources.L implements ResourceToMap {
 
 	public boolean isImported;
@@ -20,4 +22,10 @@ public class L extends emma.model.resources.L implements ResourceToMap {
 		return this.isImported;
 	}
 
+	@Override
+	public Color getColor() {
+		return Color.yellow;
+	}
+
+	
 }

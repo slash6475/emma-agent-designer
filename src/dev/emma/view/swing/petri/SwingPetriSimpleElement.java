@@ -39,19 +39,21 @@ public abstract class SwingPetriSimpleElement extends SwingPetriFigure{
 			this.addKeyListener(new KeyAdapter(){
 				@Override
 				public void keyPressed(KeyEvent e) {
-					switch(e.getKeyCode()){
-					case KeyEvent.VK_UP:
-						SwingPetriSimpleElement.this.moveBy(0, -1);
-						break;
-					case KeyEvent.VK_DOWN:
-						SwingPetriSimpleElement.this.moveBy(0,1);
-						break;
-					case KeyEvent.VK_LEFT:
-						SwingPetriSimpleElement.this.moveBy(-1,0);
-						break;
-					case KeyEvent.VK_RIGHT:
-						SwingPetriSimpleElement.this.moveBy(1,0);
-						break;
+					if(SwingPetriSimpleElement.this.isFocused()){
+						switch(e.getKeyCode()){
+						case KeyEvent.VK_UP:
+							SwingPetriSimpleElement.this.moveBy(0, -1);
+							break;
+						case KeyEvent.VK_DOWN:
+							SwingPetriSimpleElement.this.moveBy(0,1);
+							break;
+						case KeyEvent.VK_LEFT:
+							SwingPetriSimpleElement.this.moveBy(-1,0);
+							break;
+						case KeyEvent.VK_RIGHT:
+							SwingPetriSimpleElement.this.moveBy(1,0);
+							break;
+						}
 					}
 				}
 			});

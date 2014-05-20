@@ -2,6 +2,7 @@ package emma.view.swing.petri;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -18,9 +19,8 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 	 * 
 	 */
 	private static final long serialVersionUID = 558198387759281261L;
-	
 	private static final Color backgroundColor = new Color(240,240,240);
-	
+	private SubnetFigure parent;
 	private Scope scope;
 	
 	public ScopeFigure(String name, int x, int y, int width, int height, SubnetFigure parent) {
@@ -40,6 +40,14 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 		});
 		cp.addMouseListener(parent.getArcHandler());
 		cp.addMouseMotionListener(parent.getArcHandler());
+		this.parent=parent;
+	}
+	
+	@Override
+	public void addPainting(Graphics g){
+		String m = scope.getMultiplicity();
+		g.setColor(Color.red);
+		g.drawChars(m.toCharArray(), 0, m.length(),5,15);
 	}
 
 	@Override
@@ -95,5 +103,12 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 	public void notify(NameChangedEvent e) {
 		if(scope==e.getSource())
 			this.setTitle(scope.getName());
+	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e){
+		if(!this.parent.hasSelectedArc()){
+			super.mouseClicked(e);
+		}
 	}
 }
