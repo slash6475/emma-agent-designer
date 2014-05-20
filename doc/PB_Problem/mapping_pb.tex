@@ -57,7 +57,7 @@ On cherche à minimiser : \begin{itemize}
 Soit $N$ l'ensemble des $n$ Nœuds $\{N_1,...,N_n\}$\\
 Soit $S$ l'ensemble des $m$ Scopes $\{S_1,...,S_m\}$\\\\
 Un type est une paire nom/ensemble
-On définit $K$ l'ensemble des types, $|K|=k$.\\
+On définit $T$ l'ensemble des types, $|T|=t$.\\
 Une ressource est un triplet composé de :
 \begin{itemize}
 \item Son nom
@@ -65,13 +65,17 @@ Une ressource est un triplet composé de :
 \item Sa valeur, élément de l'ensemble définit par son type
 \end{itemize}
 On appelle une ressource libre une ressource dont le nom est $\emptyset$.\\\\
-$\forall n \in N$, on définit $R_n$ l'ensemble des ressources. $R_n$ admet un unique partitionnement par type admettant au plus $k$ éléments. On notera $\dot{r}$, une ressource libre, et $\dot{R^j_n}$ l'ensemble des ressources libres de type $j$. On notera $\overline{r}$ une ressource existante, et $\overline{R^j_n}$ l'ensemble des ressources existantes de type $j$.\\\\
+$\forall n \in N$, on définit $R_n$ l'ensemble des ressources. $R_n$ admet un unique partitionnement par type admettant au plus $t$ éléments. On notera $\dot{r}$, une ressource libre, $\dot{R_n}$ l'ensemble des ressources libres, et $\dot{R_n^j}$ l'ensemble des ressources libres de type $j$. On notera $\overline{r}$ une ressource existante, $\overline{R_n}$ l'ensemble des ressources existantes, et $\overline{R_n^j}$ l'ensemble des ressources existantes de type $j$.\\\\
+Une ressource non-libre consomme un espace mémoire non nul. Les nœuds ont un espace mémoire limité. Cela rajoute une contrainte supplémentaire :
+\[
+\forall n \in N : \sum_{r \in \overline{R_n}} \mbox{sizeof}(r) \leq \mbox{sizeof}(n)
+\]
 $\forall s \in S$, on définit:\begin{itemize}
 \item $ M(s) \in \mathbb{N}^+ $, la multiplicité du scope 
-\item $\dot{R_s}$ l'ensemble des ressources propres admettant au plus $k$ partitions $\{\dot{R^1_s},...,\dot{R^k_s}\}$.
-\item $\overline{R_s}$ l'ensemble des ressources d'import admettant au plus $k$ partitions\\\\
+\item $\dot{R_s}$ l'ensemble des ressources propres admettant au plus $t$ éléments $\{\dot{R^1_s},...,\dot{R^k_s}\}$.
+\item $\overline{R_s}$ l'ensemble des ressources d'import admettant au plus $t$ éléments\\\\
 \end{itemize}
-Un scope $s$ est dit mappable sur un nœud $n$ si et seulement si $\forall i \in K$:\begin{itemize}
+Un scope $s$ est dit mappable sur un nœud $n$ si et seulement si $\forall i \in T$:\begin{itemize}
 \item $\forall \dot{r_1} \in \dot{R_s^i}, \exists \dot{r_2} \in \dot{R_n^i}$
 \item $\forall \overline{r_1} \in \overline{R_s^i}, \exists \overline{r_2} \in \overline{R_n^i}$, tel que $\overline{r_1} = \overline{r_2}$\\
 \end{itemize}
@@ -79,7 +83,7 @@ Un scope $s$ est dit mappable sur un nœud $n$ si et seulement si $\forall i \in
 \textit{On appelle mapping l'opération qui consiste à associer $d$ nœuds à un scope de multiplicité $d$. Le scope doit être mappable sur chacun des $d$ nœuds}\\\\
 Les nœuds forment un réseau. Le graphe des nœuds est potentiellement orienté (communication unidirectionnelle). On associe donc à ce graphe une matrice de distance. On écrira chaque cellule $d_{l,c}$. Ainsi $d_{n_1,n_2}$ représente la métrique entre $n_1$ et $n_2$. Si et seulement si le graphe est non-orienté, alors $\forall n_1,n_2 \in N : d_{n_1,n_2} = d_{n_2,n_1}$.\\
 Dans le système EMMA, chaque nœud possède une table de routage aux dimensions finies. Cela implique qu'un nœud ne peut pas toujours communiqué avec un autre, et ce quelque soit la métrique. On définit la convention suivante : lorsqu'un nœud $n_1$ ne peut communiquer avec un nœud $n_2$, on associe une valeur clé $\lambda \in N^-$ à l'entrée $d_{n_1,n_2}$ de la matrice de distance.\\\\
-$\forall s \in S$, on définit $N_s \subseteq N$ tel que $\forall n \in N_s, \forall i \in K$:\begin{itemize}
+$\forall s \in S$, on définit $N_s \subseteq N$ tel que $\forall n \in N_s, \forall i \in T$:\begin{itemize}
 \item $|\dot{R_s^i}| \leq |\dot{R_n^i}|$
 \item $\forall \overline{r_1} \in \overline{R_s^i}, \exists \overline{r_2} \in \overline{R_n^i}$, tel que $\overline{r_1} = \overline{r_2}$
 \end{itemize}
@@ -87,7 +91,7 @@ Si $\exists s$ tel que $N_s = \emptyset$ alors il n'y a pas de solution.\\\\
 On définit $\forall s \in S, \forall n \in N_s$ :
 \begin{itemize}
 \item $M(s)$ booléens $x_{s,1}^n,...,x_{s,M(s)}^n \in X$
-\item $\forall i \in K, \forall r \in \dot{R_s^i}$, $M(s)$ booléens $y_{r,1}^n,...,y_{r,M(s)}^n \in Y$\\
+\item $\forall i \in T, \forall r \in \dot{R_s^i}$, $M(s)$ booléens $y_{r,1}^n,...,y_{r,M(s)}^n \in Y$\\
 \end{itemize}
 On remarque rapidement que :
 \[|X| = \sum_{s \in S} M(s) \times |N_s|\]
@@ -108,13 +112,16 @@ On impose alors les contraintes suivantes :
 \forall s \in S : \sum_{k=1}^{M(s)}\sum_{n \in N_s}[x_{s,k}^n \smashoperator{\prod_{r \in \dot{R_s}}} y_{r,k}^n \vee \neg x_{s,k}^n\smashoperator{\prod_{r \in \dot{R_s}}} \neg y_{r,k}^n] = M(s) \times |N_s|
 \end{equation}
 \begin{equation}
-\forall n \in N, \forall i \in K, \smashoperator{\sum_{\substack{s \in S,\\n \in N_s}}}\sum_{k=1}^{M(s)}\sum_{r \in \dot{R_s^i}} y_{r,k}^n \leq |\dot{R_n^i}|
+\forall n \in N, \forall i \in T : \smashoperator{\sum_{\substack{s \in S,\\n \in N_s}}}\sum_{k=1}^{M(s)}\sum_{r \in \dot{R_s^i}} y_{r,k}^n \leq |\dot{R_n^i}|
 \end{equation}
-
+\begin{equation}
+\forall n \in N : \smashoperator{\sum_{\substack{s \in S,\\n \in N_s}}}\sum_{k=1}^{M(s)}\sum_{i \in T}\sum_{r \in \dot{R_s^i}} y_{r,k}^n \mbox{sizeof}(r) \leq \mbox{sizeof}(n) - \sum_{r' \in \overline{R_n}} \mbox{sizeof}(r')
+\end{equation}
 \begin{description}
 \item[(1)] Le nombre de map du scope équivaut au nombre de déploiement par la multiplicité du scope.
-\item[(2)] Si un scope $s$ mappé sur un nœud $n$ possédant des arcs de sorties vers un scope $s'$ mappé sur $n'$. $({c_{s,s'} x_s^n  x_{s'}^{n'}}>0)$ alors $n$ doit pouvoir communiquer avec $n'$ $(d_{n,n'} \neq \lambda)$. Donc, la somme des coûts des paires de scopes ne pouvant communiquer doit être nulle.
+\item[(2)] Si un scope $s$ mappé sur un nœud $n$ possédant des arcs de sorties vers un scope $s'$ mappé sur $n'$. $({c_{s,s'} x_s^n  x_{s'}^{n'}}>0)$ alors $n$ doit pouvoir communiquer avec $n'$ $(d_{n,n'} \neq \lambda)$. Donc, la somme des coûts des paires de scopes mappés sur des nœuds ne pouvant communiquer doit être nulle.
 \item[(3)] L'état des $k\up{e}$ ressources d'un scope sur un nœud est \textbf{équivalent} à l'état du $k\up{e}$ scope sur le nœud.
 \item[(4)] Pour tout type, la quantité de ressources de ce type mappées sur un nœud ne doit pas dépasser la quantité disponible (le nombre de ressources libres) de ce nœud.
+\item[(5)] La somme de l'espace mémoire emprunté par les ressources mappés doit être inférieur ou égal à l'espace disponible sur ce nœud.
 \end{description}
 \end{document}
