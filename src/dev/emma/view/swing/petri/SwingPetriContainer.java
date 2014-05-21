@@ -14,7 +14,6 @@ public abstract class SwingPetriContainer extends SwingPetriFigure implements Dr
 			boolean maximizable, boolean iconifiable, Figure parent) {
 		super(name, x, y, width, height, true, maximizable, iconifiable,parent);
 		this.setContentPane(new FixedDesktopPane(this));
-		
 	}
 	
 }

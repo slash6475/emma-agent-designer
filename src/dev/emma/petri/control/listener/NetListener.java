@@ -1,5 +1,5 @@
 package emma.petri.control.listener;
 
-public interface NetListener{
+public interface NetListener extends PetriEventListener{
 
 }

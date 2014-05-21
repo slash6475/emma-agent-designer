@@ -52,7 +52,6 @@ public class SwingController implements FigureHandler{
 			xml=true;
 		} catch (TransformerConfigurationException
 				| ParserConfigurationException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			xml=false;
 		}
@@ -114,7 +113,7 @@ public class SwingController implements FigureHandler{
         del.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				//p.removeDrawable(p.getSelection());
+				fig.delete();
 			}
         });
     }
@@ -135,43 +134,30 @@ public class SwingController implements FigureHandler{
 			}
 		}
 	}
-	private void addFigure(ControlMode m){
+	
+	private boolean addFigure(ControlMode m, Figure f, int x, int y){
 		switch(m){
 		case INSERT_PLACE:
-			fig.addPlace(origin.x,origin.y);
-			break;
+			return f.addPlace(x,y);
 		case INSERT_TRANSITION:
-			fig.addTransition(origin.x,origin.y);
-			break;
+			return f.addTransition(x,y);
 		case INSERT_SUBNET:
-			fig.addSubnet(origin.x,origin.y);
-			break;
+			return f.addSubnet(x,y);
 		case INSERT_SCOPE:
-			fig.addScope(origin.x,origin.y);
-			break;
+			return f.addScope(x,y);
 		default:
-			return;
+			return false;
 		}
 	}
 	
+	private void addFigure(ControlMode m){
+		this.addFigure(m,fig, origin.x, origin.y);
+	}
+	
 	public void addFigure(Figure f, int x, int y){	
-		switch(mode){
-		case INSERT_PLACE:
-			f.addPlace(x,y);
-			break;
-		case INSERT_TRANSITION:
-			f.addTransition(x,y);
-			break;
-		case INSERT_SUBNET:
-			f.addSubnet(x,y);
-			break;
-		case INSERT_SCOPE:
-			f.addScope(x,y);
-			break;
-		default:
-			return;
+		if(this.addFigure(mode,f,x,y)){
+			mode=ControlMode.SELECT;
 		}
-		mode=ControlMode.SELECT;
 	}
 	@Override
 	public void transitionSelect() {

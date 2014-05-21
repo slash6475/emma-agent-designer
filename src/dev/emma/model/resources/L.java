@@ -33,6 +33,9 @@ public class L extends AbstractResource {
 	public void delete() {
 		// TODO Auto-generated method stub
 		notifier.fireListener(this);
-		
+	}
+	
+	public int getSize(){
+		return 1;
 	}
 }

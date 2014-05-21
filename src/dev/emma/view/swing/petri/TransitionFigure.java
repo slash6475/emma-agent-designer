@@ -7,6 +7,7 @@ import java.awt.Point;
 import javax.swing.border.LineBorder;
 import javax.swing.table.AbstractTableModel;
 
+import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.listener.TransitionListener;
 import emma.petri.model.PetriElement;
 import emma.petri.model.Transition;
@@ -49,32 +50,6 @@ public class TransitionFigure extends SwingPetriSimpleElement implements Transit
 			this.setBackground(backgroundColor);
 		}
 		super.paintComponent(g);
-		/*int angle = (int)(Math.toDegrees(Math.atan2(this.getX()-place.getX(),this.getY()-place.getY())-(Math.PI/2d))+360)%360;
-		int ancX1, ancY1, ancX2, ancY2;
-		if(angle>=315 || angle<45){
-			ancX2 = place.getWidth();
-			ancY2 = place.getHeight()/2;
-			ancX1 = 0;
-			ancY1 = this.getHeight()/2;
-		}
-		else if(angle>= 45 && angle < 135){
-			ancX2 = place.getWidth()/2;
-			ancY2 = 0;
-			ancX1 = this.getWidth()/2;
-			ancY1 = this.getHeight();
-		}
-		else if (angle>=135 && angle<225){
-			ancX2 = 0;
-			ancY2 = place.getHeight()/2;
-			ancX1 = this.getWidth();
-			ancY1 = this.getHeight()/2;
-		}
-		else{
-			ancX2 = place.getWidth()/2;
-			ancY2 = place.getHeight();
-			ancX1 = this.getWidth()/2;
-			ancY1 = 0;
-		}*/
 	}
 	
 	@Override
@@ -98,5 +73,15 @@ public class TransitionFigure extends SwingPetriSimpleElement implements Transit
 	@Override
 	public Point getCenterPoint() {
 		return centerPoint;
+	}
+
+	@Override
+	public void notity(DeletionEvent e) {
+		this.dispose();
+	}
+	
+	@Override
+	public void delete(){
+		transition.delete();
 	}
 }

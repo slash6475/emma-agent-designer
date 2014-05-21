@@ -26,5 +26,8 @@ public abstract class PetriElement {
 	
 	protected final void delete(PetriElement caller){
 		this.deleteLinks(caller);
+		this.notifyDeletion();
 	}
+	
+	protected abstract void notifyDeletion();
 }

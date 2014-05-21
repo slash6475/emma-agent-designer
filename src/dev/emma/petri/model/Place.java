@@ -7,14 +7,13 @@ import java.util.Iterator;
 import java.util.Set;
 
 import emma.model.resources.tomap.ResourceToMap;
+import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.event.StateChangedEvent;
 import emma.petri.control.listener.PlaceListener;
 
-@SuppressWarnings("rawtypes")
 public class Place  extends PT{
 	private static int q=0;
-	private Set<Token> tokens;
 	private ResourceToMap res;
 	private boolean input,output;
 	private String name;
@@ -27,39 +26,14 @@ public class Place  extends PT{
 		res=null;
 		input=true;
 		output=true;
-		tokens = new HashSet<Token>();
 		pls = new HashSet<PlaceListener>();
-	}
-	
-	public Set<Token> getTokens(){
-		return tokens;
-	}
-	
-	public boolean addToken(Token token){
-		return this.tokens.add(token);
-	}
-	
-	public boolean addTokens(Set<Token> tokens){
-		return this.tokens.addAll(tokens);
-	}
-	
-	public boolean removeToken(Token token){
-		return this.tokens.remove(token);
-	}
-	
-	public boolean removeTokens(Set<Token> tokens){
-		return this.tokens.removeAll(tokens);
-	}
-	
-	public void removeAllTokens(){
-		this.tokens.clear();
 	}
 	
 	@Override
 	protected void deleteLinks(PetriElement caller){
 		Iterator<InputArc> it = getInputArcs().iterator();
 		Iterator<OutputArc> it2 = getOutputArcs().iterator();
-		if(!(caller instanceof Subnet)){
+		if(!(caller == getParent())){
 			getParent().remove(this);
 		}
 		while(it.hasNext()){
@@ -70,8 +44,6 @@ public class Place  extends PT{
 			it2.next().delete(this);
 		}
 		getOutputArcs().clear();
-		this.removeAllTokens();
-		pls.clear();
 	}
 	
 	public String getType(){
@@ -144,5 +116,15 @@ public class Place  extends PT{
 	
 	public Set<PlaceListener> getListeners(){
 		return pls;
+	}
+	
+	@Override
+	protected void notifyDeletion() {
+		// TODO Auto-generated method stub
+		DeletionEvent e = new DeletionEvent(this);
+		Iterator<PlaceListener> it = pls.iterator();
+		while(it.hasNext()){
+			it.next().notity(e);
+		}
 	}
 }

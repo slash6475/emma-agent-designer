@@ -66,26 +66,6 @@ public abstract class SwingPetriFigure extends DesktopFrame implements Figure{
 	}
 	
 	@Override
-	public int getCanvasX(){
-		return x;
-	}
-
-	@Override
-	public int getCanvasY(){
-		return y;
-	}
-
-	@Override
-	public int getCanvasWidth(){
-		return width;
-	}
-
-	@Override
-	public int getCanvasHeight(){
-		return height;
-	}
-	
-	@Override
 	public abstract PetriElement getElement();
 	
 	@Override

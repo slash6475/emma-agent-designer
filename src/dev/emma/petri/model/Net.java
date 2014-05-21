@@ -1,9 +1,12 @@
 package emma.petri.model;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
+import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.listener.NetListener;
+
 /**
  * Modélise un Petri réseau de Petri
  * C'est un ensemble de sous-réseau
@@ -23,7 +26,10 @@ public class Net extends PetriElement {
 
 	@Override
 	protected void deleteLinks(PetriElement caller) {
-		nls.clear();
+		Iterator<Subnet> it = subs.iterator();
+		while(it.hasNext()){
+			it.next().delete(this);
+		}
 	}
 
 	public boolean add(Subnet subnet) {
@@ -40,5 +46,14 @@ public class Net extends PetriElement {
 	
 	public Set<NetListener> getListeners(){
 		return nls;
+	}
+	
+	@Override
+	protected void notifyDeletion() {
+		DeletionEvent e = new DeletionEvent(this);
+		Iterator<NetListener> it = nls.iterator();
+		while(it.hasNext()){
+			it.next().notity(e);
+		}
 	}
 }

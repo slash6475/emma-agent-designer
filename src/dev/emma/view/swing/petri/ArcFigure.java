@@ -13,6 +13,9 @@ import java.util.LinkedList;
 
 import javax.swing.table.AbstractTableModel;
 
+import emma.petri.control.event.DeletionEvent;
+import emma.petri.control.listener.InputArcListener;
+import emma.petri.control.listener.OutputArcListener;
 import emma.petri.model.Arc;
 import emma.petri.model.InputArc;
 import emma.petri.model.OutputArc;
@@ -20,7 +23,7 @@ import emma.petri.model.PetriElement;
 import emma.view.swing.SwingController;
 import emma.view.swing.petri.table.ArcTableModel;
 
-public class ArcFigure implements Figure{
+public class ArcFigure implements Figure, InputArcListener, OutputArcListener{
 
 	private Arc arc;
 	private Point placePt;
@@ -39,7 +42,14 @@ public class ArcFigure implements Figure{
 	
 	public ArcFigure(PlaceFigure p, TransitionFigure t, boolean isInputArc){
 		this.input=isInputArc;
-		this.arc=(input)?new InputArc(p.getPlace(),t.getTransition()):new OutputArc(p.getPlace(),t.getTransition());
+		if(input){
+			this.arc=new InputArc(p.getPlace(),t.getTransition());
+			((InputArc)arc).addListener(this);
+		}
+		else{
+			this.arc=new OutputArc(p.getPlace(),t.getTransition());
+			((OutputArc)arc).addListener(this);
+		}
 		this.parent=(SubnetFigure)t.getPetriParent().getPetriParent();
 		this.p=p;
 		this.t=t;
@@ -248,26 +258,6 @@ public class ArcFigure implements Figure{
 	}
 
 	@Override
-	public int getCanvasX() {
-		return this.boundX;
-	}
-
-	@Override
-	public int getCanvasY() {
-		return this.boundY;
-	}
-
-	@Override
-	public int getCanvasWidth() {
-		return this.boundX2-this.boundX;
-	}
-
-	@Override
-	public int getCanvasHeight() {
-		return this.boundY2-this.boundY;
-	}
-
-	@Override
 	public boolean isScopeContainer() {
 		return false;
 	}
@@ -386,8 +376,16 @@ public class ArcFigure implements Figure{
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public void notity(DeletionEvent e) {
+		parent.removeArc(this);
+	}
+
+	@Override
+	public void delete() {
+		arc.delete();
 	}
 
 }

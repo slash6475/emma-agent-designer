@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.table.AbstractTableModel;
 
+import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.listener.ScopeListener;
 import emma.petri.model.PetriElement;
@@ -110,5 +111,22 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 		if(!this.parent.hasSelectedArc()){
 			super.mouseClicked(e);
 		}
+	}
+
+	@Override
+	public void notity(DeletionEvent e) {
+		super.dispose();
+	}
+	
+	
+	
+	@Override
+	public void dispose(){
+		this.delete();
+	}
+
+	@Override
+	public void delete() {
+		scope.delete();
 	}
 }

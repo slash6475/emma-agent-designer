@@ -100,7 +100,7 @@ public class MapperNode {
 				return false;
 			}
 			if(r.isImported()){
-				if(n.getResourceRoot(type).contains(name)){
+				if(!n.getResourceRoot(type).contains(name)){
 					return false;
 				}
 			}

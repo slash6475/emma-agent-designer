@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 
+import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.event.StateChangedEvent;
 import emma.petri.control.listener.PlaceListener;
@@ -96,5 +97,15 @@ public class PlaceFigure extends SwingPetriSimpleElement implements PlaceListene
 	@Override
 	public Point getCenterPoint() {
 		return centerPoint;
+	}
+
+	@Override
+	public void notity(DeletionEvent e) {
+		this.dispose();
+	}
+
+	@Override
+	public void delete() {
+		place.delete();
 	}
 }

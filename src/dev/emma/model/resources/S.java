@@ -29,4 +29,8 @@ public class S extends AbstractResource {
 		// TODO Auto-generated method stub
 		notifier.fireListener(this);
 	}
+	
+	public int getSize(){
+		return 1;
+	}
 }

@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.swing.table.AbstractTableModel;
 
+import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.listener.SubnetListener;
 import emma.petri.model.PetriElement;
@@ -126,6 +127,9 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 		return false;
 	}
 	
+	public boolean removeArc(ArcFigure a){
+		return arcs.remove(a);
+	}
 	public Subnet getSubnet() {
 		return sub;
 	}
@@ -153,5 +157,14 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 	
 	public boolean hasSelectedArc(){
 		return (selectedArc!=null);
+	}
+
+	@Override
+	public void notity(DeletionEvent e) {
+		this.dispose();
+	}
+	
+	public void delete(){
+		sub.delete();
 	}
 }

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.listener.SubnetListener;
 
@@ -47,9 +48,6 @@ public class Subnet extends PetriElement{
 		while(it.hasNext()){
 			it.next().delete(this);
 		}
-		arcs.clear();
-		scopes.clear();
-		subls.clear();
 	}
 	
 
@@ -97,5 +95,14 @@ public class Subnet extends PetriElement{
 	
 	public Set<Arc> getArcs() {
 		return arcs;
+	}
+	
+	@Override
+	protected void notifyDeletion() {
+		DeletionEvent e = new DeletionEvent(this);
+		Iterator<SubnetListener> it = subls.iterator();
+		while(it.hasNext()){
+			it.next().notity(e);
+		}
 	}
 }

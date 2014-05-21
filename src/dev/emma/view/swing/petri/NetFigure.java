@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.table.AbstractTableModel;
 
+import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.listener.NetListener;
 import emma.petri.model.Net;
 import emma.petri.model.PetriElement;
@@ -32,30 +33,6 @@ public class NetFigure extends ScrollableDesktopPane implements Figure, NetListe
 		});
 		this.net = new Net();
 		net.addListener(this);
-	}
-	
-	@Override
-	public int getCanvasX() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getCanvasY() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getCanvasWidth() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getCanvasHeight() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 	
 	public Net getNet(){
@@ -161,5 +138,15 @@ public class NetFigure extends ScrollableDesktopPane implements Figure, NetListe
 			control.showPopup(NetFigure.this,e.getX(),e.getY());
 		}
 		control.putFocusOn(NetFigure.this);
+	}
+
+	@Override
+	public void notity(DeletionEvent e) {
+		this.net = new Net();
+	}
+
+	@Override
+	public void delete() {
+		net.delete();
 	}
 }

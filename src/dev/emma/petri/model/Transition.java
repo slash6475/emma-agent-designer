@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.listener.TransitionListener;
 
 public class Transition extends PT{
@@ -37,7 +38,6 @@ public class Transition extends PT{
 		}
 		getOutputArcs().clear();
 		place.delete();
-		tls.clear();
 	}
 	
 	public void setCondition(String cond){
@@ -57,5 +57,15 @@ public class Transition extends PT{
 	
 	public Set<TransitionListener> getListeners(){
 		return tls;
+	}
+	
+	@Override
+	protected void notifyDeletion() {
+		// TODO Auto-generated method stub
+		DeletionEvent e = new DeletionEvent(this);
+		Iterator<TransitionListener> it = tls.iterator();
+		while(it.hasNext()){
+			it.next().notity(e);
+		}
 	}
 }

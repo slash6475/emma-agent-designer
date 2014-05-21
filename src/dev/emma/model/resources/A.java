@@ -28,4 +28,8 @@ public class A extends AbstractResource {
 	public void delete() {
 		notifier.fireListener(this);
 	}
+	
+	public int getSize(){
+		return 1;
+	}
 }
