@@ -2,8 +2,8 @@ package emma.view.swing.petri.table;
 
 import javax.swing.table.AbstractTableModel;
 
-import emma.model.resources.tomap.ResourceToMap;
 import emma.petri.model.Place;
+import emma.tools.ClassFounder;
 
 public class PlaceTableModel extends AbstractTableModel {
 
@@ -73,7 +73,6 @@ public class PlaceTableModel extends AbstractTableModel {
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		switch(rowIndex){
@@ -82,7 +81,7 @@ public class PlaceTableModel extends AbstractTableModel {
 			break;
 		case 3:
 			try {
-				p.setType((Class<? extends ResourceToMap>) Class.forName("emma.model.resources.tomap."+aValue));
+				p.setType(ClassFounder.getResourceToMapClass((String)aValue));
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}

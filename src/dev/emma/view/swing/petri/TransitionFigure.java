@@ -29,12 +29,15 @@ public class TransitionFigure extends SwingPetriSimpleElement implements Transit
 	private static final Point centerPoint = new Point(7,20);
 	
 	public TransitionFigure(String name, int x, int y, PlaceFigure p,ScopeFigure parent) {
-		super(name, x, y, defaultWidth, defaultHeight, parent);	
+		super(name, defaultWidth, defaultHeight, parent);	
 		this.setBackground(backgroundColor);
 		this.setBorder(new LineBorder(Color.black,2));
 		this.place=p;
 		this.transition= new Transition(parent.getScope(), place.getPlace());
 		transition.addListener(this);
+		if(parent.getContentPane().add(this)!=null){
+			this.moveTo(x, y);
+		}
 	}
 
 	public Transition getTransition() {

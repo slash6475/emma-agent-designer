@@ -31,13 +31,16 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 	private ArcFigure selectedArc;
 	
 	public SubnetFigure(String name,int x, int y, int width, int height, NetFigure parent){
-		super(name, x, y, width, height, true, true, parent);
+		super(name, width, height, true, true, parent);
 		this.sub=new Subnet(parent.getNet(),name);
 		this.sub.addListener(this);
 		this.arcs = new HashSet<ArcFigure>();
 		arcHandler=new ArcHandler();
 		this.getContentPane().addMouseListener(arcHandler);
 		this.getContentPane().addMouseMotionListener(arcHandler);
+		if(parent.add(this)!=null){
+			this.moveTo(x, y);
+		}
 	}
 	
 	@Override
@@ -101,12 +104,8 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 	
 	@Override
 	public boolean addScope(int x, int y){
-		ScopeFigure s = new ScopeFigure("aScope",x,y,150,150,this);
-		if(this.getContentPane().add(s)!=null){
-			s.moveTo(x, y);
-			return true;
-		}
-		return false;
+		new ScopeFigure("aScope",x,y,150,150,this);
+		return true;
 	}
 
 	public boolean addInputArc(PlaceFigure p, TransitionFigure t){
@@ -151,6 +150,17 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 		}
 	}
 
+	public ArcFigure getArcFigure(PlaceFigure p, TransitionFigure t, boolean input){
+		Iterator<ArcFigure> it = arcs.iterator();
+		while(it.hasNext()){
+			ArcFigure a = it.next();
+			if(a.getArc().getPlace()==p.getPlace() && a.getArc().getTransition()==t.getTransition() && input==a.getArc().isInput()){
+				return a;
+			}
+		}
+		return null;
+	}
+	
 	public ArcHandler getArcHandler(){
 		return arcHandler;
 	}

@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
@@ -13,11 +14,15 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.xml.sax.SAXException;
+
 import emma.petri.view.ControlMode;
+import emma.petri.view.CorruptedFileException;
 import emma.petri.view.FigureHandler;
 import emma.petri.view.PropertiesView;
 import emma.petri.view.XMLParser;
 import emma.view.swing.petri.Figure;
+import emma.view.swing.petri.NetFigure;
 import emma.view.swing.petri.PlaceFigure;
 import emma.view.swing.petri.SubnetFigure;
 import emma.view.swing.petri.SwingPetriFigure;
@@ -101,7 +106,7 @@ public class SwingController implements FigureHandler{
         importsub.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//importFile();
+				importFile();
 			}
         });
         save.addActionListener(new ActionListener(){
@@ -131,6 +136,16 @@ public class SwingController implements FigureHandler{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
+		}
+	}
+	
+	private void importFile() {
+		if(fileChooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
+			try {
+				SubnetFigure s = parser.importSubnetFigureFromXMLFile(origin.x, origin.y,(NetFigure)fig, fileChooser.getSelectedFile());
+			} catch (CorruptedFileException | SAXException | IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}

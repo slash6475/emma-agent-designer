@@ -32,7 +32,7 @@ public class PlaceFigure extends SwingPetriSimpleElement implements PlaceListene
 	
 	@SuppressWarnings("serial")
 	public PlaceFigure(String name, int x, int y, ScopeFigure parent) {
-		super(name, x, y, defaultWidth+11, defaultHeight+24, parent);
+		super(name, defaultWidth+11, defaultHeight+24, parent);
 		this.setBackground(backgroundColor);
 		place = new Place(parent.getScope());
 		place.addListener(this);
@@ -56,6 +56,9 @@ public class PlaceFigure extends SwingPetriSimpleElement implements PlaceListene
                 null, place.getName(),
                 TitledBorder.CENTER,
                 TitledBorder.ABOVE_TOP));
+		if(parent.getContentPane().add(this)!=null){
+			this.moveTo(x, y);
+		}
 	}
 
 	@Override

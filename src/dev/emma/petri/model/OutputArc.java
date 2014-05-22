@@ -57,4 +57,9 @@ public class OutputArc extends Arc {
 			it.next().notity(e);
 		}
 	}
+
+	@Override
+	public boolean isInput() {
+		return false;
+	}
 }

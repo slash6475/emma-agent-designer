@@ -8,6 +8,9 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
+import emma.model.resources.Resource;
+import emma.model.resources.tomap.ResourceToMap;
+
 public class ClassFounder {
 	
 	
@@ -80,5 +83,23 @@ public class ClassFounder {
 			}
 		}
 		return classes;
+	}
+
+	public static String getResourcePackage(){
+		return "emma.model.resources";
+	}
+	
+	public static String getResourceToMapPackage(){
+		return ClassFounder.getResourcePackage()+".tomap";
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Class<? extends Resource> getResourceClass(String type) throws ClassNotFoundException{
+		return (Class<? extends Resource>) Class.forName(getResourcePackage()+"."+type);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Class<? extends ResourceToMap> getResourceToMapClass(String type) throws ClassNotFoundException{
+		return (Class<? extends ResourceToMap>) Class.forName(getResourceToMapPackage()+"."+type);
 	}
 }

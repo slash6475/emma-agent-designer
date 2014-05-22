@@ -59,4 +59,10 @@ public abstract class Arc extends PetriElement{
 	public String getExpression(){
 		return expr;
 	}
+	
+	public abstract boolean isInput();
+	
+	public final boolean isOutput(){
+		return !isInput();
+	}
 }

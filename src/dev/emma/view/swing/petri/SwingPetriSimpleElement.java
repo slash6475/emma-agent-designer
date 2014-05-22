@@ -14,8 +14,8 @@ public abstract class SwingPetriSimpleElement extends SwingPetriFigure{
 	 * 
 	 */
 	private static final long serialVersionUID = -694951586942013143L;
-	public SwingPetriSimpleElement(String name, int x, int y, int width, int height, final SwingPetriContainer parent) {
-		super(name, x, y, width, height, false, false, false,parent);
+	public SwingPetriSimpleElement(String name, int width, int height, final SwingPetriContainer parent) {
+		super(name, width, height, false, false, false,parent);
 		this.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {

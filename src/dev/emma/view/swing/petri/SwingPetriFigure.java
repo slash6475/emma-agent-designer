@@ -20,17 +20,12 @@ public abstract class SwingPetriFigure extends DesktopFrame implements Figure{
 	private static final long serialVersionUID = -818690048054725558L;
 
 	protected SwingController control;
-	protected int x,y,width,height;
 	private Figure parent;
 	private boolean isFocus;
 	
-	public SwingPetriFigure(String name, int x, int y, int width, int height,
+	public SwingPetriFigure(String name, int width, int height,
 			boolean resizable, boolean maximizable, boolean iconifiable,Figure parent){
 		super(name, resizable, true, maximizable, iconifiable);
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
 		this.parent=parent;
 		Dimension d = new Dimension(width,height);
 		this.setPreferredSize(d);
@@ -124,11 +119,15 @@ public abstract class SwingPetriFigure extends DesktopFrame implements Figure{
 	}
 	
 	public void moveTo(int x, int y){
-		((DesktopFrame)parent).getDesktopPane().getDesktopManager().setBoundsForFrame(this,x,y, this.getWidth(), this.getHeight());
+		/*if(parent instanceof DesktopFrame){
+			((DesktopFrame)parent).getDesktopPane().getDesktopManager().setBoundsForFrame(this,x,y, this.getWidth(), this.getHeight());
+		}
+		else */
+		this.setBounds(x, y, this.getWidth(), this.getHeight());
 	}
 	
 	public void moveBy(int x, int y){
-		((DesktopFrame)parent).getDesktopPane().getDesktopManager().setBoundsForFrame(this,this.getX()+x,this.getY()+y, this.getWidth(), this.getHeight());
+		this.moveTo(this.getX()+x,this.getY()+y);
 	}
 	
 	@Override

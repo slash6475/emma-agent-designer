@@ -25,7 +25,7 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 	private Scope scope;
 	
 	public ScopeFigure(String name, int x, int y, int width, int height, SubnetFigure parent) {
-		super(name, x, y, width, height, false, false, parent);
+		super(name, width, height, false, false, parent);
 		scope=new Scope(parent.getSubnet());
 		scope.addListener(this);
 		scope.setName(name);
@@ -42,6 +42,9 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 		cp.addMouseListener(parent.getArcHandler());
 		cp.addMouseMotionListener(parent.getArcHandler());
 		this.parent=parent;
+		if(parent.getContentPane().add(this)!=null){
+			this.moveTo(x, y);
+		}
 	}
 	
 	@Override
@@ -71,27 +74,16 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 	
 	@Override
 	public boolean addPlace(int x, int y){
-		PlaceFigure p = new PlaceFigure("P1",x,y,this);
-		if(this.getContentPane().add(p)!=null){
-			p.moveTo(x, y);
-			return true;
-		}
-		return false;
+		new PlaceFigure("P1",x,y,this);
+		return true;
 	}
 	
 	@Override
 	public boolean addTransition(int x, int y){
 		//Il doit créé une place de stockage, puis la transition
 		PlaceFigure p = new PlaceFigure("P/T",x,y,this);
-		if(this.getContentPane().add(p)!=null){
-			p.moveTo(x,y);
-			TransitionFigure t = new TransitionFigure("",x,y+5+p.getHeight(),p,this);
-			if(this.getContentPane().add(t)!=null){
-				t.moveTo(x, y+5+p.getHeight());
-				return true;
-			}
-		}
-		return false;
+		new TransitionFigure("",x, y+5+p.getHeight(),p,this);
+		return true;
 	}
 	
 	@Override
@@ -117,8 +109,6 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 	public void notity(DeletionEvent e) {
 		super.dispose();
 	}
-	
-	
 	
 	@Override
 	public void dispose(){

@@ -211,6 +211,14 @@ public class ArcFigure implements Figure, InputArcListener, OutputArcListener{
 		this.recalculateBounds();
 	}
 	
+	public void addPoint(Point pt){
+		arcPts.add(pt);
+	}
+	
+	public void addPoint(int index, Point pt){
+		arcPts.add(index,pt);
+	}
+	
 	public void dragPoint(Point dragBy){
 		if(selectedPoint!=null){
 			selectedPoint.setLocation(dragBy);
@@ -240,10 +248,10 @@ public class ArcFigure implements Figure, InputArcListener, OutputArcListener{
 				}
 			}
 			if(index==arcPts.size()){
-				arcPts.add(selectedPosition);
+				this.addPoint(selectedPosition);
 			}
 			else{
-				arcPts.add(index,selectedPosition);
+				this.addPoint(index,selectedPosition);
 			}
 			selectedPoint=selectedPosition;
 		}
@@ -386,6 +394,10 @@ public class ArcFigure implements Figure, InputArcListener, OutputArcListener{
 	@Override
 	public void delete() {
 		arc.delete();
+	}
+	
+	public LinkedList<Point> getPoints(){
+		return arcPts;
 	}
 
 }
