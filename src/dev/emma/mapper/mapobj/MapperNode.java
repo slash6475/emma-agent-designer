@@ -100,7 +100,15 @@ public class MapperNode {
 				return false;
 			}
 			if(r.isImported()){
-				if(!n.getResourceRoot(type).contains(name)){
+				Iterator<Resource> itR = n.getResourceRoot(type).iterator();
+				boolean has=false;
+				while(itR.hasNext()){
+					if(itR.next().getName().equals(name)){
+						has=true;
+						break;
+					}
+				}
+				if(!has){
 					return false;
 				}
 			}
@@ -116,6 +124,7 @@ public class MapperNode {
 		while(itType.hasNext()){
 			String type = itType.next();
 			if(needs.get(type)>dynamicCapa.get(type)){
+				System.out.println("Node has "+dynamicCapa.get(type)+" and need "+needs.get(type)+" for "+type);
 				return false;
 			}
 		}

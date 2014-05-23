@@ -79,7 +79,10 @@ public class PBSolver {
 			int constraint= 2*scopes.size();
 			Iterator<MapperNode> itCap = nodes.iterator();
 			while(itCap.hasNext()){
-				constraint+=itCap.next().getDisponibilityTypes().size();
+				MapperNode n = itCap.next();
+				if(n.getDisponibilityTypes().size()>0){
+					constraint+=n.getDisponibilityTypes().size()+1;
+				}
 			}
 			String topConstraint = this.getTopologyConstraint();
 			if(!topConstraint.equals("")){
@@ -155,22 +158,7 @@ public class PBSolver {
 			while(itNode.hasNext()){
 				MapperNode n = itNode.next();
 				out.println("* Node ["+n.getNode().getIp()+"]:");
-				Iterator<String> itType = n.getNode().getResourceRoots().iterator();
-				while(itType.hasNext()){
-					StringBuffer str = new StringBuffer();
-					String type = itType.next();
-					Iterator<ResourceToMap> itRes = n.getResourcesToMap(type).iterator();
-					while(itRes.hasNext()){
-						ResourceToMap r = itRes.next();
-						for(int i=1; resLiterals.containsKey(n,r,i); i++){
-							str.append("1 x"+resLiterals.get(n,r,i)+" ");
-						}
-					}
-					if(!str.toString().equals("")){
-						str.append("<= "+n.getDisponibility(type)+";");
-						out.println(str.toString());
-					}
-				}
+				out.println(this.getResourceQuantityConstraint(n));
 			}
 		} catch (FileNotFoundException e) {
 			throw new MappingNotFoundException(e.getMessage());
@@ -180,7 +168,44 @@ public class PBSolver {
 			}
 		}
 	}
-
+	
+	private String getResourceQuantityConstraint(MapperNode n){
+		Iterator<String> itType = n.getNode().getResourceRoots().iterator();
+		StringBuffer qty = new StringBuffer();
+		StringBuffer size = new StringBuffer();
+		while(itType.hasNext()){
+			StringBuffer qtyLine = new StringBuffer();
+			String type = itType.next();
+			Iterator<ResourceToMap> itRes = n.getResourcesToMap(type).iterator();
+			qty.append("* Resource Quantity Constraint : type '"+type+"'\n");
+			while(itRes.hasNext()){
+				ResourceToMap r = itRes.next();
+				for(int i=1; resLiterals.containsKey(n,r,i); i++){
+					int lit = resLiterals.get(n,r,i);
+					qtyLine.append("1 x");
+					qtyLine.append(lit);
+					qtyLine.append(" ");
+					size.append(r.getSize());
+					size.append(" x");
+					size.append(lit);
+					size.append(" ");
+				}
+			}
+			if(!qtyLine.toString().equals("")){
+				qty.append(qtyLine.toString());
+				qty.append("<= ");
+				qty.append(n.getDisponibility(type));
+				qty.append(";\n");
+			}
+		}
+		if(!size.toString().equals("")){
+			qty.append("* Resource Size Constraint\n");
+			qty.append(size.toString());
+			qty.append('\n');
+		}
+		return qty.toString();
+	}
+	
 	private String getFunctionToMin(){
 		StringBuffer str = new StringBuffer();
 		Iterator<MapperScope> itScope = scopes.iterator();
@@ -243,7 +268,9 @@ public class PBSolver {
 				}
 			}
 		}
-		str.append("= 0;");
+		if(!str.toString().equals("")){
+			str.append("= 0;");	
+		}
 		return str.toString();
 	}
 

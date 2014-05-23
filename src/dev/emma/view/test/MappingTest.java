@@ -1,6 +1,7 @@
 package emma.view.test;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import emma.mapper.MappingNotFoundException;
@@ -41,14 +42,13 @@ public class MappingTest {
 			n1.addResourceType("A");
 			n1.addResourceType("S");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Resource r = new L("");
+		Resource r = new emma.model.resources.L("");
 		n1.addResource(r);
-		r = new A("");
+		r = new emma.model.resources.A("");
 		n1.addResource(r);
-		r = new S("systest");
+		r = new emma.model.resources.S("systest");
 		n1.addResource(r);
 		nodes.add(n1);
 		
@@ -56,10 +56,9 @@ public class MappingTest {
 		try {
 			n2.addResourceType("L");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		r = new L("");
+		r = new emma.model.resources.L("");
 		n2.addResource(r);
 		nodes.add(n2);
 		
@@ -67,12 +66,11 @@ public class MappingTest {
 		try {
 			n3.addResourceType("L");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		r = new L("");
+		r = new emma.model.resources.L("");
 		n3.addResource(r);
-		r = new L("");
+		r = new emma.model.resources.L("");
 		n3.addResource(r);
 		nodes.add(n3);
 		
@@ -90,7 +88,7 @@ public class MappingTest {
 		p = new Place(s);
 		p.setType(L.class);
 		p.setName("ltest");
-		s.setMultiplicity("3");
+		s.setMultiplicity("1");
 		Place p2 = new Place(s);
 		p2.setType(S.class);
 		p2.setName("systest");

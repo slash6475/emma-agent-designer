@@ -143,7 +143,7 @@ public class SwingController implements FigureHandler{
 	private void importFile() {
 		if(fileChooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
 			try {
-				SubnetFigure s = parser.importSubnetFigureFromXMLFile(origin.x, origin.y,(NetFigure)fig, fileChooser.getSelectedFile());
+				parser.importSubnetFigureFromXMLFile(origin.x, origin.y,(NetFigure)fig, fileChooser.getSelectedFile());
 			} catch (CorruptedFileException | SAXException | IOException e) {
 				e.printStackTrace();
 			}
