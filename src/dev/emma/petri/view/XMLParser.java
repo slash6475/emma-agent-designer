@@ -2,7 +2,9 @@ package emma.petri.view;
 
 import java.awt.Point;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -26,6 +28,7 @@ import org.xml.sax.SAXException;
 import emma.petri.control.listener.*;
 import emma.petri.model.Arc;
 import emma.petri.model.InputArc;
+import emma.petri.model.Net;
 import emma.petri.model.OutputArc;
 import emma.petri.model.Place;
 import emma.petri.model.Scope;
@@ -248,12 +251,28 @@ public class XMLParser {
 		save.appendChild(layout);
 		doc.appendChild(save);
 		DOMSource source = new DOMSource(doc);
-		// write the content into xml file
 		StreamResult result = new StreamResult(toFile);
 		transformer.transform(source, result);
 	}
 	
+	public void saveProjectToXMLFile(Net net, File file) throws TransformerException, FileNotFoundException{
+		Iterator<Subnet> it = net.getSubnets().iterator();
+		String path = file.getPath()+"/";
+		PrintWriter out = new PrintWriter(path+"epnf.lst");
+		while(it.hasNext()){
+			Subnet sub = it.next();
+			String str = sub.getName()+"_"+sub.getID()+".epnf";
+			this.saveSubnetToXMLFile(sub, new File(path+str));
+			out.println(str);
+		}
+		out.close();
+	}
+	
 	public SubnetFigure importSubnetFigureFromXMLFile(int x, int y, NetFigure parent, File fromFile) throws CorruptedFileException, SAXException, IOException{
+		return this.importSubnetFigureFromXMLFile(x, y, parent, fromFile, false);
+	}
+	
+	public SubnetFigure importSubnetFigureFromXMLFile(int x, int y, NetFigure parent, File fromFile, boolean offsetPosition) throws CorruptedFileException, SAXException, IOException{
 		Element layout=null;
 		Element subnet=null;
 		Document doc = docBuilder.parse(fromFile);
@@ -281,7 +300,7 @@ public class XMLParser {
 				}
 			}
 		}
-		SubnetFigure s = getSubnetByElement(x,y,subnet,parent);
+		SubnetFigure s = getSubnetByElement(x,y,subnet,parent,offsetPosition);
 		layouts.clear();
 		places.clear();
 		transitions.clear();
@@ -304,7 +323,7 @@ public class XMLParser {
 		}
 	}
 	
-	private SubnetFigure getSubnetByElement(int x, int y,Element elmt, NetFigure parent) throws CorruptedFileException{
+	private SubnetFigure getSubnetByElement(int x, int y,Element elmt, NetFigure parent,boolean offsetPosition) throws CorruptedFileException{
 		String name = elmt.getAttribute("name");
 		Element fig = null;
 		if(layouts.containsKey(elmt.getAttribute("id"))){
@@ -312,6 +331,10 @@ public class XMLParser {
 		}
 		else{
 			throw new CorruptedFileException("subnetfigure layout for '"+name+"' was not found");
+		}
+		if(offsetPosition){
+			x+=this.parseInt(fig.getAttribute("x"));
+			y+=this.parseInt(fig.getAttribute("y"));
 		}
 		int width=this.parseInt(fig.getAttribute("width"));
 		int height=this.parseInt(fig.getAttribute("height"));
@@ -467,6 +490,4 @@ public class XMLParser {
 		}
 		return a;
 	}
-	
-	
 }

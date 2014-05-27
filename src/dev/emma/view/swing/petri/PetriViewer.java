@@ -15,8 +15,10 @@ public class PetriViewer extends DesktopFrame{
 	private SwingController control;
 	private Toolbar toolbar;
 	private PropertiesPanel borderPanel;
+	private PetriCanvasContainer canvas;
+	
 	public PetriViewer(SwingController c){
-		super("Petri Viewer",true, false, true,true);
+		super("",true, true, true,true);
 		FixedDesktopPane dPane = new FixedDesktopPane(this);
 		this.setContentPane(dPane);
 		this.setSize(600, 440);
@@ -27,13 +29,20 @@ public class PetriViewer extends DesktopFrame{
 		this.borderPanel=new PropertiesPanel(control);
 		this.borderPanel.addInternalFrameListener(new FListener());
 		this.add(borderPanel);
-		PetriCanvasContainer canvCont= new PetriCanvasContainer(control);
-		this.add(canvCont);
+		this.canvas = new PetriCanvasContainer(control);
+		control.setFigure(this.canvas.getNetFigure());
+		this.add(this.canvas);
 		try {
-			canvCont.setMaximum(true);
+			this.canvas.setMaximum(true);
 		} catch (PropertyVetoException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void setName(String name){
+		super.setName(name);
+		this.setTitle(name);
 	}
 	
 	private class FListener extends InternalFrameAdapter{
@@ -47,4 +56,5 @@ public class PetriViewer extends DesktopFrame{
 		this.toolbar.moveToFront();
 		this.borderPanel.moveToFront();
 	}
+	
 }

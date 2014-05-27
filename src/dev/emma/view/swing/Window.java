@@ -3,6 +3,7 @@ package emma.view.swing;
 import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 import javax.swing.JFrame;
 
@@ -16,14 +17,15 @@ public class Window extends JFrame implements DrawableContainer{
 	private static final long serialVersionUID = 6098483712279657780L;
 	
 	private FixedDesktopPane pane;
-	
-	public Window(SwingController control){
+	private int petriCount;
+	public Window(){
 		super();
-		this.setTitle("Petri (Test) Viewer");
+		this.petriCount=0;
+		this.setTitle("EMMA Agent Design");
 		this.pane = new FixedDesktopPane(this);
 		this.pane.setBackground(this.getBackground());
 		this.setContentPane(pane);
-		this.setSize(640, 480);
+		this.setSize(800, 600);
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
 		this.setResizable(true);
@@ -32,7 +34,7 @@ public class Window extends JFrame implements DrawableContainer{
 				System.exit(0);
 			}
 		});
-		pane.add(new PetriViewer(control));
+		this.setJMenuBar(new MenuBar(this));
 	}
 	
 	@Override
@@ -42,5 +44,21 @@ public class Window extends JFrame implements DrawableContainer{
 
 	@Override
 	public void addPainting(Graphics g) {
+	}
+	
+	public void addPetriViewer(){
+		petriCount++;
+		PetriViewer v = new PetriViewer(new SwingController()); 
+		v.setName("PetriViewer #"+petriCount);
+		pane.add(v);
+	}
+	
+	public void addPetriViewer(File list){
+		String name = list.getParentFile().getName();
+		SwingController control = new SwingController();
+		PetriViewer v = new PetriViewer(control);
+		v.setName(name);
+		control.importProject(list);
+		pane.add(v);
 	}
 }

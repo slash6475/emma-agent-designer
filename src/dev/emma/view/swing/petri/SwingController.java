@@ -4,7 +4,10 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
@@ -125,16 +128,25 @@ public class SwingController implements FigureHandler{
 	private void saveFile(){
 		if(fileChooser.showSaveDialog(null)==JFileChooser.APPROVE_OPTION){
 			String path = fileChooser.getSelectedFile().toString();
-			if(!path.endsWith(".epnf")){
-				path=path.concat(".epnf");
-			}
-			File file = new File(path);
-			if(!file.exists()){
+			if(fig.isScopeContainer()){
+				if(!path.endsWith(".epnf")){
+					path=path.concat(".epnf");
+				}
+				File file = new File(path);
 				try {
 					parser.saveSubnetToXMLFile(((SubnetFigure)fig).getSubnet(), file);
 				} catch (TransformerException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}
+			}
+			else{
+				File file = new File(path);
+				if(file.mkdir()){
+					try {
+						parser.saveProjectToXMLFile(((NetFigure)fig).getNet(), file);
+					} catch (TransformerException | FileNotFoundException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -146,6 +158,33 @@ public class SwingController implements FigureHandler{
 				parser.importSubnetFigureFromXMLFile(origin.x, origin.y,(NetFigure)fig, fileChooser.getSelectedFile());
 			} catch (CorruptedFileException | SAXException | IOException e) {
 				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void importProject(File list){
+		String path = list.getParentFile().getPath()+"/";
+		if(fig.isSubnetContainer()){
+			BufferedReader br = null;
+			try {
+				String sCurrentLine;
+				br = new BufferedReader(new FileReader(list));
+				while ((sCurrentLine = br.readLine()) != null) {
+					try {
+						parser.importSubnetFigureFromXMLFile(0,0,(NetFigure)fig,new File(path+sCurrentLine),true);
+					} catch (CorruptedFileException | SAXException e) {
+						e.printStackTrace();
+					}
+				}
+	 
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (br != null)br.close();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
 			}
 		}
 	}
@@ -213,7 +252,7 @@ public class SwingController implements FigureHandler{
 		scope.setEnabled(f.isScopeContainer());
 		sub.setEnabled(f.isSubnetContainer());
 		importsub.setEnabled(f.isSubnetContainer() && xml);
-		save.setEnabled(f.isScopeContainer() && xml);
+		save.setEnabled((f.isScopeContainer() || f.isSubnetContainer())&& xml);
 		del.setEnabled(f instanceof SwingPetriFigure);
 		contextMenu.show((Component) f, x, y);
 	}
@@ -252,5 +291,9 @@ public class SwingController implements FigureHandler{
 			focusFigure.getFocus();
 			properties.setProperties(focusFigure.getProperties());
 		}
+	}
+	
+	public void setFigure(Figure f){
+		this.fig=f;
 	}
 }
