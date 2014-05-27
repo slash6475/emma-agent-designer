@@ -1,11 +1,11 @@
-package emma.view.swing.petri;
+package emma.view.swing.petri.figure;
 
 import java.awt.event.MouseEvent;
 
 import javax.swing.table.AbstractTableModel;
 
 import emma.petri.model.PetriElement;
-import emma.view.swing.SwingController;
+import emma.view.swing.petri.SwingController;
 
 public interface Figure {
 	public PetriElement getElement();

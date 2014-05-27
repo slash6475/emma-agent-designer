@@ -1,4 +1,4 @@
-package emma.view.swing;
+package emma.view.swing.petri;
 
 import java.awt.Component;
 import java.awt.Point;
@@ -21,13 +21,13 @@ import emma.petri.view.CorruptedFileException;
 import emma.petri.view.FigureHandler;
 import emma.petri.view.PropertiesView;
 import emma.petri.view.XMLParser;
-import emma.view.swing.petri.Figure;
-import emma.view.swing.petri.NetFigure;
-import emma.view.swing.petri.PlaceFigure;
-import emma.view.swing.petri.SubnetFigure;
-import emma.view.swing.petri.SwingPetriFigure;
-import emma.view.swing.petri.SwingPetriSimpleElement;
-import emma.view.swing.petri.TransitionFigure;
+import emma.view.swing.petri.figure.Figure;
+import emma.view.swing.petri.figure.NetFigure;
+import emma.view.swing.petri.figure.PlaceFigure;
+import emma.view.swing.petri.figure.SubnetFigure;
+import emma.view.swing.petri.figure.SwingPetriFigure;
+import emma.view.swing.petri.figure.SwingPetriSimpleElement;
+import emma.view.swing.petri.figure.TransitionFigure;
 
 public class SwingController implements FigureHandler{
 	private boolean xml;

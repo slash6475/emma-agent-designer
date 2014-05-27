@@ -1,7 +1,6 @@
 package emma.view.test;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import emma.mapper.MappingNotFoundException;
@@ -9,7 +8,6 @@ import emma.mapper.PBSolver;
 import emma.mapper.mapobj.MapperNode;
 import emma.mapper.mapobj.MapperScope;
 import emma.model.nodes.Node;
-import emma.model.resources.tomap.A;
 import emma.model.resources.tomap.L;
 import emma.model.resources.Resource;
 import emma.model.resources.tomap.S;

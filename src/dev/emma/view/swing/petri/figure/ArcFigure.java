@@ -1,4 +1,4 @@
-package emma.view.swing.petri;
+package emma.view.swing.petri.figure;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -20,7 +20,7 @@ import emma.petri.model.Arc;
 import emma.petri.model.InputArc;
 import emma.petri.model.OutputArc;
 import emma.petri.model.PetriElement;
-import emma.view.swing.SwingController;
+import emma.view.swing.petri.SwingController;
 import emma.view.swing.petri.table.ArcTableModel;
 
 public class ArcFigure implements Figure, InputArcListener, OutputArcListener{

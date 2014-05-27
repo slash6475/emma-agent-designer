@@ -32,12 +32,12 @@ import emma.petri.model.Scope;
 import emma.petri.model.Subnet;
 import emma.petri.model.Transition;
 import emma.tools.ClassFounder;
-import emma.view.swing.petri.ArcFigure;
-import emma.view.swing.petri.NetFigure;
-import emma.view.swing.petri.PlaceFigure;
-import emma.view.swing.petri.ScopeFigure;
-import emma.view.swing.petri.SubnetFigure;
-import emma.view.swing.petri.TransitionFigure;
+import emma.view.swing.petri.figure.ArcFigure;
+import emma.view.swing.petri.figure.NetFigure;
+import emma.view.swing.petri.figure.PlaceFigure;
+import emma.view.swing.petri.figure.ScopeFigure;
+import emma.view.swing.petri.figure.SubnetFigure;
+import emma.view.swing.petri.figure.TransitionFigure;
 
 public class XMLParser {
 	private DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();

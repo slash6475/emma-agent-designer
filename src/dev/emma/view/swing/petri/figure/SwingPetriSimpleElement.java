@@ -1,4 +1,4 @@
-package emma.view.swing.petri;
+package emma.view.swing.petri.figure;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

@@ -13,18 +13,29 @@ import emma.model.resources.Resource;
 import emma.model.resources.tomap.ResourceToMap;
 import emma.petri.model.Place;
 
+/**
+ * Classe spéciale : à partir d'un noeud, on créé un MapperNode. 
+ * Ce MapperNode contient des informations supplémentaires (calculées)
+ * permettant d'effectuer un mapping.
+ * @author pierrotws
+ *
+ */
 public class MapperNode {
 	private Node n;
 	private HashMap<String,Integer> dynamicCapa;
+	private HashMap<String,List<String>> resLists;
 	private HashMap<Node, Integer> distance;
 	private HashMap<String,List<ResourceToMap>> resToMapLists;
 	
 	public static Set<MapperNode> getMapperNodes(Set<Node> nCol){
+		//On créé l'ensemble des noeuds (mapper)
 		Set<MapperNode> mNodeCol = new HashSet<>();
 		Iterator<Node> itNode = nCol.iterator();
 		while(itNode.hasNext()){
+			//Pour tous les noeuds réels, on créé un MapperNoeud
 			mNodeCol.add(new MapperNode(itNode.next()));
 		}
+		//Pour tous les noeuds (mapper), on calcule la table de distance 
 		Iterator<MapperNode> itMNode = mNodeCol.iterator();
 		while(itMNode.hasNext()){
 			itMNode.next().feedDistanceMap(nCol);
@@ -37,6 +48,7 @@ public class MapperNode {
 		this.distance=new HashMap<>();
 		this.dynamicCapa=new HashMap<>();
 		this.resToMapLists=new HashMap<>();
+		this.resLists=new HashMap<>();
 		Iterator<String> itType = n.getResourceRoots().iterator();
 		while(itType.hasNext()){
 			String type = itType.next();
@@ -46,16 +58,19 @@ public class MapperNode {
 			List<String> list = new ArrayList<>();
 			while(itRes.hasNext()){
 				Resource r = itRes.next();
+				//Si la ressource n'a pas de nom, c'est qu'elle est disponible
 				if(r.getName()==""){
 					capa++;
 				}
 				else{
+					//Sinon on l'ajoute dans une liste
 					list.add(r.getName());
 				}
 			}
 			if(capa>0){
 				dynamicCapa.put(type, capa);
 			}
+			resLists.put(type, list);
 		}
 	}
 	
@@ -88,7 +103,7 @@ public class MapperNode {
 	public Node getNode(){
 		return n;
 	}
-	
+
 	public boolean isAuthorized(MapperScope s){
 		HashMap<String,Integer> needs = new HashMap<>();
 		Iterator<Place> it = s.getScope().getPlaces().iterator();
@@ -100,15 +115,7 @@ public class MapperNode {
 				return false;
 			}
 			if(r.isImported()){
-				Iterator<Resource> itR = n.getResourceRoot(type).iterator();
-				boolean has=false;
-				while(itR.hasNext()){
-					if(itR.next().getName().equals(name)){
-						has=true;
-						break;
-					}
-				}
-				if(!has){
+				if(!this.getResourceNameList(type).contains(name)){
 					return false;
 				}
 			}
@@ -124,7 +131,6 @@ public class MapperNode {
 		while(itType.hasNext()){
 			String type = itType.next();
 			if(needs.get(type)>dynamicCapa.get(type)){
-				System.out.println("Node has "+dynamicCapa.get(type)+" and need "+needs.get(type)+" for "+type);
 				return false;
 			}
 		}
@@ -153,5 +159,9 @@ public class MapperNode {
 	
 	public Set<String> getDisponibilityTypes(){
 		return dynamicCapa.keySet();
+	}
+	
+	public List<String> getResourceNameList(String type){
+		return resLists.get(type);
 	}
 }

@@ -1,10 +1,7 @@
-package emma.view.test;
+package emma.view.swing;
 
 import java.awt.EventQueue;
-
-import emma.view.swing.Console;
-import emma.view.swing.PetriWindow;
-import emma.view.swing.SwingController;
+import emma.view.swing.petri.SwingController;
 
 public class Main {
 	public static void main(String[] args){
@@ -12,7 +9,7 @@ public class Main {
 		EventQueue.invokeLater(new Runnable(){
 			public void run(){
 				SwingController control = new SwingController();
-				PetriWindow window = new PetriWindow(control);
+				Window window = new Window(control);
 				window.setVisible(true);
 			}
 		});

@@ -1,4 +1,4 @@
-package emma.view.swing;
+package emma.view.swing.petri;
 
 import java.awt.Component;
 import java.awt.Dimension;

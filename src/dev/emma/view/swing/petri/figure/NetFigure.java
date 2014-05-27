@@ -1,4 +1,4 @@
-package emma.view.swing.petri;
+package emma.view.swing.petri.figure;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -9,8 +9,8 @@ import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.listener.NetListener;
 import emma.petri.model.Net;
 import emma.petri.model.PetriElement;
-import emma.view.swing.ScrollableDesktopPane;
-import emma.view.swing.SwingController;
+import emma.view.swing.petri.ScrollableDesktopPane;
+import emma.view.swing.petri.SwingController;
 import emma.view.swing.petri.table.NetTableModel;
 
 public class NetFigure extends ScrollableDesktopPane implements Figure, NetListener{

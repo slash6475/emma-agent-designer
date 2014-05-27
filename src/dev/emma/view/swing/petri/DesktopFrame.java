@@ -1,4 +1,4 @@
-package emma.view.swing;
+package emma.view.swing.petri;
 
 import java.awt.Graphics;
 
@@ -21,6 +21,5 @@ public class DesktopFrame extends JInternalFrame implements DrawableContainer{
 	}
 	@Override
 	public void addPainting(Graphics g) {
-		
 	}
 }

@@ -1,11 +1,11 @@
-package emma.view.swing;
+package emma.view.swing.petri;
 
 import java.beans.PropertyVetoException;
 
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
-public class PetriViewerContainer extends DesktopFrame{
+public class PetriViewer extends DesktopFrame{
 	
 	/**
 	 * 
@@ -15,7 +15,7 @@ public class PetriViewerContainer extends DesktopFrame{
 	private SwingController control;
 	private Toolbar toolbar;
 	private PropertiesPanel borderPanel;
-	public PetriViewerContainer(SwingController c){
+	public PetriViewer(SwingController c){
 		super("Petri Viewer",true, false, true,true);
 		FixedDesktopPane dPane = new FixedDesktopPane(this);
 		this.setContentPane(dPane);

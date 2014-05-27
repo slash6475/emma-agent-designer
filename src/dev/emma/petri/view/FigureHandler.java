@@ -1,6 +1,6 @@
 package emma.petri.view;
 
-import emma.view.swing.petri.Figure;
+import emma.view.swing.petri.figure.Figure;
 
 public interface FigureHandler {
 

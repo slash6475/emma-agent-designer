@@ -6,13 +6,18 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
-public class PetriWindow extends JFrame implements DrawableContainer{
+import emma.view.swing.petri.DrawableContainer;
+import emma.view.swing.petri.FixedDesktopPane;
+import emma.view.swing.petri.PetriViewer;
+import emma.view.swing.petri.SwingController;
+
+public class Window extends JFrame implements DrawableContainer{
 	
 	private static final long serialVersionUID = 6098483712279657780L;
 	
 	private FixedDesktopPane pane;
 	
-	public PetriWindow(SwingController control){
+	public Window(SwingController control){
 		super();
 		this.setTitle("Petri (Test) Viewer");
 		this.pane = new FixedDesktopPane(this);
@@ -27,7 +32,7 @@ public class PetriWindow extends JFrame implements DrawableContainer{
 				System.exit(0);
 			}
 		});
-		pane.add(new PetriViewerContainer(control));
+		pane.add(new PetriViewer(control));
 	}
 	
 	@Override

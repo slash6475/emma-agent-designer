@@ -1,4 +1,4 @@
-package emma.view.swing;
+package emma.view.swing.petri;
 
 import javax.swing.JRootPane;
 import javax.swing.event.InternalFrameAdapter;
@@ -6,7 +6,7 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 
-import emma.view.swing.petri.NetFigure;
+import emma.view.swing.petri.figure.NetFigure;
 
 public class PetriCanvasContainer extends DesktopFrame{
 
