@@ -29,7 +29,6 @@ public class PlaceTableModel extends AbstractTableModel {
 				{ "Name", p.getName() },
 				{ "Parent", p.getParent().getName() },
 				{ "Type", p.getData().getClass().getSimpleName()},
-				{ "Value", p.getData().get()},
 				{ "IsImported",p.getData().isImported()}
 			};
 		}
@@ -85,12 +84,11 @@ public class PlaceTableModel extends AbstractTableModel {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
+			break;
 		case 4:
-			
+			p.getData().setImport((boolean)aValue);
 			break;
-		case 5:
-			break;
-		default:	
+		default:
 			break;
 		}
 		this.data[rowIndex][columnIndex] = aValue;

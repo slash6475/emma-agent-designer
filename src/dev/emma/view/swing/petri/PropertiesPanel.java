@@ -67,7 +67,7 @@ public class PropertiesPanel extends DesktopFrame implements PropertiesView{
 	        if(row == 3){
 	        	lastSelected=place;
 	        }
-	        else if(row == 5){
+	        else if(row == 4){
         		lastSelected=chbox;
 	        }
 	        else{

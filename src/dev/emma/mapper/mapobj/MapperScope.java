@@ -66,7 +66,6 @@ public class MapperScope {
 			Iterator<OutputArc> ita = t.getOutputArcs().iterator();
 			while(ita.hasNext()){
 				OutputArc a = ita.next();
-				//TODO : Calculate real cost !!! (frequency * payload)
 				int c = 1;
 				c+=cost.get(a.getPlace().getParent());
 				cost.put(a.getPlace().getParent(),c);

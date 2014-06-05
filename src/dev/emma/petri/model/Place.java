@@ -12,7 +12,7 @@ import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.event.StateChangedEvent;
 import emma.petri.control.listener.PlaceListener;
 
-public class Place  extends PT{
+public class Place extends PT{
 	private static int q=0;
 	private ResourceToMap res;
 	private boolean input,output;
@@ -63,7 +63,6 @@ public class Place  extends PT{
 			}
 			return true;
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;
@@ -120,7 +119,6 @@ public class Place  extends PT{
 	
 	@Override
 	protected void notifyDeletion() {
-		// TODO Auto-generated method stub
 		DeletionEvent e = new DeletionEvent(this);
 		Iterator<PlaceListener> it = pls.iterator();
 		while(it.hasNext()){

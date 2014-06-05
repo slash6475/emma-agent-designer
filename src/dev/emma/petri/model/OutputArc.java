@@ -22,8 +22,8 @@ public class OutputArc extends Arc {
 	public OutputArc(Place p, Transition t){
 		super(p,t);
 		oals = new HashSet<OutputArcListener>();
-		p.addOutputArc(this);
-		t.addOutputArc(this);
+		p.addArc(this);
+		t.addArc(this);
 	}
 
 	@Override
@@ -34,10 +34,10 @@ public class OutputArc extends Arc {
 	@Override
 	protected void deleteLinks(PetriElement caller){
 		if(!(caller instanceof Place)){
-			getPlace().removeOutputArc(this);
+			getPlace().removeArc(this);
 		}
 		if(!(caller instanceof Transition)){
-			getTransition().removeOutputArc(this);
+			getTransition().removeArc(this);
 		}
 	}
 	
@@ -61,5 +61,11 @@ public class OutputArc extends Arc {
 	@Override
 	public boolean isInput() {
 		return false;
+	}
+	
+	@Override
+	public void setExpression(String expression){
+		super.setExpression(expression);
+		this.getTransition().notifyOutputArcExpression();
 	}
 }

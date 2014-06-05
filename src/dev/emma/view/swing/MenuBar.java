@@ -38,10 +38,8 @@ public class MenuBar extends JMenuBar{
 					parent.addPetriViewer(fileChooser.getSelectedFile());
 				}
 			}
-			
 		});
 		petri.add(openp);
-		
 		this.add(petri);
 	}
 

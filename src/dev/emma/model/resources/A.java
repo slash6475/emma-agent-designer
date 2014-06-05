@@ -14,14 +14,12 @@ public class A extends AbstractResource {
 	
 	@Override
 	public String get() {
-		return "TODO -> Agent get function";
+		return "";
 	}
 
 	@Override
 	public void post(String s) {
-		// TODO Auto-generated method stub
 		notifier.fireListener(this);
-		
 	}
 
 	@Override

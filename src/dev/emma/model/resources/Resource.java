@@ -1,6 +1,7 @@
 package emma.model.resources;
 
 import emma.tools.Notifier;
+
 /**
  * Abstract class representing the Resource :
  * defines REST compliant abstract methods

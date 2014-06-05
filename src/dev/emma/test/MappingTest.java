@@ -1,4 +1,4 @@
-package emma.view.test;
+package emma.test;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +9,7 @@ import emma.mapper.mapobj.MapperNode;
 import emma.mapper.mapobj.MapperScope;
 import emma.model.nodes.Node;
 import emma.model.resources.tomap.L;
+import emma.model.resources.tomap.ResourceToMap;
 import emma.model.resources.Resource;
 import emma.model.resources.tomap.S;
 import emma.petri.model.InputArc;
@@ -76,6 +77,7 @@ public class MappingTest {
 	}
 	
 	private static Set<Scope> feedScopes(){
+		ResourceToMap r;
 		Set<Scope> scopes = new HashSet<>();
 		Net net = new Net();
 		Subnet sub = new Subnet(net);
@@ -83,6 +85,7 @@ public class MappingTest {
 		Scope s2 = new Scope(sub);
 		Place p = new Place(s);
 		Transition t = new Transition(s,p);
+		r = p.getData();
 		p = new Place(s);
 		p.setType(L.class);
 		p.setName("ltest");
@@ -94,11 +97,17 @@ public class MappingTest {
 		Place p3 = new Place(s2);
 		p3.setType(L.class);
 		p3.setName("dest");
-		t.addInputArc(new InputArc(p, t));
-		t.addInputArc(new InputArc(p2,t));
-		t.addOutputArc(new OutputArc(p3, t));
+		InputArc ia = new InputArc(p, t);
+		ia.setExpression("1+1==2");
+		ia = new InputArc(p2,t);
+		ia.setExpression("to");
+		System.out.println("TO:"+ia.getExpression());
+		t.addArc(new OutputArc(p3, t));
 		scopes.add(s);
 		scopes.add(s2);
+		System.out.println("COUCOU");
+		System.out.println(r);
+		System.out.println("TOTO");
 		return scopes;
 	}
 }

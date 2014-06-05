@@ -16,11 +16,11 @@ public abstract class PT extends PetriElement {
 		this.outArcs = new HashSet<OutputArc>();
 	}
 	
-	public boolean addOutputArc(OutputArc arc){
+	public boolean addArc(OutputArc arc){
 		return outArcs.add(arc);
 	}
 	
-	public boolean removeOutputArc(OutputArc arc){
+	public boolean removeArc(OutputArc arc){
 		return outArcs.remove(arc);
 	}
 	
@@ -28,11 +28,11 @@ public abstract class PT extends PetriElement {
 		return outArcs;
 	}
 	
-	public boolean addInputArc(InputArc arc){
+	public boolean addArc(InputArc arc){
 		return inArcs.add(arc);
 	}
 	
-	public boolean removeInputArc(InputArc arc){
+	public boolean removeArc(InputArc arc){
 		return inArcs.remove(arc);
 	}
 	

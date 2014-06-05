@@ -303,7 +303,10 @@ public class PBSolver {
 					if(lit.charAt(0)=='x'){
 						Integer literal = Integer.parseInt(lit.substring(1));
 						if(resLiterals.containsByValue(literal)){
-							m.add(resLiterals.getFirstKeyByValue(literal).getNode(),resLiterals.getSecondKeyByValue(literal));
+							m.add(resLiterals.getSecondKeyByValue(literal),resLiterals.getThirdKeyByValue(literal),resLiterals.getFirstKeyByValue(literal).getNode());
+						}
+						else if(scopeLiterals.containsByValue(literal)){
+							m.add(scopeLiterals.getSecondKeyByValue(literal).getScope(), scopeLiterals.getThirdKeyByValue(literal), scopeLiterals.getFirstKeyByValue(literal).getNode());
 						}
 					}
 				}
