@@ -6,15 +6,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import emma.model.resources.tomap.ResourceToMap;
 import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.event.StateChangedEvent;
 import emma.petri.control.listener.PlaceListener;
+import emma.petri.model.resources.UnmappedResource;
 
 public class Place extends PT{
 	private static int q=0;
-	private ResourceToMap res;
+	private UnmappedResource res;
 	private boolean input,output;
 	private String name;
 	private Set<PlaceListener> pls;
@@ -50,10 +50,14 @@ public class Place extends PT{
 		if(res!=null){
 			return res.getClass().getSimpleName();
 		}
-		return "NULL";
+		return "null";
 	}
 	
-	public boolean setType(Class<? extends ResourceToMap> c){
+	public void setData(UnmappedResource res){
+		this.res=res;
+	}
+	
+	public boolean setData(Class<? extends UnmappedResource> c){
 		try {
 			res = c.getConstructor(String.class).newInstance(this.getName());
 			Iterator<PlaceListener> it = pls.iterator();
@@ -68,7 +72,7 @@ public class Place extends PT{
 		return false;
 	}
 	
-	public ResourceToMap getData(){
+	public UnmappedResource getData(){
 		return res;
 	}
 

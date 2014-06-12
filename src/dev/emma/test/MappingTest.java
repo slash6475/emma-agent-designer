@@ -1,17 +1,19 @@
 package emma.test;
 
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import emma.mapper.Mapping;
 import emma.mapper.MappingNotFoundException;
 import emma.mapper.PBSolver;
 import emma.mapper.mapobj.MapperNode;
 import emma.mapper.mapobj.MapperScope;
+import emma.mapper.mapobj.resources.MappedResource;
 import emma.model.nodes.Node;
-import emma.model.resources.tomap.L;
-import emma.model.resources.tomap.ResourceToMap;
 import emma.model.resources.Resource;
-import emma.model.resources.tomap.S;
 import emma.petri.model.InputArc;
 import emma.petri.model.Net;
 import emma.petri.model.OutputArc;
@@ -19,6 +21,9 @@ import emma.petri.model.Place;
 import emma.petri.model.Scope;
 import emma.petri.model.Subnet;
 import emma.petri.model.Transition;
+import emma.petri.model.resources.L;
+import emma.petri.model.resources.S;
+import emma.petri.model.resources.UnmappedResource;
 
 public class MappingTest {
 	public static void main(String[] args){
@@ -27,7 +32,16 @@ public class MappingTest {
 			Set<MapperNode> nodes = MapperNode.getMapperNodes(feedNodes());
 			Set<MapperScope> scopes = MapperScope.getMapperScopes(nodes, feedScopes());
 			solver = new PBSolver(nodes, scopes);
-			solver.solve();
+			Mapping m = solver.solve();
+			Iterator<Entry<Node, List<MappedResource>>> it = m.entrySet().iterator();
+			while(it.hasNext()){
+				Entry<Node, List<MappedResource>> e = it.next();
+				System.out.println("Node "+e.getKey().getIp()+" :");
+				Iterator<MappedResource> itRes = e.getValue().iterator();
+				while(itRes.hasNext()){
+					System.out.println("RES:"+it.next());
+				}
+			}
 		} catch (MappingNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -77,37 +91,33 @@ public class MappingTest {
 	}
 	
 	private static Set<Scope> feedScopes(){
-		ResourceToMap r;
+		UnmappedResource r;
 		Set<Scope> scopes = new HashSet<>();
 		Net net = new Net();
 		Subnet sub = new Subnet(net);
 		Scope s = new Scope(sub);
+		s.setTarget("1");
 		Scope s2 = new Scope(sub);
+		s2.setTarget("1");
 		Place p = new Place(s);
 		Transition t = new Transition(s,p);
 		r = p.getData();
 		p = new Place(s);
-		p.setType(L.class);
+		p.setData(L.class);
 		p.setName("ltest");
-		s.setMultiplicity("1");
+		s.setTarget("1");
 		Place p2 = new Place(s);
-		p2.setType(S.class);
+		p2.setData(S.class);
 		p2.setName("systest");
 		p2.getData().setImport(true);
 		Place p3 = new Place(s2);
-		p3.setType(L.class);
+		p3.setData(L.class);
 		p3.setName("dest");
 		InputArc ia = new InputArc(p, t);
-		ia.setExpression("1+1==2");
 		ia = new InputArc(p2,t);
-		ia.setExpression("to");
-		System.out.println("TO:"+ia.getExpression());
 		t.addArc(new OutputArc(p3, t));
 		scopes.add(s);
 		scopes.add(s2);
-		System.out.println("COUCOU");
-		System.out.println(r);
-		System.out.println("TOTO");
 		return scopes;
 	}
 }

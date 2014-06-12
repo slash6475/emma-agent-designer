@@ -3,7 +3,7 @@ package emma.view.swing.petri.table;
 import javax.swing.table.AbstractTableModel;
 
 import emma.petri.model.Arc;
-import emma.petri.model.InputArc;
+import emma.petri.model.OutputArc;
 
 public class ArcTableModel extends AbstractTableModel {
 
@@ -15,13 +15,23 @@ public class ArcTableModel extends AbstractTableModel {
 
 	public ArcTableModel(Arc s) {
 		this.arc = s;
-		this.data = new Object[][] {
-			{ "Figure", "Arc" },
-			{ "Place", arc.getPlace().getName() },
-			{ "Transition", arc.getTransition().getPlace().getName() },
-			{ "Type", (arc instanceof InputArc)?"Input":"Output"},
-			{ "Expression", arc.getExpression()}
-		};
+		if(this.arc.isInput()){
+			this.data = new Object[][] {
+				{ "Figure", "Arc" },
+				{ "Place", arc.getPlace().getName() },
+				{ "Transition", arc.getTransition().getPlace().getName() },
+				{ "Type", "Input" }
+			};
+		}
+		else{
+			this.data = new Object[][] {
+				{ "Figure", "Arc" },
+				{ "Place", arc.getPlace().getName() },
+				{ "Transition", arc.getTransition().getPlace().getName() },
+				{ "Type", "Output" },
+				{ "Expression", ((OutputArc)this.arc).getExpression() }
+			};
+		}
 	}
 
 	@Override
@@ -64,7 +74,7 @@ public class ArcTableModel extends AbstractTableModel {
 
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		arc.setExpression((String) aValue);
+		((OutputArc)arc).setExpression((String) aValue);
 		this.fireTableCellUpdated(rowIndex, columnIndex);
 	}
 }

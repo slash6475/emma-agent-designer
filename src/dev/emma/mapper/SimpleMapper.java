@@ -30,6 +30,7 @@ public class SimpleMapper implements Mapper {
 		}
 		Set<MapperScope> mScopes = MapperScope.getMapperScopes(mNodes, scopes);
 		PBSolver pbo = new PBSolver(mNodes,mScopes);
+		
 		return pbo.solve();
 	}
 }

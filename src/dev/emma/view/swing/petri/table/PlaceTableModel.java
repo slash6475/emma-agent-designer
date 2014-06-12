@@ -80,7 +80,7 @@ public class PlaceTableModel extends AbstractTableModel {
 			break;
 		case 3:
 			try {
-				p.setType(ClassFounder.getResourceToMapClass((String)aValue));
+				p.setData(ClassFounder.getResourceToMapClass((String)aValue));
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}

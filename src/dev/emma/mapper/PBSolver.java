@@ -5,13 +5,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
 import emma.mapper.mapobj.MapperNode;
 import emma.mapper.mapobj.MapperScope;
-import emma.model.resources.tomap.ResourceToMap;
 import emma.petri.model.Place;
+import emma.petri.model.Scope;
+import emma.petri.model.resources.UnmappedResource;
 
 /**
  * This class creates a PBO file representing the mapping problem,
@@ -27,8 +29,9 @@ public class PBSolver {
 	private Set<MapperNode> nodes;
 	//La collection de scopes;
 	private Set<MapperScope> scopes;
-	private PBMap<MapperNode,MapperScope,Integer,Integer> scopeLiterals;
-	private PBMap<MapperNode,ResourceToMap,Integer, Integer> resLiterals;
+	private PBMap<MapperNode,MapperScope,Integer> scopeLiterals;
+	private PBMap<MapperNode,UnmappedResource, Integer> resLiterals;
+	private HashMap<Scope,String> addresses;
 	/**
 	 * Create a PBSolver
 	 * @param nodes
@@ -43,24 +46,24 @@ public class PBSolver {
 		this.pboFile =  "MAP_"+System.currentTimeMillis();
 		this.scopeLiterals = new PBMap<>();
 		this.resLiterals = new PBMap<>();
+		this.addresses=new HashMap<>();
 		Iterator<MapperScope> itScope = scopes.iterator();
 		while(itScope.hasNext()){
 			MapperScope s = itScope.next();
+			if(s.getAddress()!=null){
+				addresses.put(s.getScope(), s.getAddress());
+			}
 			Iterator<MapperNode> itNode = s.getAuthorizedNodes().iterator();
 			while(itNode.hasNext()){
 				MapperNode n = itNode.next();
-				for(int i=1;i<=s.getMultiplicity();i++){
-					counter++;
-					scopeLiterals.put(n,s,i,counter);
-				}
+				counter++;
+				scopeLiterals.put(n,s,counter);
 				Iterator<Place> itP = s.getScope().getPlaces().iterator();
 				while(itP.hasNext()){
-					ResourceToMap r = itP.next().getData();
+					UnmappedResource r = itP.next().getData();
 					if(!r.isImported()){
-						for(int i=1;i<=s.getMultiplicity();i++){
-							counter++;
-							resLiterals.put(n,r,i,counter);
-						}
+						counter++;
+						resLiterals.put(n,r,counter);
 					}
 				}
 			}
@@ -121,11 +124,8 @@ public class PBSolver {
 				else{
 					while(itNode.hasNext()){
 						MapperNode node = itNode.next();
-						for(int i=1; i<=s.getMultiplicity();i++){
-							out.print("1 x"+scopeLiterals.get(node,s,i)+" ");
-						}
+						out.print("1 x"+scopeLiterals.get(node,s)+" ");
 					}
-					//MULTIPLICITY OF THE SCOPE
 					out.println("= "+s.getMultiplicity()+";");
 				}
 				itNode = s.getAuthorizedNodes().iterator();
@@ -134,22 +134,20 @@ public class PBSolver {
 				int lit;
 				while(itNode.hasNext()){
 					MapperNode n = itNode.next();
-					for(int i=1; i<=s.getMultiplicity();i++){
-						lit = scopeLiterals.get(n, s,i);
-						equiv.append("1 x"+lit);
-						nequiv.append("1 ~x"+lit);
-						Iterator<Place> itP = s.getScope().getPlaces().iterator();
-						while(itP.hasNext()){
-							ResourceToMap r = itP.next().getData();
-							if(!r.getClass().getSimpleName().equals("S")){
-								lit = resLiterals.get(n, r, i);
-								equiv.append(" x"+lit);
-								nequiv.append(" ~x"+lit);
-							}
+					lit = scopeLiterals.get(n, s);
+					equiv.append("1 x"+lit);
+					nequiv.append("1 ~x"+lit);
+					Iterator<Place> itP = s.getScope().getPlaces().iterator();
+					while(itP.hasNext()){
+						UnmappedResource r = itP.next().getData();
+						if(!r.getClass().getSimpleName().equals("S")){
+							lit = resLiterals.get(n, r);
+							equiv.append(" x"+lit);
+							nequiv.append(" ~x"+lit);
 						}
-						equiv.append(" ");
-						nequiv.append(" ");
 					}
+					equiv.append(" ");
+					nequiv.append(" ");
 				}
 				out.println("* Scope & resources integrity constraints");
 				out.println(equiv.toString()+nequiv.toString()+"= "+(s.getAuthorizedNodes().size()*s.getMultiplicity())+";");
@@ -166,6 +164,7 @@ public class PBSolver {
 			if(out!=null){
 				out.close();
 			}
+			
 		}
 	}
 	
@@ -176,20 +175,19 @@ public class PBSolver {
 		while(itType.hasNext()){
 			StringBuffer qtyLine = new StringBuffer();
 			String type = itType.next();
-			Iterator<ResourceToMap> itRes = n.getResourcesToMap(type).iterator();
+			Iterator<UnmappedResource> itRes = n.getResourcesToMap(type).iterator();
 			qty.append("* Resource Quantity Constraint : type '"+type+"'\n");
 			while(itRes.hasNext()){
-				ResourceToMap r = itRes.next();
-				for(int i=1; resLiterals.containsKey(n,r,i); i++){
-					int lit = resLiterals.get(n,r,i);
-					qtyLine.append("1 x");
-					qtyLine.append(lit);
-					qtyLine.append(" ");
-					size.append(r.getSize());
-					size.append(" x");
-					size.append(lit);
-					size.append(" ");
-				}
+				UnmappedResource r = itRes.next();
+				int lit = resLiterals.get(n,r);
+				qtyLine.append(r.getSize());
+				qtyLine.append(" x");
+				qtyLine.append(lit);
+				qtyLine.append(" ");
+				size.append(r.getSize());
+				size.append(" x");
+				size.append(lit);
+				size.append(" ");
 			}
 			if(!qtyLine.toString().equals("")){
 				qty.append(qtyLine.toString());
@@ -201,7 +199,9 @@ public class PBSolver {
 		if(!size.toString().equals("")){
 			qty.append("* Resource Size Constraint\n");
 			qty.append(size.toString());
-			qty.append('\n');
+			qty.append("<= ");
+			qty.append(n.getNode().getAvailableMemorySpace());
+			qty.append(";\n");
 		}
 		return qty.toString();
 	}
@@ -225,11 +225,7 @@ public class PBSolver {
 							int coef = n1.getDistance(n2)*s1.getCost(s2);
 							System.out.println("COEF ["+s1.getScope().getName()+","+n1.getNode().getIp()+"] ["+s2.getScope().getName()+","+n2.getNode().getIp()+"] -> "+coef);
 							if(coef > 0){
-								for(int i=1; i<=s1.getMultiplicity();i++){
-									for(int j=1; j<=s2.getMultiplicity();j++){
-										str.append(" "+coef+" x"+scopeLiterals.get(n1,s1,i)+" x"+scopeLiterals.get(n2,s2,j));
-									}
-								}
+								str.append(" "+coef+" x"+scopeLiterals.get(n1,s1)+" x"+scopeLiterals.get(n2,s2));
 							}
 						}
 					}
@@ -256,11 +252,7 @@ public class PBSolver {
 							MapperNode n2 = itNode2.next();
 							if(n1.getDistance(n2)==-1){
 								if(s1.getCost(s2)>0){
-									for(int i=1; i<=s1.getMultiplicity();i++){
-										for(int j=1; j<=s2.getMultiplicity();j++){
-											str.append("1 x"+scopeLiterals.get(n1,s1,i)+" x"+scopeLiterals.get(n2,s2,j)+" ");
-										}
-									}
+									str.append("1 x"+scopeLiterals.get(n1,s1)+" x"+scopeLiterals.get(n2,s2)+" ");
 								}
 							}
 						}
@@ -282,7 +274,7 @@ public class PBSolver {
 	 */
 	public Mapping solve() throws MappingNotFoundException{
 		PrintWriter out = null;
-		Mapping m = new Mapping();
+		Mapping m = new Mapping(addresses);
 		String l;
 		Process solver;
 		try{
@@ -302,14 +294,12 @@ public class PBSolver {
 				for(String lit : lits){
 					if(lit.charAt(0)=='x'){
 						Integer literal = Integer.parseInt(lit.substring(1));
-						if(resLiterals.containsByValue(literal)){
-							m.add(resLiterals.getSecondKeyByValue(literal),resLiterals.getThirdKeyByValue(literal),resLiterals.getFirstKeyByValue(literal).getNode());
-						}
-						else if(scopeLiterals.containsByValue(literal)){
-							m.add(scopeLiterals.getSecondKeyByValue(literal).getScope(), scopeLiterals.getThirdKeyByValue(literal), scopeLiterals.getFirstKeyByValue(literal).getNode());
+						if(scopeLiterals.containsValue(literal)){
+							m.add(scopeLiterals.getSecondKeyByValue(literal).getScope(), scopeLiterals.getFirstKeyByValue(literal).getNode());
 						}
 					}
 				}
+				m.finalize();
 			}
 			else{
 				out.println("No solution found");

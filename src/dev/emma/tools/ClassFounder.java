@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import emma.model.resources.Resource;
-import emma.model.resources.tomap.ResourceToMap;
+import emma.petri.model.resources.UnmappedResource;
 
 public class ClassFounder {
 	
@@ -99,7 +99,7 @@ public class ClassFounder {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static Class<? extends ResourceToMap> getResourceToMapClass(String type) throws ClassNotFoundException{
-		return (Class<? extends ResourceToMap>) Class.forName(getResourceToMapPackage()+"."+type);
+	public static Class<? extends UnmappedResource> getResourceToMapClass(String type) throws ClassNotFoundException{
+		return (Class<? extends UnmappedResource>) Class.forName(getResourceToMapPackage()+"."+type);
 	}
 }

@@ -116,7 +116,7 @@ public class XMLParser {
 		}
 		elmt.setAttribute("id", String.valueOf(s.getID()));
 		elmt.setAttribute("name", s.getName());
-		elmt.setAttribute("multiplicity", s.getMultiplicity());
+		elmt.setAttribute("target", s.getTarget());
 		Element places = doc.createElement("places");
 		Iterator<Place> itPlace = s.getPlaces().iterator();
 		while(itPlace.hasNext()){
@@ -239,7 +239,9 @@ public class XMLParser {
 		}
 		elmt.setAttribute("place", String.valueOf(a.getPlace().getID()));
 		elmt.setAttribute("transition", String.valueOf(a.getTransition().getID()));
-		elmt.setAttribute("expression", a.getExpression());
+		if(a.isOutput()){
+			elmt.setAttribute("expression", ((OutputArc)a).getExpression());
+		}
 		return elmt;
 	}
 	
@@ -425,7 +427,7 @@ public class XMLParser {
 		if(datalist.getLength()>0){
 			Element data = (Element)datalist.item(0);
 			try {
-				p.setType(ClassFounder.getResourceToMapClass(data.getAttribute("class")));
+				p.setData(ClassFounder.getResourceToMapClass(data.getAttribute("class")));
 			} catch (ClassNotFoundException e) {
 				throw new CorruptedFileException("Data type for place '"+name+"' is incorrect : Class '"+data.getAttribute("class")+"' not found");
 			}
@@ -468,11 +470,11 @@ public class XMLParser {
 			else if(classe.equals("output")){
 				parent.addOutputArc(p,t);
 				a = parent.getArcFigure(p, t, false);
+				((OutputArc)a.getArc()).setExpression(elmt.getAttribute("expression"));
 			}
 			else{
 				throw new CorruptedFileException("class '"+classe+"' for arc was not found");
 			}
-			a.getArc().setExpression(elmt.getAttribute("expression"));
 			if(layouts.containsKey(elmt.getAttribute("id"))){
 				Element fig = layouts.get(elmt.getAttribute("id"));
 				NodeList nl = fig.getElementsByTagName("points");

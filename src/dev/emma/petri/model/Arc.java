@@ -8,7 +8,6 @@ public abstract class Arc extends PetriElement{
 	
 	private Transition transition;
 	private Place place;
-	private String expr;
 	/**
 	 * Constructeur 
 	 * @param p : la place de l'arc. t : la transition de l'arc.
@@ -17,7 +16,6 @@ public abstract class Arc extends PetriElement{
 		super();
 		place=p;
 		transition=t;
-		expr="";
 		p.getParent().getParent().add(this);
 	}
 	
@@ -50,14 +48,6 @@ public abstract class Arc extends PetriElement{
 			}
 		}
 		return false;
-	}
-	
-	public void setExpression(String expression){
-		this.expr=expression;
-	}
-	
-	public String getExpression(){
-		return expr;
 	}
 	
 	public abstract boolean isInput();

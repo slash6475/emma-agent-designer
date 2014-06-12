@@ -21,7 +21,6 @@ public class InputArc extends Arc {
 	private Set<InputArcListener> ials;
 	public InputArc(Place p, Transition t){
 		super(p,t);
-		this.setExpression("1");
 		p.addArc(this);
 		t.addArc(this);
 		ials = new HashSet<InputArcListener>();
@@ -62,11 +61,5 @@ public class InputArc extends Arc {
 	@Override
 	public boolean isInput() {
 		return true;
-	}
-	
-	@Override
-	public void setExpression(String expression){
-		super.setExpression(expression);
-		this.getTransition().notifyInputArcExpression();
 	}
 }

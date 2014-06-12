@@ -10,8 +10,8 @@ import java.util.Map.Entry;
 
 import emma.model.nodes.Node;
 import emma.model.resources.Resource;
-import emma.model.resources.tomap.ResourceToMap;
 import emma.petri.model.Place;
+import emma.petri.model.resources.UnmappedResource;
 
 /**
  * Classe spéciale : à partir d'un noeud, on créé un MapperNode. 
@@ -25,7 +25,7 @@ public class MapperNode {
 	private HashMap<String,Integer> dynamicCapa;
 	private HashMap<String,List<String>> resLists;
 	private HashMap<Node, Integer> distance;
-	private HashMap<String,List<ResourceToMap>> resToMapLists;
+	private HashMap<String,List<UnmappedResource>> resToMapLists;
 	
 	public static Set<MapperNode> getMapperNodes(Set<Node> nCol){
 		//On créé l'ensemble des noeuds (mapper)
@@ -52,7 +52,7 @@ public class MapperNode {
 		Iterator<String> itType = n.getResourceRoots().iterator();
 		while(itType.hasNext()){
 			String type = itType.next();
-			resToMapLists.put(type, new ArrayList<ResourceToMap>());
+			resToMapLists.put(type, new ArrayList<UnmappedResource>());
 			Iterator<Resource> itRes = n.getResourceRoot(type).iterator();
 			int capa=0;
 			List<String> list = new ArrayList<>();
@@ -108,7 +108,7 @@ public class MapperNode {
 		HashMap<String,Integer> needs = new HashMap<>();
 		Iterator<Place> it = s.getScope().getPlaces().iterator();
 		while(it.hasNext()){
-			ResourceToMap r = it.next().getData();
+			UnmappedResource r = it.next().getData();
 			String type = r.getClass().getSimpleName();
 			String name = r.getName();
 			if(!n.getResourceRoots().contains(type)){
@@ -145,11 +145,11 @@ public class MapperNode {
 		}
 	}
 	
-	public void addResourceToMap(ResourceToMap r){
+	public void addResourceToMap(UnmappedResource r){
 		resToMapLists.get(r.getClass().getSimpleName()).add(r);
 	}
 	
-	public List<ResourceToMap> getResourcesToMap(String type){
+	public List<UnmappedResource> getResourcesToMap(String type){
 		return resToMapLists.get(type);
 	}
 	

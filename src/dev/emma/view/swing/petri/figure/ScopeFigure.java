@@ -21,6 +21,7 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 	 */
 	private static final long serialVersionUID = 558198387759281261L;
 	private static final Color backgroundColor = new Color(240,240,240);
+	private int placeCounter;
 	private SubnetFigure parent;
 	private Scope scope;
 	
@@ -45,11 +46,12 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 		if(parent.getContentPane().add(this)!=null){
 			this.moveTo(x, y);
 		}
+		this.placeCounter=0;
 	}
 	
 	@Override
 	public void addPainting(Graphics g){
-		String m = scope.getMultiplicity();
+		String m = scope.getTarget();
 		g.setColor(Color.red);
 		g.drawChars(m.toCharArray(), 0, m.length(),5,15);
 	}
@@ -74,14 +76,14 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 	
 	@Override
 	public boolean addPlace(int x, int y){
-		new PlaceFigure("P1",x,y,this);
+		new PlaceFigure("P"+placeCounter++,x,y,this);
 		return true;
 	}
 	
 	@Override
 	public boolean addTransition(int x, int y){
 		//Il doit créé une place de stockage, puis la transition
-		PlaceFigure p = new PlaceFigure("P/T",x,y,this);
+		PlaceFigure p = new PlaceFigure("PT"+placeCounter++,x,y,this);
 		new TransitionFigure("",x, y+5+p.getHeight(),p,this);
 		return true;
 	}

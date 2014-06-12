@@ -17,7 +17,7 @@ public class ScopeTableModel extends AbstractTableModel {
 		this.data = new Object[][] {
 			{ "Figure", "Scope" },
 			{ "Name", sub.getName() },
-			{ "Multiplicity",sub.getMultiplicity() },
+			{ "Target",sub.getTarget() },
 			{ "Parent", sub.getParent().getName() },
 			{ "Places", sub.getPlaces().size() },
 			{ "Transitions", sub.getTransitions().size() }
@@ -65,16 +65,19 @@ public class ScopeTableModel extends AbstractTableModel {
 
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+		boolean ret=true;
 		switch(rowIndex){
 		case 1:
 			sub.setName((String)aValue);
 			break;
 		case 2:
-			sub.setMultiplicity((String)aValue);
+			ret=sub.setTarget((String)aValue);
 		default:	
 			break;
 		}
-		this.data[rowIndex][columnIndex] = aValue;
-		fireTableCellUpdated(rowIndex, columnIndex);
+		if(ret){
+			this.data[rowIndex][columnIndex] = aValue;
+			fireTableCellUpdated(rowIndex, columnIndex);
+		}
 	}
 }

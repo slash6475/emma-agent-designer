@@ -16,7 +16,7 @@ public class Scope extends PetriElement{
 	private Set<Transition> transitions;
 	private String name;
 	private Set<ScopeListener> scls;
-	private String multiplicity;
+	private String target;
 	
 	public Scope(Subnet parent){
 		this(parent,"scp"+q);
@@ -29,7 +29,7 @@ public class Scope extends PetriElement{
 		this.places=new HashSet<Place>();
 		this.transitions=new HashSet<Transition>();
 		this.parent=parent;
-		this.multiplicity="1";
+		this.target="1";
 		parent.add(this);
 		scls = new HashSet<ScopeListener>();
 	}
@@ -100,12 +100,22 @@ public class Scope extends PetriElement{
 		return scls;
 	}
 	
-	public void setMultiplicity(String multiplicity){
-		this.multiplicity=multiplicity;
+	public boolean setTarget(String target){
+		if(!target.equals("*") && !target.startsWith("G:")){
+			try{
+				if(Integer.parseInt(target)<1){
+					return false;
+				}
+			} catch(NumberFormatException e){
+				return false;
+			}
+		}
+		this.target=target;
+		return true;
 	}
 	
-	public String getMultiplicity(){
-		return multiplicity;
+	public String getTarget(){
+		return target;
 	}
 	
 	@Override

@@ -1,12 +1,14 @@
 package emma.mapper;
 
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 
+import emma.mapper.mapobj.resources.MappedResource;
 import emma.model.nodes.Node;
-import emma.model.resources.tomap.ResourceToMap;
+import emma.petri.model.Place;
 import emma.petri.model.Scope;
 
 /**
@@ -16,19 +18,20 @@ import emma.petri.model.Scope;
  * @author pierrotws
  *
  */
-public class Mapping extends HashMap<Node,List<Entry<ResourceToMap,Integer>>>{
+public class Mapping extends HashMap<Node,List<MappedResource>>{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4614938823972938264L;
 
-	private HashMap<Entry<Scope,Integer>,Node> scope;
-	private HashMap<Entry<ResourceToMap,Integer>,Node> res;
+	private HashMap<Scope,List<Node>> mappedScopes;
 	
-	public Mapping(){
+	private HashMap<Scope,String> uniqueAdresses;
+	
+	public Mapping(HashMap<Scope,String> addresses){
 		super();
-		this.scope=new HashMap<>();
-		this.res=new HashMap<>();
+		this.mappedScopes=new HashMap<>();
+		this.uniqueAdresses=addresses;
 	}
 	
 	/**
@@ -37,41 +40,61 @@ public class Mapping extends HashMap<Node,List<Entry<ResourceToMap,Integer>>>{
 	 * @param r a resource
 	 * @return true if r should be mapped on n, false otherwise
 	 */
-	public boolean contains(Node n, ResourceToMap r){
+	public boolean contains(Node n, MappedResource r){
 		return this.get(n).contains(r);
 	}
 	
-	/**
-	 * 
-	 * @param n the node 
-	 * @param r a resource to add to n
-	 * @return true if adding r to n succeed, false otherwise
-	 */
-	public boolean add(ResourceToMap r, int multiplicity, Node n){
-		Entry<ResourceToMap,Integer> e = new SimpleEntry<>(r,multiplicity);
-		this.res.put(e, n);
-		if(this.containsKey(n)){
-			return this.get(n).add(e);
-		}
-		else{
-			List<Entry<ResourceToMap,Integer>> list = new ArrayList<>();
-			list.add(e);
-			return (this.put(n, list)==list);
+	public void finalize(){
+		Iterator<Scope> itScope = mappedScopes.keySet().iterator();
+		while(itScope.hasNext()){
+			Scope scope = itScope.next();
+			Iterator<Node> itNode = mappedScopes.get(scope).iterator();
+			while(itNode.hasNext()){
+				Node n = itNode.next();
+				if(!this.containsKey(n)){
+					this.put(n, new LinkedList<MappedResource>());
+				}
+				List<MappedResource> list = this.get(n);
+				Iterator<Place> itPlace = scope.getPlaces().iterator();
+				while(itPlace.hasNext()){
+					Place p = itPlace.next();
+					try {
+						list.add((MappedResource)Class.forName("emma.mapper.mapobj.resources."+p.getType()).getConstructor(Class.forName("emma.petri.model.resources."+p.getType()),Mapping.class).newInstance(p.getData(),this));
+					} catch (InstantiationException | IllegalAccessException
+							| IllegalArgumentException | InvocationTargetException
+							| NoSuchMethodException | SecurityException
+							| ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 	}
-	
 	/**
 	 * 
-	 * @param n a scope key
-	 * @param multiplicity an integer key
-	 * @param r a node
+	 * @param s a scope key
+	 * @param n a node
 	 * @return true if r should be mapped on n, false otherwise
 	 */
-	public boolean add(Scope s, int multiplicity, Node n){
-		return (scope.put(new SimpleEntry<>(s,multiplicity), n)==n);
+	public boolean add(Scope s, Node n){
+		if(this.containsKey(n)){
+			this.put(n, new LinkedList<MappedResource>());
+		}
+		if(mappedScopes.containsKey(s)){
+			return mappedScopes.get(s).add(n);
+		}
+		else{
+			List<Node> nl = new LinkedList<Node>();
+			nl.add(n);
+			return (mappedScopes.put(s, nl)==n);
+		}
 	}
 	
-	public HashMap<Entry<Scope,Integer>,Node> getScopeMapping(){
-		return scope;
+	public HashMap<Scope,List<Node>> getScopeMapping(){
+		return mappedScopes;
+	}
+	
+	public HashMap<Scope, String> getScopeAddresses(){
+		return this.uniqueAdresses;
 	}
 }

@@ -14,13 +14,14 @@ import emma.petri.control.listener.OutputArcListener;
 public class OutputArc extends Arc {
 	
 	private Set<OutputArcListener> oals;
-
+	private String expression;
 	/**
 	 * Constructeur
 	 * @param p : la place de l'arc. t : la transition de l'arc.
 	 */
 	public OutputArc(Place p, Transition t){
 		super(p,t);
+		expression="";
 		oals = new HashSet<OutputArcListener>();
 		p.addArc(this);
 		t.addArc(this);
@@ -63,9 +64,11 @@ public class OutputArc extends Arc {
 		return false;
 	}
 	
-	@Override
 	public void setExpression(String expression){
-		super.setExpression(expression);
-		this.getTransition().notifyOutputArcExpression();
+		this.expression=expression;
+	}
+	
+	public String getExpression(){
+		return this.expression;
 	}
 }

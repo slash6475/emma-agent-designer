@@ -382,5 +382,18 @@ public class Node {
 		return nsURI;
 	}
 
+	public int getMemorySpace(){
+		//TODO return the TRUE memory space
+		return 1000;
+	}
+	
+	public int getUsedMemorySpace(){
+		//TODO return the TRUE memory used
+		return 500;
+	}
+	
+	public int getAvailableMemorySpace(){
+		return this.getMemorySpace()-this.getUsedMemorySpace();
+	}
 }
 
