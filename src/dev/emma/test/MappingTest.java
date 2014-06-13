@@ -31,6 +31,17 @@ public class MappingTest {
 		try {
 			Set<MapperNode> nodes = MapperNode.getMapperNodes(feedNodes());
 			Set<MapperScope> scopes = MapperScope.getMapperScopes(nodes, feedScopes());
+			Iterator<MapperNode> itm = nodes.iterator();
+			System.out.println("MAP:");
+			while(itm.hasNext()){
+				MapperNode n1 = itm.next();
+				System.out.print(n1.getNode().getIp()+": |");
+				Iterator<MapperNode> itm2 = nodes.iterator();
+				while(itm2.hasNext()){
+					System.out.print(" "+n1.getDistance(itm2.next()));
+				}
+				System.out.println(" |");
+			}
 			solver = new PBSolver(nodes, scopes);
 			Mapping m = solver.solve();
 			Iterator<Entry<Node, List<MappedResource>>> it = m.entrySet().iterator();
@@ -64,8 +75,9 @@ public class MappingTest {
 		r = new emma.model.resources.S("systest");
 		n1.addResource(r);
 		nodes.add(n1);
-		
 		Node n2 = new Node("0002");
+		n1.addNeighbor(n2);
+		n2.addNeighbor(n1);
 		try {
 			n2.addResourceType("L");
 		} catch (ClassNotFoundException e) {
@@ -74,8 +86,11 @@ public class MappingTest {
 		r = new emma.model.resources.L("");
 		n2.addResource(r);
 		nodes.add(n2);
-		
 		Node n3 = new Node("0003");
+		n2.addNeighbor(n3);
+		n3.addNeighbor(n2);
+		n1.addRoutes(n3, n2);
+		//n3.addRoutes(n1, n2);
 		try {
 			n3.addResourceType("L");
 		} catch (ClassNotFoundException e) {

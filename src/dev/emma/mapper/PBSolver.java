@@ -180,8 +180,7 @@ public class PBSolver {
 			while(itRes.hasNext()){
 				UnmappedResource r = itRes.next();
 				int lit = resLiterals.get(n,r);
-				qtyLine.append(r.getSize());
-				qtyLine.append(" x");
+				qtyLine.append("1 x");
 				qtyLine.append(lit);
 				qtyLine.append(" ");
 				size.append(r.getSize());

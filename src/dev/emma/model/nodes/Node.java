@@ -118,14 +118,21 @@ public class Node {
 		
 		this.nsURI = (nsURI);
 		logger.info("New node " + ip);
-		
+		//TODO DEBUG ONLY : true value is 0 as commented...
+		/*
 		if(nsURI == ""){
 			resources   = new ResourceServices();
 			routes		= new BoundedHashMap<Node,Node>(0);
 			neighbors	= new BoundedSet<>(0);
 			return;
-			}
-		
+		}
+		*/
+		if(nsURI == ""){
+			resources   = new ResourceServices();
+			routes		= new BoundedHashMap<Node,Node>(5);
+			neighbors	= new BoundedSet<>(5);
+			return;
+		}
 		BufferedReader br = null;
 		String objJSONString = "";
 		 
@@ -394,6 +401,10 @@ public class Node {
 	
 	public int getAvailableMemorySpace(){
 		return this.getMemorySpace()-this.getUsedMemorySpace();
+	}
+	
+	public boolean isNeighbor(Node n){
+		return neighbors.contains(n);
 	}
 }
 

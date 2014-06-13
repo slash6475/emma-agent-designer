@@ -28,6 +28,7 @@ public class A extends AbstractResource {
 	}
 	
 	public int getSize(){
-		return 1;
+		//TODO : Random value !!
+		return 20;
 	}
 }

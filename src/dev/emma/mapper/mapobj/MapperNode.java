@@ -77,26 +77,24 @@ public class MapperNode {
 	private void feedDistanceMap(Set<Node> mNodeCol){
 		Iterator<Node> it = mNodeCol.iterator();
 		while(it.hasNext()){
-			Node mNode = it.next();
-			if(mNode!=n){
-				Entry<Node,Node> route = n.getRoute(mNode.getIp());
-				if(route == null){
-					distance.put(mNode, -1);
-				}
-				else{
-					int dist = 1;
-					while(route.getKey()!=route.getValue() && route!=null){
-						dist++;
-						route = route.getValue().getRoute(mNode.getIp());
-					}
-					if(route==null){
-						distance.put(mNode, -1);
-					}
-					else{
-						distance.put(mNode, dist);
-					}
-				}
-			}
+			Node nodeTo = it.next();
+			distance.put(nodeTo, this.getDistance(n,nodeTo));
+		}
+	}
+	
+	private int getDistance(Node from, Node to){
+		if(from==to){
+			return 0;
+		}
+		if(from.isNeighbor(to)){
+			return 1;
+		}
+		Entry<Node,Node> route = from.getRoute(to.getIp());
+		if(route==null){
+			return -1;
+		}
+		else{
+			return getDistance(route.getValue(),to)+1;
 		}
 	}
 	
@@ -136,6 +134,7 @@ public class MapperNode {
 		}
 		return true;
 	}
+	
 	public int getDistance(MapperNode n){
 		if(n==this){
 			return 0;

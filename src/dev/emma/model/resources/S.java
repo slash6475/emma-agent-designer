@@ -31,6 +31,6 @@ public class S extends AbstractResource {
 	}
 	
 	public int getSize(){
-		return 1;
+		return 0;
 	}
 }
