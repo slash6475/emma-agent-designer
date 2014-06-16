@@ -1,9 +1,6 @@
 package emma.test;
 
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import emma.mapper.Mapping;
@@ -11,7 +8,6 @@ import emma.mapper.MappingNotFoundException;
 import emma.mapper.PBSolver;
 import emma.mapper.mapobj.MapperNode;
 import emma.mapper.mapobj.MapperScope;
-import emma.mapper.mapobj.resources.MappedResource;
 import emma.model.nodes.Node;
 import emma.model.resources.Resource;
 import emma.petri.model.InputArc;
@@ -31,28 +27,9 @@ public class MappingTest {
 		try {
 			Set<MapperNode> nodes = MapperNode.getMapperNodes(feedNodes());
 			Set<MapperScope> scopes = MapperScope.getMapperScopes(nodes, feedScopes());
-			Iterator<MapperNode> itm = nodes.iterator();
-			System.out.println("MAP:");
-			while(itm.hasNext()){
-				MapperNode n1 = itm.next();
-				System.out.print(n1.getNode().getIp()+": |");
-				Iterator<MapperNode> itm2 = nodes.iterator();
-				while(itm2.hasNext()){
-					System.out.print(" "+n1.getDistance(itm2.next()));
-				}
-				System.out.println(" |");
-			}
 			solver = new PBSolver(nodes, scopes);
 			Mapping m = solver.solve();
-			Iterator<Entry<Node, List<MappedResource>>> it = m.entrySet().iterator();
-			while(it.hasNext()){
-				Entry<Node, List<MappedResource>> e = it.next();
-				System.out.println("Node "+e.getKey().getIp()+" :");
-				Iterator<MappedResource> itRes = e.getValue().iterator();
-				while(itRes.hasNext()){
-					System.out.println("RES:"+it.next());
-				}
-			}
+			System.out.println(m.getDeploymentAgent());
 		} catch (MappingNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -61,6 +38,7 @@ public class MappingTest {
 	private static Set<Node> feedNodes(){
 		Set<Node> nodes = new HashSet<>();
 		Node n1 = new Node("0001");
+		n1.setEntry(true);
 		try {
 			n1.addResourceType("L");
 			n1.addResourceType("A");
@@ -130,7 +108,9 @@ public class MappingTest {
 		p3.setName("dest");
 		InputArc ia = new InputArc(p, t);
 		ia = new InputArc(p2,t);
-		t.addArc(new OutputArc(p3, t));
+		OutputArc oa = new OutputArc(p3, t);
+		oa.setExpression("S:systest + ?x + L:ltest");
+		t.addArc(oa);
 		scopes.add(s);
 		scopes.add(s2);
 		return scopes;

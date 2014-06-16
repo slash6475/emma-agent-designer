@@ -39,9 +39,7 @@ public class MapperScope {
 		Iterator<MapperNode> itNode = mNodes.iterator();
 		while(itNode.hasNext()){
 			MapperNode m = itNode.next();
-			System.out.println("Check authorization :");
 			if(m.isAuthorized(this)){
-				System.out.println("\tScope "+s.getName()+" is authorized on "+m.getNode().getIp());
 				authorizedNodes.add(m);
 				Iterator<Place> itP = s.getPlaces().iterator();
 				while(itP.hasNext()){
@@ -50,9 +48,6 @@ public class MapperScope {
 						m.addResourceToMap(r);
 					}
 				}
-			}
-			else{
-				System.out.println("\tScope "+s.getName()+" is not authorized on "+m.getNode().getIp());
 			}
 		}
 	}

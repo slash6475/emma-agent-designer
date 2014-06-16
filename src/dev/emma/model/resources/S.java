@@ -15,7 +15,7 @@ public class S extends AbstractResource {
 	
 	@Override
 	public String get() {
-		return "";
+		return "\"\"";
 	}
 
 	@Override

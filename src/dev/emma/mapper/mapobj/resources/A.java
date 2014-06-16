@@ -25,15 +25,15 @@ public class A extends emma.petri.model.resources.A implements MappedResource {
 	@Override
 	public String toString(){
 		StringBuffer strBuf=new StringBuffer();
-		strBuf.append("{\n  \"NAME\":\"");
+		strBuf.append("{\"NAME\":\"");
 		strBuf.append(getName());
-		strBuf.append("\",\n  \"PRE\":\"");
+		strBuf.append("\",\"PRE\":\"");
 		strBuf.append(this.getCondition());	
-		strBuf.append("\",\n  \"POST\":[");
+		strBuf.append("\",\"POST\":[");
 		strBuf.append(targs.getWith());
-		strBuf.append("],\n  \"TARGET\":[");
+		strBuf.append("],\"TARGET\":[");
 		strBuf.append(targs.getDo());
-		strBuf.append("]\n}");
+		strBuf.append("]}");
 		return strBuf.toString();
 	}
 	
@@ -66,8 +66,8 @@ public class A extends emma.petri.model.resources.A implements MappedResource {
 				}
 				Iterator<String> itS = addrList.iterator();
 				while(itS.hasNext()){
-					withs.add(a.getExpression().replace(':', '#').replace("?x", "R#"+a.getPlace().getName()));
-					dos.add("PUT"+itS.next()+"/"+a.getPlace().getType()+"/"+a.getPlace().getName());
+					withs.add("\""+a.getExpression().replace(':', '#').replace("?x", "R#"+a.getPlace().getName())+"\"");
+					dos.add("\"PUT"+itS.next()+"/"+a.getPlace().getType()+"/"+a.getPlace().getName()+"\"");
 				}					
 			}
 		}
@@ -76,13 +76,9 @@ public class A extends emma.petri.model.resources.A implements MappedResource {
 			Iterator<String> it = withs.iterator();
 			if(it.hasNext()){
 				StringBuffer strBuf = new StringBuffer();
-				strBuf.append('\"');
 				strBuf.append(it.next());
-				strBuf.append('\"');
 				while(it.hasNext()){
-					strBuf.append(",\"");
 					strBuf.append(it.next());
-					strBuf.append('\"');
 				}
 				return strBuf.toString();
 			}
@@ -93,13 +89,9 @@ public class A extends emma.petri.model.resources.A implements MappedResource {
 			Iterator<String> it = dos.iterator();
 			if(it.hasNext()){
 				StringBuffer strBuf = new StringBuffer();
-				strBuf.append('\"');
 				strBuf.append(it.next());
-				strBuf.append('\"');
 				while(it.hasNext()){
-					strBuf.append(",\"");
 					strBuf.append(it.next());
-					strBuf.append('\"');
 				}
 				return strBuf.toString();
 			}

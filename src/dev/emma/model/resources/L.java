@@ -16,7 +16,7 @@ public class L extends AbstractResource {
 	
 	@Override
 	public String get() {
-		return String.valueOf(value);
+		return "\""+value+"\"";
 	}
 
 	@Override
@@ -31,7 +31,6 @@ public class L extends AbstractResource {
 
 	@Override
 	public void delete() {
-		// TODO Auto-generated method stub
 		notifier.fireListener(this);
 	}
 	

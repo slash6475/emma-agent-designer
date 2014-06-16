@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -41,6 +42,7 @@ public class Node {
 
 	private Notifier notifier = new Notifier();
 	private static Logger logger = Logger.getLogger(Network.class);
+	private boolean isEntry;
 	
 	public Notifier getNotifier(){
 		return notifier;
@@ -154,6 +156,7 @@ public class Node {
 				ex.printStackTrace();
 			}
 		}
+		this.isEntry=false;
 	}
 	
 	public String getIp() {
@@ -405,6 +408,17 @@ public class Node {
 	
 	public boolean isNeighbor(Node n){
 		return neighbors.contains(n);
+	}
+	
+	public boolean isEntryNode(){
+		return isEntry;
+	}
+	public void setEntry(boolean b){
+		this.isEntry=b;
+	}
+	
+	public Set<Node> getNeighbors(){
+		return this.neighbors;
 	}
 }
 

@@ -222,7 +222,6 @@ public class PBSolver {
 						while(itNode2.hasNext()){
 							MapperNode n2 = itNode2.next();
 							int coef = n1.getDistance(n2)*s1.getCost(s2);
-							System.out.println("COEF ["+s1.getScope().getName()+","+n1.getNode().getIp()+"] ["+s2.getScope().getName()+","+n2.getNode().getIp()+"] -> "+coef);
 							if(coef > 0){
 								str.append(" "+coef+" x"+scopeLiterals.get(n1,s1)+" x"+scopeLiterals.get(n2,s2));
 							}
