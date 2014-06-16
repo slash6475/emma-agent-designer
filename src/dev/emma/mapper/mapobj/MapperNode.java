@@ -14,12 +14,12 @@ import emma.petri.model.Place;
 import emma.petri.model.resources.UnmappedResource;
 
 /**
- * Classe spéciale : à partir d'un noeud, on créé un MapperNode. 
- * Ce MapperNode contient des informations supplémentaires (calculées)
- * permettant d'effectuer un mapping.
+ * MapperNode is made from a classical node and contains 
+ * additional computed info used by the mapping process
  * @author pierrotws
  *
  */
+
 public class MapperNode {
 	private Node n;
 	private HashMap<String,Integer> dynamicCapa;

@@ -12,6 +12,12 @@ import emma.petri.model.Scope;
 import emma.petri.model.Transition;
 import emma.petri.model.resources.UnmappedResource;
 
+/**
+ * MapperScope is made from a classical scope and contains 
+ * additional computed info used by the mapping process
+ * @author pierrotws
+ *
+ */
 public class MapperScope {
 	private Scope s;
 	private int multiplicity;

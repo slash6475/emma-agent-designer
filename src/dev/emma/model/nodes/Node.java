@@ -88,7 +88,6 @@ public class Node {
 		}
 
 		public Iterator<Entry<String, BoundedSet<Resource>>> iterator() {
-			// TODO Auto-generated method stub
 			return res.entrySet().iterator();
 		} 
 		

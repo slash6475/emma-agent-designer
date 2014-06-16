@@ -25,12 +25,17 @@ public class Mapping extends HashMap<Node,List<MappedResource>>{
 	 */
 	private static final long serialVersionUID = -4614938823972938264L;
 
+	
 	private HashMap<Scope,List<Node>> mappedScopes;	
+	//Utilisé lorsqu'un scope à une adresse IP spécifique (Broadcast ou Multicast, pas encore implémenté)
 	private HashMap<Scope,String> uniqueAdresses;
+	//Pour chaque noeud la liste des Noeuds dont il faut gérer le déploiement (AD en poupées russes)
 	private HashMap<Node,List<Node>> deployList;
+	//Pour chaque noeud, l'indice de l'AD correspondant
 	private HashMap<Node,Integer> deployNumber;
 	
 	private int counter;
+	//Le point d'entrée du déploiement (AD0)
 	private Node entryPoint;
 	
 	public Mapping(HashMap<Scope,String> addresses){
@@ -51,6 +56,9 @@ public class Mapping extends HashMap<Node,List<MappedResource>>{
 		return this.get(n).contains(r);
 	}
 	
+	/**
+	 * Function to call just after adding all the mapped scopes
+	 */
 	public void finalize(){
 		Iterator<Scope> itScope = mappedScopes.keySet().iterator();
 		while(itScope.hasNext()){
@@ -92,7 +100,13 @@ public class Mapping extends HashMap<Node,List<MappedResource>>{
 		this.setDeployNode(marks, this.entryPoint);
 	}
 	
+	/**
+	 * @param marks the already-marked node list
+	 * @param node the node we need to set list of node to handle deployment (russian dolls deployment)
+	 */
 	private void setDeployNode(List<Node> marks, Node node){
+		//On liste tous les noeuds voisins, si il ne sont pas déjà managés, on les ajoute à la liste
+		//et on les marque
 		Iterator<Node> itNode = node.getNeighbors().iterator();
 		List<Node> list = new LinkedList<>();
 		while(itNode.hasNext()){
@@ -128,16 +142,20 @@ public class Mapping extends HashMap<Node,List<MappedResource>>{
 		}
 	}
 	
+	/**
+	 * @return the hashmap scope -> List of node where the scope is mapped (generally only one)
+	 */
 	public HashMap<Scope,List<Node>> getScopeMapping(){
 		return mappedScopes;
 	}
-	
+	/**
+	 * 
+	 * @return the HashMap scope -> address (when scope has a  special multicast/broadcast address).
+	 * This Map is used by Agent Resource to determine the IP Adress used to send data. When not set,
+	 * Agent Resource use the addresses of nodes where the scope is mapped
+	 */
 	public HashMap<Scope, String> getScopeAddresses(){
 		return this.uniqueAdresses;
-	}
-	
-	private String getDeploymentAgentByNode(Node node){
-		return this.getDeploymentAgentByNode(new StringBuffer(),node);
 	}
 	
 	private String getDeploymentAgentByNode(StringBuffer strBuf,Node node){
@@ -205,8 +223,11 @@ public class Mapping extends HashMap<Node,List<MappedResource>>{
 		strBuf.append("]}");
 		return strBuf.toString();
 	}
-	
+	/**
+	 * 
+	 * @return the russian doll agent deployment
+	 */
 	public String getDeploymentAgent(){
-		return this.getDeploymentAgentByNode(entryPoint);
+		return this.getDeploymentAgentByNode(new StringBuffer(),entryPoint);
 	}
 }

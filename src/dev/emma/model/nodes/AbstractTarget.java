@@ -9,12 +9,10 @@ public abstract class AbstractTarget implements Target{
 	}
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return name;
 	}
 	@Override
 	public String getIP() {
-		// TODO Auto-generated method stub
 		return ip;
 	}
 }
