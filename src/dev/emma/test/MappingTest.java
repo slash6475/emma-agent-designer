@@ -10,6 +10,7 @@ import emma.mapper.mapobj.MapperNode;
 import emma.mapper.mapobj.MapperScope;
 import emma.model.nodes.Node;
 import emma.model.resources.Resource;
+import emma.petri.model.ArcException;
 import emma.petri.model.InputArc;
 import emma.petri.model.Net;
 import emma.petri.model.OutputArc;
@@ -19,7 +20,6 @@ import emma.petri.model.Subnet;
 import emma.petri.model.Transition;
 import emma.petri.model.resources.L;
 import emma.petri.model.resources.S;
-import emma.petri.model.resources.UnmappedResource;
 
 public class MappingTest {
 	public static void main(String[] args){
@@ -84,7 +84,6 @@ public class MappingTest {
 	}
 	
 	private static Set<Scope> feedScopes(){
-		UnmappedResource r;
 		Set<Scope> scopes = new HashSet<>();
 		Net net = new Net();
 		Subnet sub = new Subnet(net);
@@ -94,7 +93,6 @@ public class MappingTest {
 		s2.setTarget("1");
 		Place p = new Place(s);
 		Transition t = new Transition(s,p);
-		r = p.getData();
 		p = new Place(s);
 		p.setData(L.class);
 		p.setName("ltest");
@@ -106,11 +104,14 @@ public class MappingTest {
 		Place p3 = new Place(s2);
 		p3.setData(L.class);
 		p3.setName("dest");
-		InputArc ia = new InputArc(p, t);
-		ia = new InputArc(p2,t);
-		OutputArc oa = new OutputArc(p3, t);
-		oa.setExpression("S:systest + ?x + L:ltest");
-		t.addArc(oa);
+		try{
+			new InputArc(p, t);
+			new InputArc(p2,t);
+			OutputArc oa = new OutputArc(p3, t);
+			oa.setExpression("S:systest + ?x + L:ltest");
+		} catch (ArcException e){
+			System.out.println(e.getMessage());
+		}
 		scopes.add(s);
 		scopes.add(s2);
 		return scopes;

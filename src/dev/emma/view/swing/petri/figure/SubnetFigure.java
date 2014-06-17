@@ -14,6 +14,7 @@ import javax.swing.table.AbstractTableModel;
 import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.listener.SubnetListener;
+import emma.petri.model.ArcException;
 import emma.petri.model.PetriElement;
 import emma.petri.model.Subnet;
 import emma.view.swing.petri.table.SubnetTableModel;
@@ -109,19 +110,27 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 	}
 
 	public boolean addInputArc(PlaceFigure p, TransitionFigure t){
-		ArcFigure a = new ArcFigure(p,t,true);
-		if(arcs.add(a)){
-			this.repaint();
-			return true;
+		try {
+			ArcFigure a = new ArcFigure(p,t,true);
+			if(arcs.add(a)){
+				this.repaint();
+				return true;
+			}
+		} catch (ArcException e) {
+			System.out.println(e.getMessage());
 		}
 		return false;
 	}
 	
 	public boolean addOutputArc(PlaceFigure p, TransitionFigure t){
-		ArcFigure a = new ArcFigure(p,t,false);
-		if(arcs.add(a)){
-			this.repaint();
-			return true;
+		try {
+			ArcFigure a = new ArcFigure(p,t,false);
+			if(arcs.add(a)){
+				this.repaint();
+				return true;
+			}
+		} catch(ArcException e){
+			System.out.println(e.getMessage());
 		}
 		return false;
 	}

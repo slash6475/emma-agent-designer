@@ -7,7 +7,7 @@ package emma.model.resources;
  */
 public class L extends AbstractResource {
 	
-	public int value;
+	private int value;
 	
 	public L(String name){
 		super(name);
@@ -16,11 +16,16 @@ public class L extends AbstractResource {
 	
 	@Override
 	public String get() {
-		return "\""+value+"\"";
+		return String.valueOf(value);
 	}
 
 	@Override
-	public void post(String s) {
+	public String toString(){
+		return "\""+this.get()+"\"";
+	}
+	
+	@Override
+	public void put(String s) {
 		try{
 			value=Integer.parseInt(s);
 			notifier.fireListener(this);

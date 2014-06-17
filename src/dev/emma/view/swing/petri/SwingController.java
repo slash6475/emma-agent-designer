@@ -19,6 +19,7 @@ import javax.xml.transform.TransformerException;
 
 import org.xml.sax.SAXException;
 
+import emma.petri.control.Player;
 import emma.petri.view.ControlMode;
 import emma.petri.view.CorruptedFileException;
 import emma.petri.view.FigureHandler;
@@ -50,6 +51,7 @@ public class SwingController implements FigureHandler{
 	private SwingPetriSimpleElement lastSelected;
 	private Figure focusFigure;
 	private XMLParser parser;
+	private Player player;
 	
 	public SwingController(){
 		mode=ControlMode.SELECT;
@@ -295,5 +297,15 @@ public class SwingController implements FigureHandler{
 	
 	public void setFigure(Figure f){
 		this.fig=f;
+	}
+	
+	public void setNetFigure(NetFigure netFigure) {
+		player = new Player(netFigure.getNet());
+		this.setFigure(netFigure);
+	}
+	
+	@Override
+	public void playPause() {
+		player.playPause();
 	}
 }

@@ -17,4 +17,6 @@ public interface FigureHandler {
 	public void setPropertiesView(PropertiesView p);
 	
 	public void putFocusOn(Figure f);
+
+	public void playPause();
 }

@@ -427,7 +427,7 @@ public class XMLParser {
 		if(datalist.getLength()>0){
 			Element data = (Element)datalist.item(0);
 			try {
-				p.setData(ClassFounder.getResourceToMapClass(data.getAttribute("class")));
+				p.setData(ClassFounder.getUnmappedResourceClass(data.getAttribute("class")));
 			} catch (ClassNotFoundException e) {
 				throw new CorruptedFileException("Data type for place '"+name+"' is incorrect : Class '"+data.getAttribute("class")+"' not found");
 			}

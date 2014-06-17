@@ -22,7 +22,8 @@ public class A extends emma.petri.model.resources.A implements MappedResource {
 	private Targets targs;
 	
 	public A(emma.petri.model.resources.A unmapped, Mapping m) throws ScopeAddressesException{
-		super(unmapped.getName(),unmapped.getTransition());
+		super(unmapped.getName());
+		this.setTransition(unmapped.getTransition());
 		this.mapping=m;
 		this.targs=new Targets(unmapped.getTransition().getOutputArcs());
 	}

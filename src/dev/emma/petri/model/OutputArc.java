@@ -19,8 +19,11 @@ public class OutputArc extends Arc {
 	 * Constructeur
 	 * @param p : la place de l'arc. t : la transition de l'arc.
 	 */
-	public OutputArc(Place p, Transition t){
+	public OutputArc(Place p, Transition t) throws ArcException{
 		super(p,t);
+		if(!p.hasInputRight()){
+			throw new ArcException("Place "+p.getName()+" has not input right");
+		}
 		expression="";
 		oals = new HashSet<OutputArcListener>();
 		p.addArc(this);

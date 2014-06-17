@@ -20,6 +20,7 @@ public class PlaceTableModel extends AbstractTableModel {
 				{ "Figure", "Place" },
 				{ "Name", p.getName() },
 				{ "Parent", p.getParent().getName() },
+				{ "Token", p.hasToken()},
 				{ "Type", ""}
 			};
 		}
@@ -28,8 +29,10 @@ public class PlaceTableModel extends AbstractTableModel {
 				{ "Figure", "Place" },
 				{ "Name", p.getName() },
 				{ "Parent", p.getParent().getName() },
+				{ "Token", p.hasToken()},
 				{ "Type", p.getData().getClass().getSimpleName()},
-				{ "IsImported",p.getData().isImported()}
+				{ "IsImported",p.getData().isImported()},
+				{ "Value", p.getData().get()}
 			};
 		}
 	}
@@ -66,7 +69,7 @@ public class PlaceTableModel extends AbstractTableModel {
 		if(col==0){
 			return false;
 		}
-		else if(row!=2){
+		if(row!=0 && row!=2){
 			return true;
 		}
 		return false;
@@ -79,17 +82,23 @@ public class PlaceTableModel extends AbstractTableModel {
 			p.setName((String)aValue);
 			break;
 		case 3:
+			p.setToken((boolean)aValue);
+			break;
+		case 4:
 			try {
-				p.setData(ClassFounder.getResourceToMapClass((String)aValue));
+				p.setData(ClassFounder.getUnmappedResourceClass((String)aValue));
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 			break;
-		case 4:
+		case 5:
 			p.getData().setImport((boolean)aValue);
 			break;
-		default:
+		case 6:
+			p.getData().put((String)aValue);
 			break;
+		default:
+			return;
 		}
 		this.data[rowIndex][columnIndex] = aValue;
 		fireTableCellUpdated(rowIndex, columnIndex);

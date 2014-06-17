@@ -75,6 +75,7 @@ public class ArcTableModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		((OutputArc)arc).setExpression((String) aValue);
+		this.data[rowIndex][columnIndex] = aValue;
 		this.fireTableCellUpdated(rowIndex, columnIndex);
 	}
 }

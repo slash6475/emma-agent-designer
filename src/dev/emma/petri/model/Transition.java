@@ -18,7 +18,8 @@ public class Transition extends PT{
 		super(s);
 		s.add(this);
 		this.place=p;
-		res=new A(this.place.getName(), this);
+		res=new A(this.place.getName());
+		res.setTransition(this);
 		this.place.setData(res);
 		tls = new HashSet<TransitionListener>();
 	}

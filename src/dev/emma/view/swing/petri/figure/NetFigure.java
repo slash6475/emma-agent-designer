@@ -86,7 +86,7 @@ public class NetFigure extends ScrollableDesktopPane implements Figure, NetListe
 
 	@Override
 	public boolean addSubnet(int x, int y) {
-		new SubnetFigure("aSubnet",x,y,300,300,this);
+		new SubnetFigure("aSubnet",x,y,350,300,this);
 		return true;
 	}
 

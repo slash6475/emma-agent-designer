@@ -25,4 +25,14 @@ public abstract class AbstractResource implements Resource{
 	public String toString(){
 		return this.get();
 	}
+	
+	@Override
+	public boolean hasInputRight(){
+		return true;
+	}
+	
+	@Override
+	public boolean hasOutputRight(){
+		return true;
+	}
 }

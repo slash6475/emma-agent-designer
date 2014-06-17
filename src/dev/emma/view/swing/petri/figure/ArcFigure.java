@@ -17,6 +17,7 @@ import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.listener.InputArcListener;
 import emma.petri.control.listener.OutputArcListener;
 import emma.petri.model.Arc;
+import emma.petri.model.ArcException;
 import emma.petri.model.InputArc;
 import emma.petri.model.OutputArc;
 import emma.petri.model.PetriElement;
@@ -40,7 +41,7 @@ public class ArcFigure implements Figure, InputArcListener, OutputArcListener{
 	private int boundX, boundY, boundX2, boundY2;
 	private boolean isFocused;
 	
-	public ArcFigure(PlaceFigure p, TransitionFigure t, boolean isInputArc){
+	public ArcFigure(PlaceFigure p, TransitionFigure t, boolean isInputArc) throws ArcException{
 		this.input=isInputArc;
 		if(input){
 			this.arc=new InputArc(p.getPlace(),t.getTransition());
@@ -154,11 +155,9 @@ public class ArcFigure implements Figure, InputArcListener, OutputArcListener{
 		newPt=transPt;
 		g.drawLine(oldPt.x, oldPt.y, newPt.x, newPt.y);
 		if(input){
-			drawPoint(g,placePt);
 			g.fillRect(transPt.x-5, transPt.y-5, 10, 10);
 		}
 		else{
-			drawPoint(g,transPt);
 			g.fillRect(placePt.x-5, placePt.y-5, 10, 10);
 		}
 	}

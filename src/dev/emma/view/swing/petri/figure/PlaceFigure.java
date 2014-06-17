@@ -49,6 +49,9 @@ public class PlaceFigure extends SwingPetriSimpleElement implements PlaceListene
 				}
 				g.fillOval(0,0,defaultWidth,defaultHeight);
 				g.setColor(Color.black);
+				if(place.hasToken()){
+					g.fillOval((defaultWidth/2)-5,(defaultHeight/2)-5,10,10);
+				}
 				g.drawOval(0,0,defaultWidth,defaultHeight);
 			}
 		});

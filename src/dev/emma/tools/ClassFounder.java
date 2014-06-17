@@ -86,11 +86,11 @@ public class ClassFounder {
 	}
 
 	public static String getResourcePackage(){
-		return "emma.model.resources";
+		return emma.model.resources.Resource.class.getPackage().getName();
 	}
 	
-	public static String getResourceToMapPackage(){
-		return ClassFounder.getResourcePackage()+".tomap";
+	public static String getUnmappedResourcePackage(){
+		return emma.petri.model.resources.UnmappedResource.class.getPackage().getName();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -99,7 +99,7 @@ public class ClassFounder {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static Class<? extends UnmappedResource> getResourceToMapClass(String type) throws ClassNotFoundException{
-		return (Class<? extends UnmappedResource>) Class.forName(getResourceToMapPackage()+"."+type);
+	public static Class<? extends UnmappedResource> getUnmappedResourceClass(String type) throws ClassNotFoundException{
+		return (Class<? extends UnmappedResource>) Class.forName(getUnmappedResourcePackage()+"."+type);
 	}
 }

@@ -48,7 +48,8 @@ public class Window extends JFrame implements DrawableContainer{
 	
 	public void addPetriViewer(){
 		petriCount++;
-		PetriViewer v = new PetriViewer(new SwingController()); 
+		SwingController control = new SwingController();
+		PetriViewer v = new PetriViewer(control);
 		v.setName("PetriViewer #"+petriCount);
 		pane.add(v);
 	}

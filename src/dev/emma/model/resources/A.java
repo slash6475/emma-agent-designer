@@ -18,7 +18,7 @@ public class A extends AbstractResource {
 	}
 
 	@Override
-	public void post(String s) {
+	public void put(String s) {
 		notifier.fireListener(this);
 	}
 
@@ -28,7 +28,11 @@ public class A extends AbstractResource {
 	}
 	
 	public int getSize(){
-		//TODO : Random value !!
 		return 20;
+	}
+
+	@Override
+	public boolean hasInputRight() {
+		return false;
 	}
 }

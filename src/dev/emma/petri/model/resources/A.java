@@ -10,10 +10,9 @@ public class A extends emma.model.resources.A implements UnmappedResource {
 	private Transition transition;
 	private String test;
 	
-	public A(String name, Transition t){
+	public A(String name){
 		super(name);
 		this.test="1";
-		this.transition=t;
 		this.isImported=false;
 	}
 
@@ -39,6 +38,10 @@ public class A extends emma.model.resources.A implements UnmappedResource {
 	
 	public void setCondition(String str){
 		this.test=str;
+	}
+	
+	public void setTransition(Transition t){
+		this.transition=t;
 	}
 	
 	public Transition getTransition(){

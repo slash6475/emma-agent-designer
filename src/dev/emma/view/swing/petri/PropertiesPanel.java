@@ -19,11 +19,11 @@ public class PropertiesPanel extends DesktopFrame implements PropertiesView{
 	private static final long serialVersionUID = -3252042432305047846L;
 	
 	private JTable table;
-	private static JComboBox<String> placeTypes = new JComboBox<String>(ClassFounder.getClassesSimpleName("emma.model.resources.tomap"));
+	private static JComboBox<String> placeTypes = new JComboBox<String>(ClassFounder.getClassesSimpleName(ClassFounder.getUnmappedResourcePackage()));
 	
 	public PropertiesPanel(SwingController control){
 		super("Element Properties",true, false, false,true);
-		this.setSize(200,200);
+		this.setSize(120,200);
 		table = new JTable();
 		table.setVisible(false);
 		this.getContentPane().add(table);
@@ -64,14 +64,17 @@ public class PropertiesPanel extends DesktopFrame implements PropertiesView{
 	    @Override
 	    public Component getTableCellEditorComponent(JTable table,
 	            Object value, boolean isSelected, int row, int column) {
-	        if(row == 3){
+	        switch(row){
+	        case 4:
 	        	lastSelected=place;
-	        }
-	        else if(row == 4){
-        		lastSelected=chbox;
-	        }
-	        else{
+	        	break;
+	        case 3:
+	        case 5:
+	        	lastSelected=chbox;
+	        	break;
+	        default:
 	        	lastSelected=classic;
+	        	break;
 	        }
 	        return lastSelected.getTableCellEditorComponent(table, value, isSelected, row, column);
 	    }

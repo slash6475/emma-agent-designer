@@ -21,16 +21,15 @@ public class PetriViewer extends DesktopFrame{
 		super("",true, true, true,true);
 		FixedDesktopPane dPane = new FixedDesktopPane(this);
 		this.setContentPane(dPane);
-		this.setSize(600, 440);
+		this.setSize(700, 500);
 		this.control=c;
 		this.toolbar=new Toolbar(control);
-		toolbar.addInternalFrameListener(new FListener());
-		this.add(toolbar);
+		this.getContentPane().add(toolbar);
 		this.borderPanel=new PropertiesPanel(control);
 		this.borderPanel.addInternalFrameListener(new FListener());
 		this.add(borderPanel);
 		this.canvas = new PetriCanvasContainer(control);
-		control.setFigure(this.canvas.getNetFigure());
+		control.setNetFigure(this.canvas.getNetFigure());
 		this.add(this.canvas);
 		try {
 			this.canvas.setMaximum(true);
@@ -53,7 +52,7 @@ public class PetriViewer extends DesktopFrame{
 	}
 	
 	public void manageFrames(){
-		this.toolbar.moveToFront();
+		//this.toolbar.moveToFront();
 		this.borderPanel.moveToFront();
 	}
 	

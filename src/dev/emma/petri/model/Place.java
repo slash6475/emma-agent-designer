@@ -18,15 +18,17 @@ public class Place extends PT{
 	private boolean input,output;
 	private String name;
 	private Set<PlaceListener> pls;
+	private boolean tokens;
 	
 	public Place(Scope s){
 		super(s);
-		name="p"+(q++);
+		this.name="p"+(q++);
+		this.tokens=false;
 		s.add(this);
-		res=null;
-		input=true;
-		output=true;
-		pls = new HashSet<PlaceListener>();
+		this.res=null;
+		this.input=true;
+		this.output=true;
+		this.pls = new HashSet<PlaceListener>();
 	}
 	
 	@Override
@@ -128,5 +130,35 @@ public class Place extends PT{
 		while(it.hasNext()){
 			it.next().notity(e);
 		}
+	}
+	
+	public void putToken(){
+		this.tokens=true;
+	}
+	
+	public void removeToken(){
+		this.tokens=false;
+	}
+
+	public boolean hasToken() {
+		return tokens;
+	}
+	
+	public void setToken(boolean t){
+		this.tokens=t;
+	}
+	
+	public boolean hasInputRight(){
+		if(this.res==null){
+			return false;
+		}
+		return this.res.hasInputRight();
+	}
+	
+	public boolean hasOutputRight(){
+		if(this.res==null){
+			return false;
+		}
+		return this.res.hasOutputRight();
 	}
 }

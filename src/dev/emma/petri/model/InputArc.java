@@ -19,8 +19,14 @@ public class InputArc extends Arc {
 	 * @param p : la place de l'arc. t : la transition de l'arc.
 	 */
 	private Set<InputArcListener> ials;
-	public InputArc(Place p, Transition t){
+	public InputArc(Place p, Transition t) throws ArcException{
 		super(p,t);
+		if(p.getParent()!=t.getParent()){
+			throw new ArcException("An input arc cannot link 2 different scopes");
+		}
+		if(!p.hasOutputRight()){
+			throw new ArcException("Place "+p.getName()+" has not output right");
+		}
 		p.addArc(this);
 		t.addArc(this);
 		ials = new HashSet<InputArcListener>();

@@ -3,7 +3,6 @@ package emma.view.swing.petri;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -16,7 +15,7 @@ public class Toolbar extends DesktopFrame {
 
 	public Toolbar(final FigureHandler control){
 		super("Creation Tools",true, false, false,true);
-		this.setSize(460, 75);
+		this.setBounds(120, 0, 400, 75);
 		this.getContentPane().setLayout(new FlowLayout());
 		
 		//Ajout du play/stop
@@ -25,7 +24,7 @@ public class Toolbar extends DesktopFrame {
 		play.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//playstop.doClick();
+				control.playPause();
 			}
 		});
 		this.getContentPane().add(play);

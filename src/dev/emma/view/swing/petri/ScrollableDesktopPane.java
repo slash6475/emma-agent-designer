@@ -25,8 +25,7 @@ public class ScrollableDesktopPane extends JScrollPane{
 	private JDesktopPane desktopPane;
 	private IFrameListener componentListener;
 
-	public ScrollableDesktopPane() {
-		
+	public ScrollableDesktopPane() {		
 		componentListener = new IFrameListener();
 		this.desktopPane = new JDesktopPane();
 		desktopPane.addContainerListener(new ContainerListener() {
@@ -57,16 +56,13 @@ public class ScrollableDesktopPane extends JScrollPane{
 		public void componentResized(ComponentEvent e) {
 			resizeDesktop();
 		}
-		
 		@Override
 		public void componentMoved(ComponentEvent e) {
 			resizeDesktop();
 		}
-
 		@Override
 		public void componentShown(ComponentEvent e) {
 		}
-
 		@Override
 		public void componentHidden(ComponentEvent e) {
 		}
@@ -76,8 +72,6 @@ public class ScrollableDesktopPane extends JScrollPane{
 	public Component add(Component c){
 		return desktopPane.add(c);
 	}
- 
-
 
 	/**
 	 * returns all internal frames placed upon the desktop
@@ -107,66 +101,41 @@ public class ScrollableDesktopPane extends JScrollPane{
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run(){
 				Rectangle viewPort = getViewport().getViewRect();
-
 				int maxX = viewPort.width + viewPort.x, maxY = viewPort.height + viewPort.y;
 				int minX = viewPort.x, minY = viewPort.y;
-
-				// determine the min/max extents of all internal frames
-
 				JInternalFrame frame = null;
 				JInternalFrame[] frames = getAllFrames();
-
-				for (int i=0; i < frames.length; i++) {
-
+				for(int i=0; i < frames.length; i++){
 					frame = frames[i];
-
-					if (frame.getX() < minX) { // get minimum X
+					if (frame.getX() < minX) {
 						minX = frame.getX();
 					}
-					if ((frame.getX() + frame.getWidth()) > maxX)
-					{
+					if ((frame.getX() + frame.getWidth()) > maxX){
 						maxX = frame.getX() + frame.getWidth();
 					}
-
-					if (frame.getY() < minY) { // get minimum Y
+					if (frame.getY() < minY) {
 						minY = frame.getY();
 					}
-					if ((frame.getY() + frame.getHeight()) > maxY)
-					{
+					if ((frame.getY() + frame.getHeight()) > maxY){
 						maxY = frame.getY() + frame.getHeight();
 					}
 				}
-
-				// Don't count with frames that get off screen from the left side ant the top
 				if (minX < 0) minX = 0;
 				if (minY < 0) minY = 0;
-
-				setVisible(false); // don't update the viewport
-				// while we move everything (otherwise desktop looks 'bouncy')
-
+				setVisible(false);
 				if (minX != 0 || minY != 0) {
-					// have to scroll it to the right or up the amount that it's off screen...
-					// before scroll, move every component to the right / down by that amount
-
 					for (int i=0; i < frames.length; i++) {
 						frame = frames[i];
 						frame.setLocation(frame.getX()-minX, frame.getY()-minY);
 					}
-
-					// have to scroll (set the viewport) to the right or up the amount
-					// that it's off screen...
 					JViewport view = getViewport();
 					view.setViewSize(new Dimension((maxX-minX),(maxY-minY)));
 					view.setViewPosition(new Point((viewPort.x-minX),(viewPort.y-minY)));
 					setViewport(view);
 
 				}
-
-				// resize the desktop
 				setDesktopSize(new Dimension(maxX-minX, maxY-minY));
-
-				setVisible(true); // update the viewport again
-
+				setVisible(true);
 			}
 		});
 	}

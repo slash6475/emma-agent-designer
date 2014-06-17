@@ -20,8 +20,11 @@ public interface Resource {
 	
 	public String get();
 	
-	public void post(String s);
+	public void put(String s);
 	
 	public void delete();
 
+	public boolean hasInputRight();
+	
+	public boolean hasOutputRight();
 }
