@@ -35,4 +35,20 @@ public abstract class AbstractResource implements Resource{
 	public boolean hasOutputRight(){
 		return true;
 	}
+	
+	@Override
+	public String get() {
+		return "";
+	}
+
+	@Override
+	public void put(String s) {
+		notifier.fireListener(this);
+	}
+
+	@Override
+	public void delete() {
+		notifier.fireListener(this);
+	}
+	
 }

@@ -24,22 +24,13 @@ public class L extends AbstractResource {
 		return "\""+this.get()+"\"";
 	}
 	
-	@Override
-	public void put(String s) {
-		try{
-			value=Integer.parseInt(s);
-			notifier.fireListener(this);
-		} catch(NumberFormatException e){
-			
-		}
-	}
-
-	@Override
-	public void delete() {
-		notifier.fireListener(this);
-	}
 	
 	public int getSize(){
 		return 4;
+	}
+	
+	protected void setValue(int value){
+		notifier.fireListener(this);
+		this.value=value;
 	}
 }

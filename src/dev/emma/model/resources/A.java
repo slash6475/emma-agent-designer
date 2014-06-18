@@ -12,21 +12,6 @@ public class A extends AbstractResource {
 		super(name);
 	}
 	
-	@Override
-	public String get() {
-		return "";
-	}
-
-	@Override
-	public void put(String s) {
-		notifier.fireListener(this);
-	}
-
-	@Override
-	public void delete() {
-		notifier.fireListener(this);
-	}
-	
 	public int getSize(){
 		return 20;
 	}

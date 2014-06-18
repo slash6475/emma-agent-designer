@@ -11,7 +11,9 @@ import java.util.Set;
 
 import javax.swing.table.AbstractTableModel;
 
+import emma.petri.control.event.ActivationEvent;
 import emma.petri.control.event.DeletionEvent;
+import emma.petri.control.event.DesactivationEvent;
 import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.listener.SubnetListener;
 import emma.petri.model.ArcException;
@@ -179,11 +181,17 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 	}
 
 	@Override
-	public void notity(DeletionEvent e) {
+	public void notify(DeletionEvent e) {
 		this.dispose();
 	}
 	
 	public void delete(){
 		sub.delete();
 	}
+
+	@Override
+	public void notify(ActivationEvent e){}
+
+	@Override
+	public void notify(DesactivationEvent e){}
 }

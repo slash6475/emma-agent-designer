@@ -77,30 +77,34 @@ public class PlaceTableModel extends AbstractTableModel {
 
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+		boolean ok=true;
 		switch(rowIndex){
 		case 1:
 			p.setName((String)aValue);
 			break;
 		case 3:
-			p.setToken((boolean)aValue);
+			ok = p.setToken((boolean)aValue);
 			break;
 		case 4:
 			try {
-				p.setData(ClassFounder.getUnmappedResourceClass((String)aValue));
+				ok = p.setData(ClassFounder.getUnmappedResourceClass((String)aValue));
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 			break;
 		case 5:
-			p.getData().setImport((boolean)aValue);
+			ok=p.getData().setImport((boolean)aValue);
 			break;
 		case 6:
 			p.getData().put((String)aValue);
+			ok=p.getData().get().equals(aValue);
 			break;
 		default:
 			return;
 		}
-		this.data[rowIndex][columnIndex] = aValue;
-		fireTableCellUpdated(rowIndex, columnIndex);
+		if(ok){
+			this.data[rowIndex][columnIndex] = aValue;
+			fireTableCellUpdated(rowIndex, columnIndex);
+		}
 	}
 }

@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.listener.NetListener;
 
 /**
@@ -46,14 +45,5 @@ public class Net extends PetriElement {
 	
 	public Set<NetListener> getListeners(){
 		return nls;
-	}
-	
-	@Override
-	protected void notifyDeletion() {
-		DeletionEvent e = new DeletionEvent(this);
-		Iterator<NetListener> it = nls.iterator();
-		while(it.hasNext()){
-			it.next().notity(e);
-		}
 	}
 }

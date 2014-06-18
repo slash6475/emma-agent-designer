@@ -8,7 +8,9 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.table.AbstractTableModel;
 
+import emma.petri.control.event.ActivationEvent;
 import emma.petri.control.event.DeletionEvent;
+import emma.petri.control.event.DesactivationEvent;
 import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.listener.ScopeListener;
 import emma.petri.model.PetriElement;
@@ -108,7 +110,7 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 	}
 
 	@Override
-	public void notity(DeletionEvent e) {
+	public void notify(DeletionEvent e) {
 		super.dispose();
 	}
 	
@@ -121,4 +123,10 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 	public void delete() {
 		scope.delete();
 	}
+
+	@Override
+	public void notify(ActivationEvent e) {}
+
+	@Override
+	public void notify(DesactivationEvent e) {}
 }

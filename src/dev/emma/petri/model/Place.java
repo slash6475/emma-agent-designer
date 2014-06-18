@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.event.StateChangedEvent;
 import emma.petri.control.listener.PlaceListener;
@@ -56,12 +55,14 @@ public class Place extends PT{
 	}
 	
 	public void setData(UnmappedResource res){
+		this.tokens=false;
 		this.res=res;
 	}
 	
 	public boolean setData(Class<? extends UnmappedResource> c){
 		try {
 			res = c.getConstructor(String.class).newInstance(this.getName());
+			this.tokens=false;
 			Iterator<PlaceListener> it = pls.iterator();
 			StateChangedEvent e = new StateChangedEvent(this);
 			while(it.hasNext()){
@@ -112,6 +113,7 @@ public class Place extends PT{
 	}
 
 	public void addListener(PlaceListener l){
+		this.addPetriEventListener(l);
 		pls.add(l);
 	}
 
@@ -123,29 +125,28 @@ public class Place extends PT{
 		return pls;
 	}
 	
-	@Override
-	protected void notifyDeletion() {
-		DeletionEvent e = new DeletionEvent(this);
-		Iterator<PlaceListener> it = pls.iterator();
-		while(it.hasNext()){
-			it.next().notity(e);
+	public boolean putToken(){
+		if(!this.tokens && res.hasInputRight()){
+			this.tokens=true;
+			return true;
 		}
+		return false;
 	}
 	
-	public void putToken(){
-		this.tokens=true;
-	}
-	
-	public void removeToken(){
-		this.tokens=false;
+	public boolean removeToken(){
+		if(this.tokens){
+			this.tokens=false;
+			return true;
+		}
+		return false;
 	}
 
 	public boolean hasToken() {
 		return tokens;
 	}
 	
-	public void setToken(boolean t){
-		this.tokens=t;
+	public boolean setToken(boolean t){
+		return (t)?putToken():removeToken();
 	}
 	
 	public boolean hasInputRight(){

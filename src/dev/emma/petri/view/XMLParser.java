@@ -155,7 +155,7 @@ public class XMLParser {
 		if(p.getData()!=null){
 			Element data = doc.createElement("data");
 			data.setAttribute("class", p.getType());
-			data.appendChild(doc.createCDATASection(p.getData().toString()));
+			data.appendChild(doc.createCDATASection(p.getData().get()));
 			elmt.appendChild(data);
 		}
 		elmt.setAttribute("input",p.isInput()?"true":"false");
@@ -427,7 +427,9 @@ public class XMLParser {
 		if(datalist.getLength()>0){
 			Element data = (Element)datalist.item(0);
 			try {
-				p.setData(ClassFounder.getUnmappedResourceClass(data.getAttribute("class")));
+				if(p.setData(ClassFounder.getUnmappedResourceClass(data.getAttribute("class")))){
+					p.getData().put(data.getTextContent());
+				}
 			} catch (ClassNotFoundException e) {
 				throw new CorruptedFileException("Data type for place '"+name+"' is incorrect : Class '"+data.getAttribute("class")+"' not found");
 			}

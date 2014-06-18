@@ -7,7 +7,9 @@ import java.awt.Point;
 import javax.swing.border.LineBorder;
 import javax.swing.table.AbstractTableModel;
 
+import emma.petri.control.event.ActivationEvent;
 import emma.petri.control.event.DeletionEvent;
+import emma.petri.control.event.DesactivationEvent;
 import emma.petri.control.listener.TransitionListener;
 import emma.petri.model.PetriElement;
 import emma.petri.model.Transition;
@@ -28,13 +30,16 @@ public class TransitionFigure extends SwingPetriSimpleElement implements Transit
 	private static final int defaultHeight = 40;
 	private static final Point centerPoint = new Point(7,20);
 	
+	private boolean isActivated;
+	
 	public TransitionFigure(String name, int x, int y, PlaceFigure p,ScopeFigure parent) {
 		super(name, defaultWidth, defaultHeight, parent);	
 		this.setBackground(backgroundColor);
 		this.setBorder(new LineBorder(Color.black,2));
 		this.place=p;
 		this.transition= new Transition(parent.getScope(), place.getPlace());
-		transition.addListener(this);
+		this.isActivated=false;
+		this.transition.addListener(this);
 		if(parent.getContentPane().add(this)!=null){
 			this.moveTo(x, y);
 		}
@@ -46,7 +51,7 @@ public class TransitionFigure extends SwingPetriSimpleElement implements Transit
 	
 	@Override
 	public void paintComponent(Graphics g){
-		if(this.isFocused()){
+		if(this.isFocused() || isActivated){
 			this.setBackground(Color.magenta);
 		}
 		else{
@@ -79,12 +84,28 @@ public class TransitionFigure extends SwingPetriSimpleElement implements Transit
 	}
 
 	@Override
-	public void notity(DeletionEvent e) {
+	public void notify(DeletionEvent e) {
 		this.dispose();
 	}
 	
 	@Override
 	public void delete(){
 		transition.delete();
+	}
+
+	@Override
+	public void notify(ActivationEvent e) {
+		if(e.getSource()==transition){
+			this.isActivated=true;
+			this.repaint();
+		}
+	}
+
+	@Override
+	public void notify(DesactivationEvent e) {
+		if(e.getSource()==transition){
+			this.isActivated=false;
+			this.repaint();
+		}
 	}
 }

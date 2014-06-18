@@ -17,6 +17,7 @@ public class TransitionTableModel extends AbstractTableModel {
 		this.data = new Object[][] {
 			{ "Figure", "Transition" },
 			{ "Parent", t.getParent().getName() },
+			{ "Condition", t.getCondition() },
 			{ "Place", t.getPlace().getName()}
 		};
 	}
@@ -50,12 +51,20 @@ public class TransitionTableModel extends AbstractTableModel {
 
 	@Override
 	public boolean isCellEditable(int row, int col){
+		if(col==0){
+			return false;
+		}
+		if(row==2){
+			return true;
+		}
 		return false;
 	}
 
 
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		//fireTableCellUpdated(rowIndex, columnIndex);
+		t.setCondition((String) aValue);
+		this.data[rowIndex][columnIndex] = aValue;
+		fireTableCellUpdated(rowIndex, columnIndex);
 	}
 }

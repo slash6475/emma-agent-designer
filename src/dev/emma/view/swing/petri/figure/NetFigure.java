@@ -5,7 +5,9 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.table.AbstractTableModel;
 
+import emma.petri.control.event.ActivationEvent;
 import emma.petri.control.event.DeletionEvent;
+import emma.petri.control.event.DesactivationEvent;
 import emma.petri.control.listener.NetListener;
 import emma.petri.model.Net;
 import emma.petri.model.PetriElement;
@@ -137,7 +139,7 @@ public class NetFigure extends ScrollableDesktopPane implements Figure, NetListe
 	}
 
 	@Override
-	public void notity(DeletionEvent e) {
+	public void notify(DeletionEvent e) {
 		this.net = new Net();
 	}
 
@@ -145,4 +147,10 @@ public class NetFigure extends ScrollableDesktopPane implements Figure, NetListe
 	public void delete() {
 		net.delete();
 	}
+
+	@Override
+	public void notify(ActivationEvent e){}
+
+	@Override
+	public void notify(DesactivationEvent e){}
 }

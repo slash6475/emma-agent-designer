@@ -12,7 +12,7 @@ public class A extends emma.model.resources.A implements UnmappedResource {
 	
 	public A(String name){
 		super(name);
-		this.test="1";
+		this.test="true";
 		this.isImported=false;
 	}
 

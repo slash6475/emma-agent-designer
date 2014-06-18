@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.listener.TransitionListener;
 import emma.petri.model.resources.A;
 
@@ -55,19 +54,11 @@ public class Transition extends PT{
 	}
 	
 	public void addListener(TransitionListener l){
+		this.addPetriEventListener(l);
 		tls.add(l);
 	}
 	
 	public Set<TransitionListener> getListeners(){
 		return tls;
-	}
-	
-	@Override
-	protected void notifyDeletion() {
-		DeletionEvent e = new DeletionEvent(this);
-		Iterator<TransitionListener> it = tls.iterator();
-		while(it.hasNext()){
-			it.next().notity(e);
-		}
 	}
 }

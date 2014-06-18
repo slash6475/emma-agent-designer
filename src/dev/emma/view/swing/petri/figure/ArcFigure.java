@@ -13,7 +13,9 @@ import java.util.LinkedList;
 
 import javax.swing.table.AbstractTableModel;
 
+import emma.petri.control.event.ActivationEvent;
 import emma.petri.control.event.DeletionEvent;
+import emma.petri.control.event.DesactivationEvent;
 import emma.petri.control.listener.InputArcListener;
 import emma.petri.control.listener.OutputArcListener;
 import emma.petri.model.Arc;
@@ -40,9 +42,11 @@ public class ArcFigure implements Figure, InputArcListener, OutputArcListener{
 	private boolean input;
 	private int boundX, boundY, boundX2, boundY2;
 	private boolean isFocused;
+	private boolean isActivated;
 	
 	public ArcFigure(PlaceFigure p, TransitionFigure t, boolean isInputArc) throws ArcException{
 		this.input=isInputArc;
+		this.isActivated=false;
 		if(input){
 			this.arc=new InputArc(p.getPlace(),t.getTransition());
 			((InputArc)arc).addListener(this);
@@ -145,7 +149,7 @@ public class ArcFigure implements Figure, InputArcListener, OutputArcListener{
 		Point oldPt, newPt;
 		oldPt=placePt;
 		Iterator<Point> it=arcPts.iterator();
-		g.setColor((isFocused)?Color.magenta:Color.black);
+		g.setColor((isFocused || isActivated)?Color.magenta:Color.black);
 		while(it.hasNext()){
 			newPt=it.next();
 			g.drawLine(oldPt.x, oldPt.y, newPt.x, newPt.y);
@@ -386,7 +390,7 @@ public class ArcFigure implements Figure, InputArcListener, OutputArcListener{
 	}
 
 	@Override
-	public void notity(DeletionEvent e) {
+	public void notify(DeletionEvent e) {
 		parent.removeArc(this);
 	}
 
@@ -397,6 +401,23 @@ public class ArcFigure implements Figure, InputArcListener, OutputArcListener{
 	
 	public LinkedList<Point> getPoints(){
 		return arcPts;
+	}
+
+
+	@Override
+	public void notify(ActivationEvent e) {
+		if(e.getSource()==this.arc){
+			this.isActivated=true;
+			parent.repaint();
+		}
+	}
+
+	@Override
+	public void notify(DesactivationEvent e) {
+		if(e.getSource()==this.arc){
+			this.isActivated=false;
+			parent.repaint();
+		}
 	}
 
 }

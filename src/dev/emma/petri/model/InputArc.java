@@ -1,10 +1,7 @@
 package emma.petri.model;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-
-import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.listener.InputArcListener;
 
 
@@ -48,22 +45,14 @@ public class InputArc extends Arc {
 	}
 	
 	public void addListener(InputArcListener l){
+		this.addPetriEventListener(l);
 		ials.add(l);
 	}
 	
 	public Set<InputArcListener> getListeners(){
 		return ials;
 	}
-
-	@Override
-	protected void notifyDeletion() {
-		DeletionEvent e = new DeletionEvent(this);
-		Iterator<InputArcListener> it = ials.iterator();
-		while(it.hasNext()){
-			it.next().notity(e);
-		}
-	}
-
+	
 	@Override
 	public boolean isInput() {
 		return true;

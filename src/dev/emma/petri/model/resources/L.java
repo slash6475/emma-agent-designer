@@ -12,6 +12,15 @@ public class L extends emma.model.resources.L implements UnmappedResource {
 	}
 	
 	@Override
+	public void put(String str){
+		try{
+			this.setValue((int)Double.parseDouble(str));
+		} catch(NumberFormatException e){
+			
+		}
+	}
+	
+	@Override
 	public boolean setImport(boolean i) {
 		this.isImported=i;
 		return true;

@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import emma.petri.control.event.DeletionEvent;
 import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.listener.ScopeListener;
 
@@ -93,6 +92,7 @@ public class Scope extends PetriElement{
 	}
 
 	public void addListener(ScopeListener l){
+		this.addPetriEventListener(l);
 		scls.add(l);
 	}
 	
@@ -116,15 +116,5 @@ public class Scope extends PetriElement{
 	
 	public String getTarget(){
 		return target;
-	}
-	
-	@Override
-	protected void notifyDeletion() {
-		// TODO Auto-generated method stub
-		DeletionEvent e = new DeletionEvent(this);
-		Iterator<ScopeListener> it = scls.iterator();
-		while(it.hasNext()){
-			it.next().notity(e);
-		}
 	}
 }

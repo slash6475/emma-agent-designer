@@ -1,8 +1,13 @@
 package emma.petri.control;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map.Entry;
+
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.swing.JOptionPane;
 
 import emma.petri.model.InputArc;
 import emma.petri.model.Net;
@@ -11,78 +16,61 @@ import emma.petri.model.Place;
 import emma.petri.model.Scope;
 import emma.petri.model.Subnet;
 import emma.petri.model.Transition;
-import expr.Parser;
-import expr.SyntaxException;
 /**
  * @author  pierrotws
  */
-
 public class Player extends Thread{
-	
+    
+	private ScriptEngine engine;
+	private Bindings bindings;
 	private Net net;
 	private boolean play;
+	
 	public Player(Net net){
 		this.net=net;
 		this.play=false;
+		ScriptEngineManager factory = new ScriptEngineManager();
+		this.engine = factory.getEngineByName("JavaScript");
+		this.bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
 	}
 	
 	@Override
 	public void run(){
 		while(true){
-			try {
-				Thread.sleep(1000);
-				if(play){
-					Iterator<Subnet> itSub = net.getSubnets().iterator();
-					while(itSub.hasNext()){
-						Iterator<Scope> itScope = itSub.next().getScopes().iterator();
-						while(itScope.hasNext()){
-							Iterator<Transition> itTrans = itScope.next().getTransitions().iterator();
-							while(itTrans.hasNext()){
-								Transition t = itTrans.next();
-								Iterator<InputArc> itia = t.getInputArcs().iterator();
-								while(itia.hasNext()){
-									if(itia.next().getPlace().hasToken()){
-										this.executeTransition(t);
-										break;
-									}
+			if(play){
+				play=false;
+				System.out.println("Player running...");
+				Iterator<Subnet> itSub = net.getSubnets().iterator();
+				while(itSub.hasNext()){
+					Iterator<Scope> itScope = itSub.next().getScopes().iterator();
+					while(itScope.hasNext()){
+						Iterator<Transition> itTrans = itScope.next().getTransitions().iterator();
+						while(itTrans.hasNext()){
+							Transition t = itTrans.next();
+							Iterator<InputArc> itia = t.getInputArcs().iterator();
+							while(itia.hasNext()){
+								if(itia.next().getPlace().hasToken()){
+									new Execution(t);
 								}
 							}
 						}
 					}
 				}	
-			} catch (InterruptedException e) {
-				System.out.println(e.getMessage());
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					System.out.println(e.getMessage());
+				}
+				if(!play){
+					JOptionPane.showMessageDialog(null, "Simulation finished");
+				}
 			}
-			
-		}
-	}
-	
-	private void executeTransition(Transition t) {
-		System.out.println("EXEC transition : "+t.getPlace().getName());
-		HashMap<String,String> map = new HashMap<>();
-		Iterator<InputArc> itia = t.getInputArcs().iterator();
-		while(itia.hasNext()){
-			Place p = itia.next().getPlace();
-			map.put(p.getType()+':'+p.getName(),p.getData().get());
-			p.removeToken();
-		}
-		Iterator<OutputArc> itoa = t.getOutputArcs().iterator();
-		while(itoa.hasNext()){
-			OutputArc a = itoa.next();
-			String expr = a.getExpression();
-			Iterator<Entry<String,String>> ie = map.entrySet().iterator();
-			while(ie.hasNext()){
-				Entry<String,String> e = ie.next();
-				System.out.print("Replace:["+e.getKey()+","+e.getValue()+"]");
-				expr=expr.replaceAll(e.getKey(), e.getValue());
-			}
-			expr=expr.replaceAll("\\?x",a.getPlace().getData().get());
-			System.out.println("\t expression:["+expr+"]");
-			try {
-				a.getPlace().getData().put(String.valueOf(((int)Parser.parse(expr).value())));
-				a.getPlace().putToken();
-			} catch (SyntaxException e) {
-				System.out.println("CANNOT EVALUATE ARC : "+e.getMessage());
+			else{
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					System.out.println(e.getMessage());
+				}
 			}
 		}
 	}
@@ -104,6 +92,82 @@ public class Player extends Thread{
 		}
 		else{
 			this.play();
+		}
+	}
+	
+	private class Execution extends Thread{
+		private Transition t;
+		public Execution(Transition t){
+			this.t = t;
+			this.start();
+		}
+		
+		@Override
+		public void run() {
+			Iterator<InputArc> itia = t.getInputArcs().iterator();
+			while(itia.hasNext()){
+				InputArc ia = itia.next();
+				ia.activate();
+				Place p = ia.getPlace();
+				try {
+					p.removeToken();
+					this.put(p.getType(),p.getName(),p.getData().get());
+				} catch (ScriptException e) {
+					e.printStackTrace();
+				}
+			}
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			itia = t.getInputArcs().iterator();
+			while(itia.hasNext()){
+				itia.next().desactivate();
+			}
+			try {
+				Boolean test = (Boolean) this.eval(t.getCondition());
+				if(test){
+					t.activate();
+					//Si une transition s'active, la simulation peut continuer
+					//Si aucune exec n'actualise la transition, on considère que 
+					//la simulation est dans un état bloqué
+					play=true;
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					t.desactivate();
+					Iterator<OutputArc> itoa = t.getOutputArcs().iterator();
+					while(itoa.hasNext()){
+						OutputArc a = itoa.next();
+						a.activate();
+						this.put("","x", a.getPlace().getData().get());
+						a.getPlace().getData().put(String.valueOf(this.eval(a.getExpression())));
+						a.getPlace().putToken();
+					}
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					itoa = t.getOutputArcs().iterator();
+					while(itoa.hasNext()){
+						itoa.next().desactivate();
+					}
+				}
+			} catch (ScriptException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage());
+			}
+		}
+
+		private Object eval(String condition) throws ScriptException {
+			return engine.eval(condition.replaceAll("\\?|:", "_"),bindings);
+		}
+		
+		private void put(String type,String name, String value) throws ScriptException{
+			bindings.put(type+"_"+name, engine.eval(value));
 		}
 	}
 }
