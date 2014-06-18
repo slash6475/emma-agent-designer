@@ -15,6 +15,7 @@ import emma.petri.control.event.NameChangedEvent;
 import emma.petri.control.listener.ScopeListener;
 import emma.petri.model.PetriElement;
 import emma.petri.model.Scope;
+import emma.view.swing.petri.SwingPetriContainer;
 import emma.view.swing.petri.table.ScopeTableModel;
 
 public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{

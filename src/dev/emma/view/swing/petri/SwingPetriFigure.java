@@ -1,4 +1,4 @@
-package emma.view.swing.petri.figure;
+package emma.view.swing.petri;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -10,8 +10,9 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import emma.petri.model.PetriElement;
-import emma.view.swing.petri.DesktopFrame;
-import emma.view.swing.petri.SwingController;
+import emma.view.swing.petri.figure.Figure;
+import emma.view.swing.petri.figure.PlaceFigure;
+import emma.view.swing.petri.figure.TransitionFigure;
 
 public abstract class SwingPetriFigure extends DesktopFrame implements Figure{
 	/**

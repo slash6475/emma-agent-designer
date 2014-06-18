@@ -19,6 +19,7 @@ import emma.petri.control.listener.SubnetListener;
 import emma.petri.model.ArcException;
 import emma.petri.model.PetriElement;
 import emma.petri.model.Subnet;
+import emma.view.swing.petri.SwingPetriContainer;
 import emma.view.swing.petri.table.SubnetTableModel;
 
 public class SubnetFigure extends SwingPetriContainer implements SubnetListener{

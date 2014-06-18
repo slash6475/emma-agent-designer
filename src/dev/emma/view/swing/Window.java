@@ -59,7 +59,7 @@ public class Window extends JFrame implements DrawableContainer{
 		SwingController control = new SwingController();
 		PetriViewer v = new PetriViewer(control);
 		v.setName(name);
-		control.importProject(list);
 		pane.add(v);
+		control.importProject(list);
 	}
 }

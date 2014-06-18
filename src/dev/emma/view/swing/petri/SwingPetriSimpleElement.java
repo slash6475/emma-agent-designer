@@ -1,4 +1,4 @@
-package emma.view.swing.petri.figure;
+package emma.view.swing.petri;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.JComponent;
+
 
 public abstract class SwingPetriSimpleElement extends SwingPetriFigure{
 

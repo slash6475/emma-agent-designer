@@ -29,8 +29,6 @@ import emma.view.swing.petri.figure.Figure;
 import emma.view.swing.petri.figure.NetFigure;
 import emma.view.swing.petri.figure.PlaceFigure;
 import emma.view.swing.petri.figure.SubnetFigure;
-import emma.view.swing.petri.figure.SwingPetriFigure;
-import emma.view.swing.petri.figure.SwingPetriSimpleElement;
 import emma.view.swing.petri.figure.TransitionFigure;
 
 public class SwingController implements FigureHandler{

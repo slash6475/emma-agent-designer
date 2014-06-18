@@ -17,6 +17,7 @@ import emma.petri.control.event.StateChangedEvent;
 import emma.petri.control.listener.PlaceListener;
 import emma.petri.model.PetriElement;
 import emma.petri.model.Place;
+import emma.view.swing.petri.SwingPetriSimpleElement;
 import emma.view.swing.petri.table.PlaceTableModel;
 
 public class PlaceFigure extends SwingPetriSimpleElement implements PlaceListener{

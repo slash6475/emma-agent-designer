@@ -13,6 +13,7 @@ import emma.petri.control.event.DesactivationEvent;
 import emma.petri.control.listener.TransitionListener;
 import emma.petri.model.PetriElement;
 import emma.petri.model.Transition;
+import emma.view.swing.petri.SwingPetriSimpleElement;
 import emma.view.swing.petri.table.TransitionTableModel;
 
 

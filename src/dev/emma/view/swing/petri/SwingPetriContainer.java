@@ -1,7 +1,6 @@
-package emma.view.swing.petri.figure;
+package emma.view.swing.petri;
 
-import emma.view.swing.petri.DrawableContainer;
-import emma.view.swing.petri.FixedDesktopPane;
+import emma.view.swing.petri.figure.Figure;
 
 public abstract class SwingPetriContainer extends SwingPetriFigure implements DrawableContainer{
 
