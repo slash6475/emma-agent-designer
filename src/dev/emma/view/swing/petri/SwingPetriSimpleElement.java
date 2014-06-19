@@ -28,6 +28,7 @@ public abstract class SwingPetriSimpleElement extends SwingPetriFigure{
 		this.getContentPane().addMouseListener(new MouseAdapter(){
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				parent.moveToBack();
 				parent.getController().selectPT(SwingPetriSimpleElement.this);
 			}
 		});

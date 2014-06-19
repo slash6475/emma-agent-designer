@@ -386,8 +386,7 @@ public class ArcFigure implements Figure, InputArcListener, OutputArcListener{
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-	}
+	public void mouseClicked(MouseEvent e) {}
 
 	@Override
 	public void notify(DeletionEvent e) {

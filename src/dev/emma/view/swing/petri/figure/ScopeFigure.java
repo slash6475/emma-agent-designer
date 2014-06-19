@@ -36,15 +36,9 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 		this.setBackground(backgroundColor);
 		Container cp = this.getContentPane();
 		cp.setBackground(backgroundColor);
-		cp.addMouseListener(new MouseAdapter(){
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				//Forcing Scope to be at the lowest z index
-				ScopeFigure.this.moveToBack();
-			}
-		});
-		cp.addMouseListener(parent.getArcHandler());
-		cp.addMouseMotionListener(parent.getArcHandler());
+		ArcHandler a = new ArcHandler();
+		cp.addMouseListener(a);
+		cp.addMouseMotionListener(a);
 		this.parent=parent;
 		if(parent.getContentPane().add(this)!=null){
 			this.moveTo(x, y);
@@ -52,6 +46,18 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 		this.placeCounter=0;
 	}
 	
+	private class ArcHandler extends MouseAdapter{
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			ScopeFigure.this.moveToBack();
+			parent.getArcHandler().mouseClicked(e);
+		}
+		@Override
+		public void mouseDragged(MouseEvent e){
+			MouseEvent e1 = new MouseEvent(ScopeFigure.this,e.getID(),e.getWhen(),e.getModifiers(),e.getX()+ScopeFigure.this.getX(),e.getY()+ScopeFigure.this.getY(),e.getClickCount(),e.isPopupTrigger());
+			parent.getArcHandler().mouseDragged(e1);
+		}
+	}
 	@Override
 	public void addPainting(Graphics g){
 		String m = scope.getTarget();
