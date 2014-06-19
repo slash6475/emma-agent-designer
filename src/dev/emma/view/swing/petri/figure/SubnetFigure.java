@@ -2,6 +2,8 @@ package emma.view.swing.petri.figure;
 
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -42,6 +44,7 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 		arcHandler=new ArcHandler();
 		this.getContentPane().addMouseListener(arcHandler);
 		this.getContentPane().addMouseMotionListener(arcHandler);
+		this.getContentPane().addKeyListener(arcHandler);
 		if(parent.add(this)!=null){
 			this.moveTo(x, y);
 		}
@@ -68,7 +71,7 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 		}
 	}
 	
-	public class ArcHandler implements MouseListener, MouseMotionListener{
+	public class ArcHandler implements MouseListener, MouseMotionListener, KeyListener{
 		@Override
 		public void mousePressed(MouseEvent e) {
 			Point p1 = SubnetFigure.this.getContentPane().getLocationOnScreen();
@@ -83,22 +86,38 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 			}
 		}
 		@Override
-		public void mouseReleased(MouseEvent e) {
-			
-		}
-		
+		public void mouseReleased(MouseEvent e) {}
 		@Override
 		public void mouseMoved(MouseEvent e) {}
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if(e.getClickCount()>1 && selectedArc!=null){
-				selectedArc.removeAPoint();
+			if(e.getClickCount()>1){
+				this.removePoint();
 			}
 		}
 		@Override
 		public void mouseEntered(MouseEvent e) {}
 		@Override
 		public void mouseExited(MouseEvent e) {}
+		@Override
+		public void keyTyped(KeyEvent e) {}
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if(e.getKeyCode()==KeyEvent.VK_DELETE){
+				this.removePoint();
+			}
+		}
+		@Override
+		public void keyReleased(KeyEvent e) {}
+		
+		private void removePoint(){
+			if(selectedArc!=null){
+				if(!selectedArc.removeAPoint()){
+					selectedArc.delete();
+				}
+				SubnetFigure.this.repaint();
+			}
+		}
 	}
 	
 	@Override

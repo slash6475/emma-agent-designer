@@ -64,14 +64,12 @@ public class ArcFigure implements Figure, InputArcListener, OutputArcListener{
 			@Override
 			public void componentMoved(ComponentEvent e) {
 				setPlacePosition();
-				parent.repaint();
 			}
 		};
 		this.transListener = new ComponentAdapter(){
 			@Override
 			public void componentMoved(ComponentEvent e) {
 				setTransitionPosition();
-				parent.repaint();
 			}
 		};
 		this.p.addComponentListener(placeListener);
@@ -207,11 +205,13 @@ public class ArcFigure implements Figure, InputArcListener, OutputArcListener{
 		return false;
 	}
 	
-	public void removeAPoint(){
+	public boolean removeAPoint(){
 		if(arcPts.size()>0){
 			arcPts.removeLast();
+			this.recalculateBounds();
+			return true;
 		}
-		this.recalculateBounds();
+		return false;
 	}
 	
 	public void addPoint(Point pt){
