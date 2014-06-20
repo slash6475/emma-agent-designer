@@ -1,4 +1,4 @@
-package emma.view;
+package emma.view.network;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 import emma.model.nodes.Network;
 
-public class NetworkViewerJTree extends JPanel {
+public class NetworkJTree extends JPanel {
 	/**
 	 * 
 	 */
@@ -27,7 +27,7 @@ public class NetworkViewerJTree extends JPanel {
 	
 
 	private DefaultTreeModel treeModel;
-	public NetworkViewerJTree(String networkName){
+	public NetworkJTree(String networkName){
 		network 	= new DefaultMutableTreeNode(networkName);
 	    treeModel 	= new DefaultTreeModel(network);
 

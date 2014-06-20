@@ -14,4 +14,7 @@ public interface Server {
 	 * Disconnect function of Server
 	 */
 	public void disconnect();
+	
+
+	public boolean isConnected();
 }

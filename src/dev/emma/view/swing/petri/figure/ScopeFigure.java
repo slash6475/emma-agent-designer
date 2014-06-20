@@ -58,6 +58,7 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 			parent.getArcHandler().mouseDragged(e1);
 		}
 	}
+	
 	@Override
 	public void addPainting(Graphics g){
 		String m = scope.getTarget();
@@ -91,7 +92,6 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 	
 	@Override
 	public boolean addTransition(int x, int y){
-		//Il doit créé une place de stockage, puis la transition
 		PlaceFigure p = new PlaceFigure("PT"+placeCounter++,x,y,this);
 		new TransitionFigure("",x, y+5+p.getHeight(),p,this);
 		return true;
@@ -105,8 +105,9 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 	
 	@Override
 	public void notify(NameChangedEvent e) {
-		if(scope==e.getSource())
+		if(scope==e.getSource()){
 			this.setTitle(scope.getName());
+		}
 	}
 	
 	@Override

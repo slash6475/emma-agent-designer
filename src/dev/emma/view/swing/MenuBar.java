@@ -20,7 +20,6 @@ public class MenuBar extends JMenuBar{
 		this.parent = caller;
 		this.fileChooser = new JFileChooser();
 		JMenu petri = new JMenu("Petri");
-		//
 		JMenuItem newp = new JMenuItem("New Project");
 		newp.addActionListener(new ActionListener(){
 			@Override
@@ -29,7 +28,6 @@ public class MenuBar extends JMenuBar{
 			}
 		});
 		petri.add(newp);
-		//
 		JMenuItem openp = new JMenuItem("Open Project");
 		openp.addActionListener(new ActionListener(){
 			@Override
@@ -41,6 +39,17 @@ public class MenuBar extends JMenuBar{
 		});
 		petri.add(openp);
 		this.add(petri);
+		
+		JMenu network = new JMenu("Network");
+		JMenuItem newn = new JMenuItem("New Network Manager");
+		newn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				parent.addNetworkManager();
+			}
+		});
+		network.add(newn);
+		this.add(network);
 	}
 
 }

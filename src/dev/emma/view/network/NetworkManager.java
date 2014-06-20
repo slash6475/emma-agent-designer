@@ -1,6 +1,6 @@
-package emma.view;
+package emma.view.network;
 
-import java.awt.Frame;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,7 +14,6 @@ import java.text.NumberFormat;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -33,48 +32,33 @@ import ch.ethz.inf.vs.californium.coap.Response;
 import ch.ethz.inf.vs.californium.coap.registries.CodeRegistry;
 
 import emma.control.coap.CoapClient;
+import emma.model.nodes.Network;
+import emma.view.swing.petri.DesktopFrame;
 
-public class AgentLauncher extends JPanel{
-	private static Logger logger = Logger.getLogger(AgentLauncher.class);
-	
+public class NetworkManager extends DesktopFrame{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private static Logger logger = Logger.getLogger(NetworkManager.class);
     protected JTextArea payload;
     protected JComboBox<String> method;
     protected JComboBox<String> ip;
     protected JTextField uri;
     protected JTextField port;
     protected NumberFormat format;
-    
+
     protected JButton refresh_btn;
     protected JButton launch_btn;
     protected JButton load_btn;
     protected JButton save_btn;
+	
+    private NetworkViewer netViewer;
     
-    
-	public static void main(String[] args) {
-		Frame win = new Frame("Agent Launcher");
-		win.add(new AgentLauncher());
-		win.setVisible(true);
-		win.setSize(400, 400);
-	}
-	
-	public void loadIP() {
-		
-	}
-	
-	public void loadAgent() {
-	
-	}
-	
-	public void sendAgent() {
-	
-	}
-	
-	
-	public AgentLauncher(){
+	public NetworkManager(Network net){
+		super("Agent Launcher", true, true, false, true);
+		this.netViewer = new NetworkViewer(net);
 		method = new JComboBox<String>();
 		method.addItem("GET");
 		method.addItem("PUT");
@@ -90,10 +74,9 @@ public class AgentLauncher extends JPanel{
                 };
             }
         });
-		
-        payload = new JTextArea(5, 20);
+        payload = new JTextArea(15, 20);
         payload.setEditable(true);
-        
+
         ip = new JComboBox<String>();
         ip.addItem("127.0.0.1");
         ip.setEditable(true);
@@ -120,12 +103,12 @@ public class AgentLauncher extends JPanel{
         layout.setHorizontalGroup(
             layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(method, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(method, 60, 60,60)
                 .addComponent(label_coap, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addComponent(ip, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(ip, 70, 80, 100)
                 .addComponent(label_coap_end, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addComponent(port, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addComponent(uri, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(port, 40, 40, 40)
+                .addComponent(uri, 60, 60, Short.MAX_VALUE)
                 .addContainerGap()
         );
         layout.setVerticalGroup(
@@ -150,20 +133,25 @@ public class AgentLauncher extends JPanel{
         control.add(load_btn);
         control.add(save_btn);
         control.add(launch_btn);
-
-        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        //this.getContentPane().add(BorderLayout.NORTH, uri_box);
-        this.add(jpanel_uri);
-        this.add(new JScrollPane(payload));
-        this.add(control);
+		
+        this.getContentPane().add(jpanel_uri,BorderLayout.NORTH);
+        this.getContentPane().add(netViewer,BorderLayout.WEST);
+        this.getContentPane().add(new JScrollPane(payload),BorderLayout.CENTER);
+        this.getContentPane().add(control,BorderLayout.SOUTH);
+        this.pack();
+        this.setVisible(true);
 	}
+
+	public void loadIP() {}
+	
+	public void loadAgent() {}
+	
+	public void sendAgent() {}
 	
     private Action Refresh = new AbstractAction("Refresh") {
 		private static final long serialVersionUID = 1L;
-
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			
 			logger.debug("Refresh");
 		}
     };
@@ -173,11 +161,8 @@ public class AgentLauncher extends JPanel{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
-			
-			AgentLauncher.this.setEnabled(false);
-			AgentLauncher.this.setVisible(false);
-			
+			NetworkManager.this.setEnabled(false);
+			NetworkManager.this.setVisible(false);
 			CoapClient client = new CoapClient();
 			String uriString = "coap://" + ip.getSelectedItem() +": " + port.getText() + uri.getText();
 			String payloadString = payload.getText().replace(" ","").replace("\n", "");
@@ -191,20 +176,18 @@ public class AgentLauncher extends JPanel{
 			try {
 				uriString = uriString.replace(" ","");
 				Response rsp = client.send(methodTosend, uriString, payloadString);
-				if(rsp != null)
-					JOptionPane.showMessageDialog(AgentLauncher.this, rsp.getPayloadString());
-				else JOptionPane.showMessageDialog(AgentLauncher.this, "No response");
-				
-
-				
-				
+				if(rsp != null){
+					JOptionPane.showMessageDialog(NetworkManager.this, rsp.getPayloadString());
+				}
+				else{
+					JOptionPane.showMessageDialog(NetworkManager.this, "No response");	
+				}
 			} catch (URISyntaxException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			} 
 			finally{
-				AgentLauncher.this.setVisible(true);
-				AgentLauncher.this.setEnabled(true);
+				NetworkManager.this.setVisible(true);
+				NetworkManager.this.setEnabled(true);
 			}
 		}
     	
@@ -216,19 +199,15 @@ public class AgentLauncher extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent e) {
             String agent = payload.getText();
-
             JFileChooser fc = new JFileChooser();
-          
-            int returnVal = fc.showSaveDialog(null);
 
-
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
+            if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 int dialogResult = JOptionPane.YES_OPTION;
                 
-                if (file.exists()) 
+                if (file.exists()){
                     dialogResult = JOptionPane.showConfirmDialog(null, "This agent already exists, do you want to erase it ?", "Warning", JOptionPane.YES_NO_OPTION);
-
+                }
                 if (dialogResult == JOptionPane.YES_OPTION) {
                   	FileWriter fw;
                   	try {
@@ -250,23 +229,18 @@ public class AgentLauncher extends JPanel{
 
 		public void actionPerformed(ActionEvent e) {
             JFileChooser fc = new JFileChooser();
-            int returnVal = fc.showOpenDialog(null);
-
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
+            if(fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 BufferedReader br;
                 try {
                     br = new BufferedReader(new FileReader(file.getAbsolutePath()));
-
                     StringBuilder sb = new StringBuilder();
                     String line = br.readLine();
-
                     while (line != null) {
                         sb.append(line);
                         sb.append("\n");
                         line = br.readLine();
                     }
-
                     payload.setText(sb.toString());
                     br.close();
                 } catch (IOException ex) {

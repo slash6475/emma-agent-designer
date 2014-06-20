@@ -36,6 +36,8 @@ public class PetriViewer extends DesktopFrame{
 		} catch (PropertyVetoException e) {
 			e.printStackTrace();
 		}
+		this.pack();
+		this.setVisible(true);
 	}
 	
 	@Override

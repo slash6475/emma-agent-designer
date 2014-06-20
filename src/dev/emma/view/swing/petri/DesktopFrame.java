@@ -14,7 +14,6 @@ public class DesktopFrame extends JInternalFrame implements DrawableContainer{
 	public DesktopFrame(String name,boolean resizable, boolean closable, boolean maximizable,
 			boolean iconifiable){
 		super(name,resizable,closable,maximizable,iconifiable);
-		this.setVisible(true);
 	}
 	public DesktopFrame(String name){
 		this(name,true,true,true,true);

@@ -4,9 +4,12 @@ import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.net.SocketException;
 
 import javax.swing.JFrame;
 
+import emma.control.coap.CoapProxy;
+import emma.view.network.NetworkManager;
 import emma.view.swing.petri.DrawableContainer;
 import emma.view.swing.petri.FixedDesktopPane;
 import emma.view.swing.petri.PetriViewer;
@@ -18,10 +21,17 @@ public class Window extends JFrame implements DrawableContainer{
 	
 	private FixedDesktopPane pane;
 	private int petriCount;
+	private CoapProxy coapProxy;
+	
 	public Window(){
 		super();
+		try {
+			this.coapProxy = new CoapProxy();
+		} catch (SocketException e) {
+			System.out.println(e.getMessage());
+		}
 		this.petriCount=0;
-		this.setTitle("EMMA Agent Design");
+		this.setTitle("EMMA Framework");
 		this.pane = new FixedDesktopPane(this);
 		this.pane.setBackground(this.getBackground());
 		this.setContentPane(pane);
@@ -46,6 +56,9 @@ public class Window extends JFrame implements DrawableContainer{
 	public void addPainting(Graphics g) {
 	}
 	
+	public void addNetworkManager(){
+		pane.add(new NetworkManager(this.coapProxy.getNetwork()));
+	}
 	public void addPetriViewer(){
 		petriCount++;
 		SwingController control = new SwingController();

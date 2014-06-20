@@ -15,10 +15,10 @@ import emma.control.Server;
 
 public class HttpRegistry implements Server {
 	private HttpServer server;
-	
 	private int PORT = 8000;
 	private String registryUri = "/emma/registry";
 	private String registryPath = "registry";
+	private boolean isConnected;
 	
 	class MyHandler implements HttpHandler {
 		public void handle(HttpExchange t) throws IOException {
@@ -71,16 +71,26 @@ public class HttpRegistry implements Server {
 		server = HttpServer.create(new InetSocketAddress(PORT), 0);
 		server.createContext(registryUri, new MyHandler());
 		server.setExecutor(null); // creates a default executor
+		this.isConnected=false;
 	}
 
 	@Override
 	public void connect() {
 		server.start();
 		System.out.println("Registry server listening on port " + PORT);
+		this.isConnected=true;
 	}
 
 	@Override
 	public void disconnect() {
 		server.stop(0);
+		this.isConnected=false;
 	}
+
+	@Override
+	public boolean isConnected() {
+		return this.isConnected;
+	}
+	
+	
 }
