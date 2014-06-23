@@ -50,15 +50,16 @@ public class NetworkManager extends DesktopFrame{
     protected NumberFormat format;
 
     protected JButton refresh_btn;
+    protected JButton gen_btn;
     protected JButton launch_btn;
     protected JButton load_btn;
     protected JButton save_btn;
 	
-    private NetworkViewer netViewer;
-    
-	public NetworkManager(Network net){
+    private Network network;
+
+	public NetworkManager(Network netwk){
 		super("Agent Launcher", true, true, false, true);
-		this.netViewer = new NetworkViewer(net);
+		NetworkViewer netViewer = new NetworkViewer(netwk);
 		method = new JComboBox<String>();
 		method.addItem("GET");
 		method.addItem("PUT");
@@ -123,13 +124,15 @@ public class NetworkManager extends DesktopFrame{
                 )
         );
  
-        refresh_btn = new JButton(Refresh);
-        launch_btn = new JButton(Launch);
-        load_btn = new JButton(Load);
-        save_btn = new JButton(Save);
+        refresh_btn = new JButton(refresh);
+        gen_btn = new JButton(gen);
+        launch_btn = new JButton(launch);
+        load_btn = new JButton(load);
+        save_btn = new JButton(save);
 
         Box control = Box.createHorizontalBox();
         control.add(refresh_btn);
+        control.add(gen_btn);
         control.add(load_btn);
         control.add(save_btn);
         control.add(launch_btn);
@@ -138,6 +141,7 @@ public class NetworkManager extends DesktopFrame{
         this.getContentPane().add(netViewer,BorderLayout.WEST);
         this.getContentPane().add(new JScrollPane(payload),BorderLayout.CENTER);
         this.getContentPane().add(control,BorderLayout.SOUTH);
+        this.network = netwk;
         this.pack();
         this.setVisible(true);
 	}
@@ -148,7 +152,7 @@ public class NetworkManager extends DesktopFrame{
 	
 	public void sendAgent() {}
 	
-    private Action Refresh = new AbstractAction("Refresh") {
+    private Action refresh = new AbstractAction("Refresh") {
 		private static final long serialVersionUID = 1L;
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -156,7 +160,20 @@ public class NetworkManager extends DesktopFrame{
 		}
     };
     
-    private Action Launch = new AbstractAction("Launch") {
+    private Action gen =  new AbstractAction("Generate"){
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser fc = new JFileChooser();
+            if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                System.out.println(file.getName());
+            }
+		}
+    };
+    
+    private Action launch = new AbstractAction("Launch") {
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -193,7 +210,7 @@ public class NetworkManager extends DesktopFrame{
     	
     };
     
-    private Action Save = new AbstractAction("Save") {
+    private Action save = new AbstractAction("Save") {
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -224,7 +241,7 @@ public class NetworkManager extends DesktopFrame{
             }
 		};
     
-    private Action Load = new AbstractAction("Load") {
+    private Action load = new AbstractAction("Load") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent e) {

@@ -4,10 +4,8 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
@@ -163,30 +161,7 @@ public class SwingController implements FigureHandler{
 	}
 	
 	public void importProject(File list){
-		String path = list.getParentFile().getPath()+"/";
-		if(fig.isSubnetContainer()){
-			BufferedReader br = null;
-			try {
-				String sCurrentLine;
-				br = new BufferedReader(new FileReader(list));
-				while ((sCurrentLine = br.readLine()) != null) {
-					try {
-						parser.importSubnetFigureFromXMLFile(0,0,(NetFigure)fig,new File(path+sCurrentLine),true);
-					} catch (CorruptedFileException | SAXException e) {
-						e.printStackTrace();
-					}
-				}
-	 
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					if (br != null)br.close();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			}
-		}
+		parser.importProject((NetFigure)fig,list);
 	}
 	
 	private boolean addFigure(ControlMode m, Figure f, int x, int y){

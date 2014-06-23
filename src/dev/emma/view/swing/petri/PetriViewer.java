@@ -6,7 +6,6 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
 public class PetriViewer extends DesktopFrame{
-	
 	/**
 	 * 
 	 */
@@ -36,8 +35,6 @@ public class PetriViewer extends DesktopFrame{
 		} catch (PropertyVetoException e) {
 			e.printStackTrace();
 		}
-		this.pack();
-		this.setVisible(true);
 	}
 	
 	@Override

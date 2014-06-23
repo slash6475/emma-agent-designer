@@ -1,8 +1,10 @@
 package emma.petri.view;
 
 import java.awt.Point;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -493,5 +495,32 @@ public class XMLParser {
 			throw new CorruptedFileException("arc relies unknow place and/or transition");
 		}
 		return a;
+	}
+    
+	public void importProject(NetFigure fig, File list) {
+		String path = list.getParentFile().getPath()+"/";
+		if(fig.isSubnetContainer()){
+			BufferedReader br = null;
+			try {
+				String sCurrentLine;
+				br = new BufferedReader(new FileReader(list));
+				while ((sCurrentLine = br.readLine()) != null) {
+					try {
+						this.importSubnetFigureFromXMLFile(0,0,fig,new File(path+sCurrentLine),true);
+					} catch (CorruptedFileException | SAXException e) {
+						e.printStackTrace();
+					}
+				}
+	 
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (br != null)br.close();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
 	}
 }

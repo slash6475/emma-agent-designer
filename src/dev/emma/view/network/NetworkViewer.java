@@ -17,7 +17,6 @@ public class NetworkViewer extends NetworkJTree implements Listener{
 	 * 
 	 */
 	private static final long serialVersionUID = 7947025900047711801L;
-	//private Network network;
 		
 	public NetworkViewer(Network net){
 		super(net.getName());

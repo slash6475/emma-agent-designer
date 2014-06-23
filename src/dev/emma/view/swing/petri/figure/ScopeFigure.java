@@ -3,9 +3,12 @@ package emma.view.swing.petri.figure;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.AbstractTableModel;
 
 import emma.petri.control.event.ActivationEvent;
@@ -44,9 +47,19 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 			this.moveTo(x, y);
 		}
 		this.placeCounter=0;
+		this.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				ScopeFigure.this.parent.repaint();
+			}
+		});
 	}
 	
 	private class ArcHandler extends MouseAdapter{
+		@Override
+		public void mousePressed(MouseEvent e) {
+			parent.getArcHandler().mousePressed(e);
+		}
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			ScopeFigure.this.moveToBack();
@@ -54,7 +67,8 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 		}
 		@Override
 		public void mouseDragged(MouseEvent e){
-			MouseEvent e1 = new MouseEvent(ScopeFigure.this,e.getID(),e.getWhen(),e.getModifiers(),e.getX()+ScopeFigure.this.getX(),e.getY()+ScopeFigure.this.getY(),e.getClickCount(),e.isPopupTrigger());
+			int height = ((BasicInternalFrameUI) ScopeFigure.this.getUI()).getNorthPane().getSize().height+5;
+			MouseEvent e1 = new MouseEvent(ScopeFigure.this,e.getID(),e.getWhen(),e.getModifiers(),e.getX()+ScopeFigure.this.getX()+5,e.getY()+ScopeFigure.this.getY()+height,e.getClickCount(),e.isPopupTrigger());
 			parent.getArcHandler().mouseDragged(e1);
 		}
 	}

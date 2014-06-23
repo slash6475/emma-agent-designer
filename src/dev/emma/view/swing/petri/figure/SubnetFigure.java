@@ -38,10 +38,14 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 	
 	public SubnetFigure(String name,int x, int y, int width, int height, NetFigure parent){
 		super(name, width, height, true, true, parent);
+		MouseListener[] tab1 = this.getContentPane().getMouseListeners();
+		for(MouseListener l : tab1){
+			this.getContentPane().removeMouseListener(l);
+		}
 		this.sub=new Subnet(parent.getNet(),name);
 		this.sub.addListener(this);
 		this.arcs = new HashSet<ArcFigure>();
-		arcHandler=new ArcHandler();
+		arcHandler=new ArcHandler(tab1);
 		this.getContentPane().addMouseListener(arcHandler);
 		this.getContentPane().addMouseMotionListener(arcHandler);
 		this.getContentPane().addKeyListener(arcHandler);
@@ -58,7 +62,7 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 		}
 	}
 	
-	private void selectArc(Point point) {
+	private boolean selectArc(Point point) {
 		selectedArc=null;
 		Iterator<ArcFigure> it = arcs.iterator();
 		while(it.hasNext()){
@@ -66,17 +70,27 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 			if(a.isInBounds(point)){
 				selectedArc=a;
 				control.putFocusOn(a);
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	public class ArcHandler implements MouseListener, MouseMotionListener, KeyListener{
+		private MouseListener[] mouses;
+		public ArcHandler(MouseListener[] mouses){
+			this.mouses=mouses;
+		}
 		@Override
 		public void mousePressed(MouseEvent e) {
 			Point p1 = SubnetFigure.this.getContentPane().getLocationOnScreen();
 			Point p2 = e.getLocationOnScreen();
-			selectArc(new Point(p2.x-p1.x,p2.y-p1.y));
+			if(!selectArc(new Point(p2.x-p1.x,p2.y-p1.y))){
+				for(MouseListener l : mouses){
+					l.mouseClicked(e);
+				}
+				SubnetFigure.this.repaint();
+			}
 		}
 
 		@Override
