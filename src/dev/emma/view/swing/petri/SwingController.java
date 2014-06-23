@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.filechooser.FileFilter;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -23,6 +24,7 @@ import emma.petri.view.CorruptedFileException;
 import emma.petri.view.FigureHandler;
 import emma.petri.view.PropertiesView;
 import emma.petri.view.XMLParser;
+import emma.view.swing.FileNameFilter;
 import emma.view.swing.petri.figure.Figure;
 import emma.view.swing.petri.figure.NetFigure;
 import emma.view.swing.petri.figure.PlaceFigure;
@@ -48,11 +50,13 @@ public class SwingController implements FigureHandler{
 	private Figure focusFigure;
 	private XMLParser parser;
 	private Player player;
+	private FileNameFilter epnf;
+	private FileNameFilter lst;
 	
 	public SwingController(){
-		mode=ControlMode.SELECT;
-		lastSelected=null;
-		focusFigure=null;
+		this.mode=ControlMode.SELECT;
+		this.lastSelected=null;
+		this.focusFigure=null;
 		try {
 			parser = new XMLParser();
 			xml=true;
@@ -61,72 +65,92 @@ public class SwingController implements FigureHandler{
 			e1.printStackTrace();
 			xml=false;
 		}
-		
-		fileChooser = new JFileChooser();
-		contextMenu = new JPopupMenu();
-		place = new JMenuItem("Add place");
-        trans = new JMenuItem("Add transition");
-        scope = new JMenuItem("Add scope");
-        sub = new JMenuItem("Add subnet");
-        importsub = new JMenuItem("Import Subnet");
-        save = new JMenuItem("Save");
-        del = new JMenuItem("Delete");
-        contextMenu.add(place);
-        contextMenu.add(trans);
-        contextMenu.add(scope);
-        contextMenu.add(sub);
-        contextMenu.addSeparator();
-        contextMenu.add(importsub);
-        contextMenu.add(save);
-        contextMenu.addSeparator();
-        contextMenu.add(del);
-        place.addActionListener(new ActionListener(){
+		this.fileChooser = new JFileChooser();
+		for(FileFilter f : this.fileChooser.getChoosableFileFilters()){
+			this.fileChooser.removeChoosableFileFilter(f);
+		}
+		this.epnf=new FileNameFilter("epnf", "Subnet Files (.epnf)");
+		this.lst=new FileNameFilter("???", "Project (new directory)");
+		this.contextMenu = new JPopupMenu();
+		this.place = new JMenuItem("Add place");
+		this.trans = new JMenuItem("Add transition");
+		this.scope = new JMenuItem("Add scope");
+		this.sub = new JMenuItem("Add subnet");
+		this.importsub = new JMenuItem("Import Subnet");
+		this.save = new JMenuItem("Save");
+		this.del = new JMenuItem("Delete");
+		this.contextMenu.add(place);
+		this.contextMenu.add(trans);
+		this.contextMenu.add(scope);
+		this.contextMenu.add(sub);
+		this.contextMenu.addSeparator();
+		this.contextMenu.add(importsub);
+		this.contextMenu.add(save);
+		this.contextMenu.addSeparator();
+		this.contextMenu.add(del);
+		this.place.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
 				addFigure(ControlMode.INSERT_PLACE);
 			}
         });
-        trans.addActionListener(new ActionListener(){
+		this.trans.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
 				addFigure(ControlMode.INSERT_TRANSITION);
 			}
         });
-        scope.addActionListener(new ActionListener(){
+		this.scope.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
 				addFigure(ControlMode.INSERT_SCOPE);
 			}
         });
-        sub.addActionListener(new ActionListener(){
+		this.sub.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
 				addFigure(ControlMode.INSERT_SUBNET);
 			}
         });
-        importsub.addActionListener(new ActionListener(){
+		this.importsub.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				importFile();
 			}
         });
-        save.addActionListener(new ActionListener(){
+		this.save.addActionListener(new ActionListener(){
         	@Override
 			public void actionPerformed(ActionEvent e) {
-				saveFile();
+				saveFile(fig.isSubnetContainer());
 			}
         });
-        del.addActionListener(new ActionListener(){
+		this.del.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
 				fig.delete();
 			}
         });
     }
-	private void saveFile(){
-		if(fileChooser.showSaveDialog(null)==JFileChooser.APPROVE_OPTION){
-			String path = fileChooser.getSelectedFile().toString();
-			if(fig.isScopeContainer()){
+	private void saveFile(boolean project){
+		if(project){
+			fileChooser.addChoosableFileFilter(lst);
+			if(fileChooser.showSaveDialog(null)==JFileChooser.APPROVE_OPTION){
+				String path = fileChooser.getSelectedFile().toString();
+				File file = new File(path);
+				if(file.mkdir()){
+					try {
+						parser.saveProjectToXMLFile(((NetFigure)fig).getNet(), file);
+					} catch (TransformerException | FileNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			fileChooser.removeChoosableFileFilter(lst);
+		}
+		else{
+			fileChooser.addChoosableFileFilter(epnf);
+			if(fileChooser.showSaveDialog(null)==JFileChooser.APPROVE_OPTION){
+				String path = fileChooser.getSelectedFile().toString();
 				if(!path.endsWith(".epnf")){
 					path=path.concat(".epnf");
 				}
@@ -137,16 +161,7 @@ public class SwingController implements FigureHandler{
 					e.printStackTrace();
 				}
 			}
-			else{
-				File file = new File(path);
-				if(file.mkdir()){
-					try {
-						parser.saveProjectToXMLFile(((NetFigure)fig).getNet(), file);
-					} catch (TransformerException | FileNotFoundException e) {
-						e.printStackTrace();
-					}
-				}
-			}
+			fileChooser.removeChoosableFileFilter(epnf);
 		}
 	}
 	

@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 
 import org.apache.log4j.Logger;
@@ -166,6 +167,16 @@ public class NetworkManager extends DesktopFrame{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JFileChooser fc = new JFileChooser();
+			fc.addChoosableFileFilter(new FileFilter() {
+				@Override
+				public boolean accept(File pathname) {
+					return pathname.getName().endsWith(".txt");
+				}
+				@Override
+				public String getDescription() {
+					return null;
+				}
+			});
             if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 System.out.println(file.getName());

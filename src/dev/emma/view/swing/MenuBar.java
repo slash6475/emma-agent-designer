@@ -7,6 +7,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.filechooser.FileFilter;
 
 public class MenuBar extends JMenuBar{
 
@@ -19,6 +20,10 @@ public class MenuBar extends JMenuBar{
 		super();
 		this.parent = caller;
 		this.fileChooser = new JFileChooser();
+		for(FileFilter f : this.fileChooser.getChoosableFileFilters()){
+			this.fileChooser.removeChoosableFileFilter(f);
+		}
+		this.fileChooser.addChoosableFileFilter(new FileNameFilter("lst","Project Files (.lst)"));
 		JMenu petri = new JMenu("Petri");
 		JMenuItem newp = new JMenuItem("New Project");
 		newp.addActionListener(new ActionListener(){
@@ -51,5 +56,4 @@ public class MenuBar extends JMenuBar{
 		network.add(newn);
 		this.add(network);
 	}
-
 }
