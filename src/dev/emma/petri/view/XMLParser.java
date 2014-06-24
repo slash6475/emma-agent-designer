@@ -681,7 +681,7 @@ public class XMLParser {
 			}
 			else if(classe.equals("output")){
 				try{
-					a = new InputArc(p,t);
+					a = new OutputArc(p,t);
 				} catch (ArcException e) {
 					throw new CorruptedFileException(e.getMessage());
 				}
