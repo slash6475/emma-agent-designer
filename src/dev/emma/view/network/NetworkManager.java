@@ -26,14 +26,24 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.basic.BasicComboBoxUI;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
 
 import org.apache.log4j.Logger;
+import org.xml.sax.SAXException;
 
 import ch.ethz.inf.vs.californium.coap.Response;
 import ch.ethz.inf.vs.californium.coap.registries.CodeRegistry;
 
 import emma.control.coap.CoapClient;
+import emma.mapper.Mapper;
+import emma.mapper.MappingNotFoundException;
+import emma.mapper.SimpleMapper;
 import emma.model.nodes.Network;
+import emma.petri.model.Net;
+import emma.petri.view.CorruptedFileException;
+import emma.petri.view.XMLParser;
+import emma.view.swing.FileNameFilter;
 import emma.view.swing.petri.DesktopFrame;
 
 public class NetworkManager extends DesktopFrame{
@@ -57,16 +67,18 @@ public class NetworkManager extends DesktopFrame{
     protected JButton save_btn;
 	
     private Network network;
+    private Mapper mapper;
+    private XMLParser parser;
 
 	public NetworkManager(Network netwk){
 		super("Agent Launcher", true, true, false, true);
 		NetworkViewer netViewer = new NetworkViewer(netwk);
-		method = new JComboBox<String>();
-		method.addItem("GET");
-		method.addItem("PUT");
-		method.addItem("POST");
-		method.addItem("DELETE");
-		method.setUI(new BasicComboBoxUI() {
+		this.method = new JComboBox<String>();
+		this.method.addItem("GET");
+		this.method.addItem("PUT");
+		this.method.addItem("POST");
+		this.method.addItem("DELETE");
+		this.method.setUI(new BasicComboBoxUI() {
             @SuppressWarnings("serial")
 			protected JButton createArrowButton() {
                 return new JButton() {
@@ -76,13 +88,13 @@ public class NetworkManager extends DesktopFrame{
                 };
             }
         });
-        payload = new JTextArea(15, 20);
-        payload.setEditable(true);
+		this.payload = new JTextArea(15, 20);
+		this.payload.setEditable(true);
 
-        ip = new JComboBox<String>();
-        ip.addItem("127.0.0.1");
-        ip.setEditable(true);
-        ip.setUI(new BasicComboBoxUI() {
+		this.ip = new JComboBox<String>();
+		this.ip.addItem("127.0.0.1");
+		this.ip.setEditable(true);
+		this.ip.setUI(new BasicComboBoxUI() {
             @SuppressWarnings("serial")
 			protected JButton createArrowButton() {
                 return new JButton() {
@@ -92,9 +104,8 @@ public class NetworkManager extends DesktopFrame{
                 };
             }
         });
-        port = new JTextField("5683");
-        
-        uri = new JTextField("/");
+		this.port = new JTextField("5683");
+		this.uri = new JTextField("/");
         JLabel label_coap = new JLabel("coap://");
         JLabel label_coap_end = new JLabel(":");
 
@@ -125,11 +136,11 @@ public class NetworkManager extends DesktopFrame{
                 )
         );
  
-        refresh_btn = new JButton(refresh);
-        gen_btn = new JButton(gen);
-        launch_btn = new JButton(launch);
-        load_btn = new JButton(load);
-        save_btn = new JButton(save);
+        this.refresh_btn = new JButton(refresh);
+        this.gen_btn = new JButton(gen);
+        this.launch_btn = new JButton(launch);
+        this.load_btn = new JButton(load);
+        this.save_btn = new JButton(save);
 
         Box control = Box.createHorizontalBox();
         control.add(refresh_btn);
@@ -143,6 +154,12 @@ public class NetworkManager extends DesktopFrame{
         this.getContentPane().add(new JScrollPane(payload),BorderLayout.CENTER);
         this.getContentPane().add(control,BorderLayout.SOUTH);
         this.network = netwk;
+        this.mapper=new SimpleMapper();
+        try {
+			this.parser=new XMLParser();
+		} catch (TransformerConfigurationException | ParserConfigurationException e) {
+			System.out.println(e.getMessage());
+		}
         this.pack();
         this.setVisible(true);
 	}
@@ -163,37 +180,37 @@ public class NetworkManager extends DesktopFrame{
     
     private Action gen =  new AbstractAction("Generate"){
 		private static final long serialVersionUID = 1L;
-
+		private final JFileChooser fc;
+		{
+			fc = new JFileChooser();
+			for(FileFilter f : fc.getChoosableFileFilters()){
+				fc.removeChoosableFileFilter(f);
+			}
+			fc.addChoosableFileFilter(new FileNameFilter("epnf|lst","Files (.epnf,.lst)"));
+		}
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			JFileChooser fc = new JFileChooser();
-			fc.addChoosableFileFilter(new FileFilter() {
-				@Override
-				public boolean accept(File pathname) {
-					return pathname.getName().endsWith(".txt");
-				}
-				@Override
-				public String getDescription() {
-					return null;
-				}
-			});
-            if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            if(fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
-                System.out.println(file.getName());
+                try {
+                	Net n = parser.getNetFromXMLFile(file);
+            		payload.setText(mapper.getMapping(network, parser.getNetFromXMLFile(file)).getDeploymentAgent(true));
+				} catch (MappingNotFoundException | CorruptedFileException | IOException | SAXException ex) {
+					payload.setText("ERROR :\n"+ex.getMessage());
+				}
             }
 		}
     };
     
     private Action launch = new AbstractAction("Launch") {
 		private static final long serialVersionUID = 1L;
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			NetworkManager.this.setEnabled(false);
 			NetworkManager.this.setVisible(false);
 			CoapClient client = new CoapClient();
 			String uriString = "coap://" + ip.getSelectedItem() +": " + port.getText() + uri.getText();
-			String payloadString = payload.getText().replace(" ","").replace("\n", "");
+			String payloadString = payload.getText().replaceAll(" |\n|\t","");
 			
 			int methodTosend = -1;
 			if(method.getSelectedItem().equals("GET"))			methodTosend = CodeRegistry.METHOD_GET;
@@ -226,18 +243,16 @@ public class NetworkManager extends DesktopFrame{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-            String agent = payload.getText();
-            JFileChooser fc = new JFileChooser();
-
+			String agent = payload.getText();
+			JFileChooser fc = new JFileChooser();
             if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 int dialogResult = JOptionPane.YES_OPTION;
-                
                 if (file.exists()){
                     dialogResult = JOptionPane.showConfirmDialog(null, "This agent already exists, do you want to erase it ?", "Warning", JOptionPane.YES_NO_OPTION);
                 }
                 if (dialogResult == JOptionPane.YES_OPTION) {
-                  	FileWriter fw;
+                	FileWriter fw;
                   	try {
                   		fw = new FileWriter(file.getAbsoluteFile());
                   		BufferedWriter bw = new BufferedWriter(fw);
@@ -246,11 +261,11 @@ public class NetworkManager extends DesktopFrame{
                   	}
                   	catch (IOException ex) {
                   		JOptionPane.showMessageDialog(null, "Saving agent error : " + ex.getMessage());
-                  		}  
-                  	}
+                  	} 
                 }
             }
-		};
+		}
+    };
     
     private Action load = new AbstractAction("Load") {
 		private static final long serialVersionUID = 1L;

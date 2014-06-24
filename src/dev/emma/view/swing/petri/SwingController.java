@@ -166,6 +166,7 @@ public class SwingController implements FigureHandler{
 	}
 	
 	private void importFile() {
+		fileChooser.addChoosableFileFilter(epnf);
 		if(fileChooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
 			try {
 				parser.importSubnetFigureFromXMLFile(origin.x, origin.y,(NetFigure)fig, fileChooser.getSelectedFile());
@@ -173,6 +174,7 @@ public class SwingController implements FigureHandler{
 				e.printStackTrace();
 			}
 		}
+		fileChooser.removeChoosableFileFilter(epnf);
 	}
 	
 	public void importProject(File list){
