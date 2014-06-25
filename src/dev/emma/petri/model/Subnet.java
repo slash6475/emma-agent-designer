@@ -43,6 +43,9 @@ public class Subnet extends PetriElement{
 	
 	@Override
 	protected void deleteLinks(PetriElement caller) {
+		if(caller!=parent){
+			parent.remove(this);
+		}
 		Iterator<Scope> it = scopes.iterator();
 		while(it.hasNext()){
 			it.next().delete(this);

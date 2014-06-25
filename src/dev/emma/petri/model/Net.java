@@ -46,4 +46,8 @@ public class Net extends PetriElement {
 	public Set<NetListener> getListeners(){
 		return nls;
 	}
+
+	public boolean remove(Subnet subnet) {
+		return this.getSubnets().remove(subnet);
+	}
 }

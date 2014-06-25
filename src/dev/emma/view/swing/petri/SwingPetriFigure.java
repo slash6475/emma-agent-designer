@@ -9,6 +9,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
+
 import emma.petri.model.PetriElement;
 import emma.view.swing.petri.figure.Figure;
 import emma.view.swing.petri.figure.PlaceFigure;
@@ -39,6 +42,12 @@ public abstract class SwingPetriFigure extends DesktopFrame implements Figure{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				SwingPetriFigure.this.mouseClicked(e);
+			}
+		});
+		this.addInternalFrameListener(new InternalFrameAdapter(){
+		    @Override 
+			public void internalFrameClosing(InternalFrameEvent e) {
+				getElement().delete();
 			}
 		});
 	}
