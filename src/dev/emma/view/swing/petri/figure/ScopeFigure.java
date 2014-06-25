@@ -30,7 +30,8 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 	private int placeCounter;
 	private SubnetFigure parent;
 	private Scope scope;
-	
+	private int oldX;
+	private int oldY;
 	public ScopeFigure(String name, int x, int y, int width, int height, SubnetFigure parent) {
 		super(name, width, height, false, false, parent);
 		scope=new Scope(parent.getSubnet());
@@ -50,9 +51,13 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 		this.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentMoved(ComponentEvent e) {
-				ScopeFigure.this.parent.repaint();
+				ScopeFigure.this.parent.scopeMoved(ScopeFigure.this, oldX, oldY);
+				oldX = ScopeFigure.this.getX();
+				oldY = ScopeFigure.this.getY();
 			}
 		});
+		this.oldX=x;
+		this.oldY=y;
 	}
 	
 	private class ArcHandler extends MouseAdapter{

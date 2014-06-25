@@ -228,4 +228,25 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 
 	@Override
 	public void notify(DesactivationEvent e){}
+
+	public void scopeMoved(ScopeFigure scopeFigure, int oldX, int oldY) {
+		Iterator<ArcFigure> it = arcs.iterator();
+		int x1 = scopeFigure.getX();
+		int x2 = x1+scopeFigure.getWidth();
+		int y1 = scopeFigure.getY();
+		int y2 = y1+scopeFigure.getHeight();
+		//If a point is in the scope that has been moved,
+		//then we should move this point from the same decay
+		while(it.hasNext()){
+			ArcFigure a = it.next();
+			Iterator<Point> itP = a.getPoints().iterator();
+			while(itP.hasNext()){
+				Point p = itP.next();
+				if(p.x>=x1 && p.x<=x2 && p.y>=y1 && p.y<=y2){
+					p.move(p.x+(x1-oldX), p.y+(y1-oldY));
+				}
+			}
+		}
+		this.repaint();
+	}
 }
