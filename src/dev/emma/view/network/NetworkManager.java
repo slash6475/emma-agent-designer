@@ -40,7 +40,6 @@ import emma.mapper.Mapper;
 import emma.mapper.MappingNotFoundException;
 import emma.mapper.SimpleMapper;
 import emma.model.nodes.Network;
-import emma.petri.model.Net;
 import emma.petri.view.CorruptedFileException;
 import emma.petri.view.XMLParser;
 import emma.view.swing.FileNameFilter;
@@ -193,7 +192,6 @@ public class NetworkManager extends DesktopFrame{
             if(fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 try {
-                	Net n = parser.getNetFromXMLFile(file);
             		payload.setText(mapper.getMapping(network, parser.getNetFromXMLFile(file)).getDeploymentAgent(true));
 				} catch (MappingNotFoundException | CorruptedFileException | IOException | SAXException ex) {
 					payload.setText("ERROR :\n"+ex.getMessage());

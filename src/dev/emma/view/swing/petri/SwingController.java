@@ -60,9 +60,8 @@ public class SwingController implements FigureHandler{
 		try {
 			parser = new XMLParser();
 			xml=true;
-		} catch (TransformerConfigurationException
-				| ParserConfigurationException e1) {
-			e1.printStackTrace();
+		} catch (TransformerConfigurationException | ParserConfigurationException e1) {
+			System.out.println(e1.getMessage());
 			xml=false;
 		}
 		this.fileChooser = new JFileChooser();
@@ -70,7 +69,7 @@ public class SwingController implements FigureHandler{
 			this.fileChooser.removeChoosableFileFilter(f);
 		}
 		this.epnf=new FileNameFilter("epnf", "Subnet Files (.epnf)");
-		this.lst=new FileNameFilter("???", "Project (new directory)");
+		this.lst=new FileNameFilter("", "Project (new directory)");
 		this.contextMenu = new JPopupMenu();
 		this.place = new JMenuItem("Add place");
 		this.trans = new JMenuItem("Add transition");
@@ -171,7 +170,7 @@ public class SwingController implements FigureHandler{
 			try {
 				parser.importSubnetFigureFromXMLFile(origin.x, origin.y,(NetFigure)fig, fileChooser.getSelectedFile());
 			} catch (CorruptedFileException | SAXException | IOException e) {
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 		}
 		fileChooser.removeChoosableFileFilter(epnf);
