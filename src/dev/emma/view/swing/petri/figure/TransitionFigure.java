@@ -35,7 +35,6 @@ public class TransitionFigure extends SwingPetriSimpleElement implements Transit
 	
 	public TransitionFigure(String name, int x, int y, PlaceFigure p,ScopeFigure parent) {
 		super(name, defaultWidth, defaultHeight, parent);	
-		this.setBackground(backgroundColor);
 		this.setBorder(new LineBorder(Color.black,2));
 		this.place=p;
 		this.transition= new Transition(parent.getScope(), place.getPlace());
@@ -51,14 +50,15 @@ public class TransitionFigure extends SwingPetriSimpleElement implements Transit
 	}
 	
 	@Override
-	public void paintComponent(Graphics g){
+	public void paintSimpleElement(Graphics g){
+		//super.paintComponent(g);
 		if(this.isFocused() || isActivated){
-			this.setBackground(Color.magenta);
+			g.setColor(Color.magenta);
 		}
 		else{
-			this.setBackground(backgroundColor);
+			g.setColor(backgroundColor);
 		}
-		super.paintComponent(g);
+		g.fillRect(0, 0, this.getWidth(), this.getHeight());
 	}
 	
 	@Override

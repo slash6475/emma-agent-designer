@@ -1,5 +1,7 @@
 package emma.view.swing.petri;
 
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -7,7 +9,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.JComponent;
-
 
 public abstract class SwingPetriSimpleElement extends SwingPetriFigure{
 
@@ -17,13 +18,13 @@ public abstract class SwingPetriSimpleElement extends SwingPetriFigure{
 	private static final long serialVersionUID = -694951586942013143L;
 	public SwingPetriSimpleElement(String name, int width, int height, final SwingPetriContainer parent) {
 		super(name, width, height, false, false, false,parent);
+		this.putClientProperty("JInternalFrame.isPalette", Boolean.TRUE);
 		this.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				SwingPetriSimpleElement.this.moveBy(e.getX(), e.getY());
 			}
 		});
-		((javax.swing.plaf.basic.BasicInternalFrameUI)this.getUI()).setNorthPane(null);
 		this.setContentPane(new PetriContainer());
 		this.getContentPane().addMouseListener(new MouseAdapter(){
 			@Override
@@ -32,6 +33,12 @@ public abstract class SwingPetriSimpleElement extends SwingPetriFigure{
 				parent.getController().selectPT(SwingPetriSimpleElement.this);
 			}
 		});
+		JComponent c = ((javax.swing.plaf.basic.BasicInternalFrameUI) getUI()).getNorthPane();
+		Dimension d = new Dimension(c.getWidth(), 0);
+		c.setSize(d);
+		c.setPreferredSize(d);
+		c.setMinimumSize(d);
+		c.setMaximumSize(d);
 	}
 	
 	@SuppressWarnings("serial")
@@ -66,6 +73,11 @@ public abstract class SwingPetriSimpleElement extends SwingPetriFigure{
 				}
 			});
 		}
+		@Override
+		public void paintComponent(Graphics g){
+			super.paintComponent(g);
+			SwingPetriSimpleElement.this.paintSimpleElement(g);
+		}
 	}
 	
 	public abstract java.awt.Point getCenterPoint();
@@ -79,4 +91,6 @@ public abstract class SwingPetriSimpleElement extends SwingPetriFigure{
 	public boolean isSubnetContainer() {
 		return false;
 	}
+
+	public abstract void paintSimpleElement(Graphics g);
 }

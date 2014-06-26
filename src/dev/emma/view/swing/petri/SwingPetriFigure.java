@@ -129,10 +129,6 @@ public abstract class SwingPetriFigure extends DesktopFrame implements Figure{
 	}
 	
 	public void moveTo(int x, int y){
-		/*if(parent instanceof DesktopFrame){
-			((DesktopFrame)parent).getDesktopPane().getDesktopManager().setBoundsForFrame(this,x,y, this.getWidth(), this.getHeight());
-		}
-		else */
 		this.setBounds(x, y, this.getWidth(), this.getHeight());
 	}
 	

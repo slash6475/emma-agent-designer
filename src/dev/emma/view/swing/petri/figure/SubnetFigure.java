@@ -1,5 +1,6 @@
 package emma.view.swing.petri.figure;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -36,7 +37,7 @@ public class SubnetFigure extends SwingPetriContainer implements SubnetListener{
 	private ArcFigure selectedArc;
 	
 	public SubnetFigure(String name,int x, int y, int width, int height, NetFigure parent){
-		super(name, width, height, true, true, parent);
+		super(name, width, height, true, true, parent,Color.white);
 		MouseListener[] tab1 = this.getContentPane().getMouseListeners();
 		for(MouseListener l : tab1){
 			this.getContentPane().removeMouseListener(l);

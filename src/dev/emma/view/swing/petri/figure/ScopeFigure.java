@@ -22,18 +22,15 @@ import emma.view.swing.petri.SwingPetriContainer;
 import emma.view.swing.petri.table.ScopeTableModel;
 
 public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 558198387759281261L;
-	private static final Color backgroundColor = new Color(240,240,240);
+	private static final Color backgroundColor = new Color(214,217,223);
 	private int placeCounter;
 	private SubnetFigure parent;
 	private Scope scope;
 	private int oldX;
 	private int oldY;
 	public ScopeFigure(String name, int x, int y, int width, int height, SubnetFigure parent) {
-		super(name, width, height, false, false, parent);
+		super(name, width, height, false, false, parent, backgroundColor);
 		scope=new Scope(parent.getSubnet());
 		scope.addListener(this);
 		scope.setName(name);
@@ -105,14 +102,14 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 	
 	@Override
 	public boolean addPlace(int x, int y){
-		new PlaceFigure("P"+placeCounter++,x,y,this);
+		new PlaceFigure("P"+placeCounter++,x-30,y-40,this);
 		return true;
 	}
 	
 	@Override
 	public boolean addTransition(int x, int y){
-		PlaceFigure p = new PlaceFigure("PT"+placeCounter++,x,y,this);
-		new TransitionFigure("",x, y+5+p.getHeight(),p,this);
+		PlaceFigure p = new PlaceFigure("PT"+placeCounter++,x-30,y-40,this);
+		new TransitionFigure("",x-30, y+p.getHeight()-40,p,this);
 		return true;
 	}
 	

@@ -18,7 +18,6 @@ import emma.view.swing.petri.SwingController;
 public class Window extends JFrame implements DrawableContainer{
 	
 	private static final long serialVersionUID = 6098483712279657780L;
-	
 	private FixedDesktopPane pane;
 	private int petriCount;
 	private CoapProxy coapProxy;
@@ -44,7 +43,7 @@ public class Window extends JFrame implements DrawableContainer{
 				System.exit(0);
 			}
 		});
-		this.setJMenuBar(new MenuBar(this));
+		this.setJMenuBar(new WindowMenuBar(this));
 	}
 	
 	@Override

@@ -72,6 +72,7 @@ public class NetworkManager extends DesktopFrame{
 	public NetworkManager(Network netwk){
 		super("Agent Launcher", true, true, false, true);
 		NetworkViewer netViewer = new NetworkViewer(netwk);
+		//TODO SET JMenuBar// this.setJMenuBar()
 		this.method = new JComboBox<String>();
 		this.method.addItem("GET");
 		this.method.addItem("PUT");

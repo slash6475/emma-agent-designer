@@ -25,7 +25,12 @@ public class PetriViewer extends DesktopFrame{
 		this.toolbar=new Toolbar(control);
 		this.getContentPane().add(toolbar);
 		this.borderPanel=new PropertiesPanel(control);
-		this.borderPanel.addInternalFrameListener(new FListener());
+		this.borderPanel.addInternalFrameListener(new InternalFrameAdapter(){
+			@Override
+			public void internalFrameIconified(InternalFrameEvent e){
+				e.getInternalFrame().moveToFront();
+			}
+		});
 		this.add(borderPanel);
 		this.canvas = new PetriCanvasContainer(control);
 		control.setNetFigure(this.canvas.getNetFigure());
@@ -43,15 +48,7 @@ public class PetriViewer extends DesktopFrame{
 		this.setTitle(name);
 	}
 	
-	private class FListener extends InternalFrameAdapter{
-		@Override
-		public void internalFrameIconified(InternalFrameEvent e){
-			e.getInternalFrame().moveToFront();
-		}
-	}
-	
 	public void manageFrames(){
-		//this.toolbar.moveToFront();
 		this.borderPanel.moveToFront();
 	}
 	

@@ -9,14 +9,14 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.filechooser.FileFilter;
 
-public class MenuBar extends JMenuBar{
+public class WindowMenuBar extends JMenuBar{
 
 	private static final long serialVersionUID = -1391148230196504990L;
 	
 	private Window parent;
 	private JFileChooser fileChooser;
 	
-	public MenuBar(Window caller){
+	public WindowMenuBar(Window caller){
 		super();
 		this.parent = caller;
 		this.fileChooser = new JFileChooser();

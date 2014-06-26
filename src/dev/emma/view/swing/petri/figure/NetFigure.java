@@ -1,8 +1,8 @@
 package emma.view.swing.petri.figure;
 
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.table.AbstractTableModel;
 
 import emma.petri.control.event.ActivationEvent;
@@ -25,6 +25,7 @@ public class NetFigure extends ScrollableDesktopPane implements Figure, NetListe
 	private boolean isFocus;
 	
 	public NetFigure(final SwingController control){
+		super(Color.white);
 		this.control=control;
 		this.isFocus=false;
 		this.addMouseListener(new MouseAdapter(){

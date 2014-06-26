@@ -1,5 +1,6 @@
 package emma.view.swing.petri;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -14,6 +15,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
+import javax.swing.UIDefaults;
 
 public class ScrollableDesktopPane extends JScrollPane{
 
@@ -25,9 +27,26 @@ public class ScrollableDesktopPane extends JScrollPane{
 	private JDesktopPane desktopPane;
 	private IFrameListener componentListener;
 
-	public ScrollableDesktopPane() {		
+	public ScrollableDesktopPane(){
+		this(null);
+	}
+	public ScrollableDesktopPane(final Color color) {		
 		componentListener = new IFrameListener();
-		this.desktopPane = new JDesktopPane();
+		if(color!=null){
+			this.desktopPane = new JDesktopPane(){
+				private static final long serialVersionUID = 1L;
+				@Override
+				public void updateUI(){
+					UIDefaults map = new UIDefaults();
+					map.put("DesktopPane[Enabled].backgroundPainter", new UniformPainter<Object>(color));
+					putClientProperty("Nimbus.Overrides", map);
+					super.updateUI();
+				}
+			};
+		}
+		else{
+			this.desktopPane = new JDesktopPane();
+		}
 		desktopPane.addContainerListener(new ContainerListener() {
 			@Override
 			public void componentAdded(ContainerEvent event) {
