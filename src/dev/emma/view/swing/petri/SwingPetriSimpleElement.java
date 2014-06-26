@@ -2,6 +2,7 @@ package emma.view.swing.petri;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -80,7 +81,7 @@ public abstract class SwingPetriSimpleElement extends SwingPetriFigure{
 		}
 	}
 	
-	public abstract java.awt.Point getCenterPoint();
+	public abstract Point getCenterPoint();
 	
 	@Override
 	public boolean isScopeContainer() {
@@ -92,5 +93,10 @@ public abstract class SwingPetriSimpleElement extends SwingPetriFigure{
 		return false;
 	}
 
+	@Override
+	public void moveTo(int x, int y){
+		FixedDesktopPane fdp = (FixedDesktopPane)((SwingPetriContainer)this.getPetriParent()).getContentPane();
+		fdp.setBoundsForFrame(this, x, y, this.getWidth(), this.getHeight());
+	}
 	public abstract void paintSimpleElement(Graphics g);
 }

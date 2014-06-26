@@ -34,9 +34,7 @@ public class ScopeFigure extends SwingPetriContainer  implements ScopeListener{
 		scope=new Scope(parent.getSubnet());
 		scope.addListener(this);
 		scope.setName(name);
-		this.setBackground(backgroundColor);
 		Container cp = this.getContentPane();
-		cp.setBackground(backgroundColor);
 		ArcHandler a = new ArcHandler();
 		cp.addMouseListener(a);
 		cp.addMouseMotionListener(a);
