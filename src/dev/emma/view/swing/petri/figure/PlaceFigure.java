@@ -40,11 +40,10 @@ public class PlaceFigure extends SwingPetriSimpleElement implements PlaceListene
 		this.place.addListener(this);
 		this.isActivated=false;
 		this.setName(name);
-		TitledBorder border = new SimpleElementBorder(
+		this.setBorder(new SimpleElementBorder(
 				null, place.getName(),
                 TitledBorder.CENTER,
-                TitledBorder.ABOVE_TOP);
-		this.setBorder(border);
+                TitledBorder.ABOVE_TOP));
 		if(parent.getContentPane().add(this)!=null){
 			this.moveTo(x, y);
 		}
@@ -73,8 +72,8 @@ public class PlaceFigure extends SwingPetriSimpleElement implements PlaceListene
 	@Override
 	public void notify(NameChangedEvent e) {
 		if(this.place==e.getSource()){
-			this.setBorder(BorderFactory.createTitledBorder(
-	                null, place.getName(),
+			this.setBorder(new SimpleElementBorder(
+					null, place.getName(),
 	                TitledBorder.CENTER,
 	                TitledBorder.ABOVE_TOP));
 		}
