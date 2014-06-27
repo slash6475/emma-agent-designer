@@ -60,7 +60,7 @@ public class PropertiesPanel extends DesktopFrame implements PropertiesView{
 	    public Object getCellEditorValue(){
 	        return lastSelected.getCellEditorValue();
 	    }
-
+		
 	    @Override
 	    public Component getTableCellEditorComponent(JTable table,
 	            Object value, boolean isSelected, int row, int column) {
@@ -70,6 +70,8 @@ public class PropertiesPanel extends DesktopFrame implements PropertiesView{
 	        	break;
 	        case 3:
 	        case 5:
+	        case 6:
+	        case 7:
 	        	lastSelected=chbox;
 	        	break;
 	        default:

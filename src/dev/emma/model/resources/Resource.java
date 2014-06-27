@@ -9,22 +9,11 @@ import emma.tools.Notifier;
  *
  */
 public interface Resource {
-	
 	public Notifier getNotifier();
-	
 	public String getName();
-	
 	public void setName(String name);
-	
 	public int getSize();
-	
 	public String get();
-	
 	public void put(String s);
-	
 	public void delete();
-
-	public boolean hasInputRight();
-	
-	public boolean hasOutputRight();
 }

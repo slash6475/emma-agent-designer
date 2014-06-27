@@ -6,10 +6,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
-
 import emma.mapper.mapobj.resources.MappedResource;
 import emma.model.nodes.Node;
 import emma.petri.model.Place;
@@ -41,8 +37,6 @@ public class Mapping extends HashMap<Node,List<MappedResource>>{
 	private int counter;
 	//Le point d'entrée du déploiement (AD0)
 	private Node entryPoint;
-	private Gson gson;	
-	private JsonParser parser;
 	
 	public Mapping(HashMap<Scope,String> addresses){
 		super();
@@ -50,8 +44,6 @@ public class Mapping extends HashMap<Node,List<MappedResource>>{
 		this.deployList = new HashMap<>();
 		this.deployNumber=new HashMap<>();
 		this.uniqueAdresses=addresses;
-		this.gson = new GsonBuilder().setPrettyPrinting().create();
-		this.parser = new JsonParser();
 	}
 	
 	/**
@@ -231,19 +223,11 @@ public class Mapping extends HashMap<Node,List<MappedResource>>{
 		strBuf.append("]}");
 		return strBuf.toString();
 	}
-	
-	public String getDeploymentAgent(){
-		return this.getDeploymentAgent(false);
-	}
 	/**
 	 * 
 	 * @return the russian doll agent deployment
 	 */
-	public String getDeploymentAgent(boolean indentation){
-		String ret = this.getDeploymentAgentByNode(new StringBuffer(),entryPoint);
-		if(indentation){
-			ret = gson.toJson(parser.parse(ret));
-		}
-		return ret;
+	public String getDeploymentAgent(){
+		return this.getDeploymentAgentByNode(new StringBuffer(),entryPoint);
 	}
 }

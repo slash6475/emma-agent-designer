@@ -27,16 +27,6 @@ public abstract class AbstractResource implements Resource{
 	}
 	
 	@Override
-	public boolean hasInputRight(){
-		return true;
-	}
-	
-	@Override
-	public boolean hasOutputRight(){
-		return true;
-	}
-	
-	@Override
 	public String get() {
 		return "";
 	}

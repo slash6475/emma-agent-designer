@@ -15,9 +15,4 @@ public class S extends AbstractResource {
 	public int getSize(){
 		return 0;
 	}
-
-	@Override
-	public boolean hasInputRight(){
-		return false;
-	}
 }

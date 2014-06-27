@@ -26,13 +26,15 @@ public class PlaceTableModel extends AbstractTableModel {
 		}
 		else{ 
 			this.data = new Object[][] {
-				{ "Figure", "Place" },
-				{ "Name", p.getName() },
-				{ "Parent", p.getParent().getName() },
-				{ "Token", p.hasToken()},
-				{ "Type", p.getData().getClass().getSimpleName()},
-				{ "IsImported",p.getData().isImported()},
-				{ "Value", p.getData().get()}
+				{ "Figure", "Place" },  //0
+				{ "Name", p.getName() }, //1
+				{ "Parent", p.getParent().getName() }, //2
+				{ "Token", p.hasToken()}, //3
+				{ "Type", p.getData().getClass().getSimpleName()}, //4
+				{ "IsImported",p.getData().isImported()}, //5
+				{ "Input",p.getData().hasInputRight()}, //6
+				{ "Output",p.getData().hasOutputRight()}, //7
+				{ "Value", p.getData().get()} //8
 			};
 		}
 	}
@@ -96,6 +98,12 @@ public class PlaceTableModel extends AbstractTableModel {
 			ok=p.getData().setImport((boolean)aValue);
 			break;
 		case 6:
+			ok=p.getData().setInputRight((boolean)aValue);
+			break;
+		case 7:
+			ok=p.getData().setOutputRight((boolean)aValue);
+			break;
+		case 8:
 			p.getData().put((String)aValue);
 			ok=p.getData().get().equals(aValue);
 			break;

@@ -20,8 +20,6 @@ public class NetworkViewer extends NetworkJTree implements Listener{
 		
 	public NetworkViewer(Network net){
 		super(net.getName());
-		//this.network = net;
-	    //this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		net.getNotifier().addListener(this);
 	}
 
@@ -29,7 +27,7 @@ public class NetworkViewer extends NetworkJTree implements Listener{
 	public void Changed(Object obj) {
 		if(obj instanceof Network)		networkChanged((Network) obj);
 		else if(obj instanceof Node) 	nodeChanged((Node) obj);	
-		}
+	}
 	
 	/*
 	 * Update node list of the JTree view

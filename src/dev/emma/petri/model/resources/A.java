@@ -9,6 +9,7 @@ public class A extends emma.model.resources.A implements UnmappedResource {
 	private boolean isImported;
 	private Transition transition;
 	private String test;
+	private boolean outputRight;
 	
 	public A(String name){
 		super(name);
@@ -46,5 +47,26 @@ public class A extends emma.model.resources.A implements UnmappedResource {
 	
 	public Transition getTransition(){
 		return this.transition;
+	}
+
+	@Override
+	public boolean hasInputRight() {
+		return false;
+	}
+	
+	@Override
+	public boolean hasOutputRight() {
+		return outputRight;
+	}
+
+	@Override
+	public boolean setInputRight(boolean aValue) {
+		return false;
+	}
+
+	@Override
+	public boolean setOutputRight(boolean aValue) {
+		this.outputRight=aValue;
+		return true;
 	}
 }
