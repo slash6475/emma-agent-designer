@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 
 import javax.swing.Painter;
 
+//Set background does not work with Nimbus theme, so we use a dedicated painter
 public class UniformPainter<T> implements Painter<T>{
 	private Color color;
 	public UniformPainter(Color color) {

@@ -24,7 +24,7 @@ public class NetworkViewer extends NetworkJTree implements Listener{
 	}
 
 	@Override
-	public void Changed(Object obj) {
+	public void changed(Object obj) {
 		if(obj instanceof Network)		networkChanged((Network) obj);
 		else if(obj instanceof Node) 	nodeChanged((Node) obj);	
 	}

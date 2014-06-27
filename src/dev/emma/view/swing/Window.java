@@ -8,6 +8,8 @@ import java.net.SocketException;
 
 import javax.swing.JFrame;
 
+import org.apache.log4j.Logger;
+
 import emma.control.coap.CoapProxy;
 import emma.view.network.NetworkManager;
 import emma.view.swing.petri.DrawableContainer;
@@ -16,8 +18,8 @@ import emma.view.swing.petri.PetriViewer;
 import emma.view.swing.petri.SwingController;
 
 public class Window extends JFrame implements DrawableContainer{
-	
 	private static final long serialVersionUID = 6098483712279657780L;
+	private static Logger logger = Logger.getLogger(Window.class);
 	private FixedDesktopPane pane;
 	private int petriCount;
 	private CoapProxy coapProxy;
@@ -25,9 +27,10 @@ public class Window extends JFrame implements DrawableContainer{
 	public Window(){
 		super();
 		try {
+			//Unique coapProxy for NetworkManager frames
 			this.coapProxy = new CoapProxy();
 		} catch (SocketException e) {
-			System.out.println(e.getMessage());
+			logger.warn(e.getMessage());
 		}
 		this.petriCount=0;
 		this.setTitle("EMMA Framework");
@@ -40,6 +43,7 @@ public class Window extends JFrame implements DrawableContainer{
 		this.setResizable(true);
 		this.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent we){
+				logger.debug("End of the program");
 				System.exit(0);
 			}
 		});
@@ -52,12 +56,12 @@ public class Window extends JFrame implements DrawableContainer{
 	}
 
 	@Override
-	public void addPainting(Graphics g) {
-	}
+	public void addPainting(Graphics g) {}
 	
 	public void addNetworkManager(){
 		pane.add(new NetworkManager(this.coapProxy.getNetwork()));
 	}
+	//Add a new Petri Viewer
 	public void addPetriViewer(){
 		petriCount++;
 		SwingController control = new SwingController();
@@ -65,7 +69,7 @@ public class Window extends JFrame implements DrawableContainer{
 		v.setName("PetriViewer #"+petriCount);
 		pane.add(v);
 	}
-	
+	//Open previously saved Petri Viewer
 	public void addPetriViewer(File list){
 		String name = list.getParentFile().getName();
 		SwingController control = new SwingController();

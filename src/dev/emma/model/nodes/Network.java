@@ -35,15 +35,6 @@ public class Network extends LocalResource {
 		return notifier;
 	}
 	
-	/*
-	 * 
-	 */
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 */
-
 	@Override
 	public void performGET(GETRequest request) {
 		String rsp = "coucou ohoh \n";

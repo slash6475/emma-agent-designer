@@ -2,6 +2,8 @@ package emma.tools;
 
 import javax.swing.event.EventListenerList;
 
+
+
 public class Notifier {
 	private final EventListenerList listeners = new EventListenerList();
 	
@@ -24,7 +26,7 @@ public class Notifier {
 	
 	public void fireListener(Object e){
 		 for(Listener listener : getListeners()){
-			 listener.Changed(e);
+			 listener.changed(e);
 		 }
 	}
 }

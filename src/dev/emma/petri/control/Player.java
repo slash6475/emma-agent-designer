@@ -9,6 +9,8 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.JOptionPane;
 
+import org.apache.log4j.Logger;
+
 import emma.petri.model.InputArc;
 import emma.petri.model.Net;
 import emma.petri.model.OutputArc;
@@ -20,7 +22,8 @@ import emma.petri.model.Transition;
  * @author  pierrotws
  */
 public class Player extends Thread{
-    
+    private static Logger logger = Logger.getLogger(Player.class);
+	
 	private ScriptEngine engine;
 	private Bindings bindings;
 	private Net net;
@@ -39,7 +42,7 @@ public class Player extends Thread{
 		while(true){
 			if(play){
 				play=false;
-				System.out.println("Player running...");
+				logger.debug("Player running...");
 				Iterator<Subnet> itSub = net.getSubnets().iterator();
 				while(itSub.hasNext()){
 					Iterator<Scope> itScope = itSub.next().getScopes().iterator();
@@ -59,7 +62,7 @@ public class Player extends Thread{
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-					System.out.println(e.getMessage());
+					logger.warn(e.getMessage());
 				}
 				if(!play){
 					JOptionPane.showMessageDialog(null, "Simulation finished");
@@ -69,7 +72,7 @@ public class Player extends Thread{
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-					System.out.println(e.getMessage());
+					logger.warn(e.getMessage());
 				}
 			}
 		}
@@ -113,7 +116,7 @@ public class Player extends Thread{
 					p.removeToken();
 					this.put(p.getType(),p.getName(),p.getData().get());
 				} catch (ScriptException e) {
-					e.printStackTrace();
+					logger.warn(e.getMessage());
 				}
 			}
 			try {
@@ -136,7 +139,7 @@ public class Player extends Thread{
 					try {
 						Thread.sleep(200);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.warn(e.getMessage());
 					}
 					t.desactivate();
 					Iterator<OutputArc> itoa = t.getOutputArcs().iterator();
@@ -150,7 +153,7 @@ public class Player extends Thread{
 					try {
 						Thread.sleep(200);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.warn(e.getMessage());
 					}
 					itoa = t.getOutputArcs().iterator();
 					while(itoa.hasNext()){

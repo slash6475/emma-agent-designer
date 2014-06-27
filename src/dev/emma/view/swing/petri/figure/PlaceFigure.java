@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 
-import javax.swing.BorderFactory;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 

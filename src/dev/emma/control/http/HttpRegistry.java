@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 
+import org.apache.log4j.Logger;
+
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -14,6 +16,7 @@ import com.sun.net.httpserver.HttpServer;
 import emma.control.Server;
 
 public class HttpRegistry implements Server {
+	private static Logger logger = Logger.getLogger(HttpRegistry.class);
 	private HttpServer server;
 	private int PORT = 8000;
 	private String registryUri = "/emma/registry";
@@ -77,7 +80,7 @@ public class HttpRegistry implements Server {
 	@Override
 	public void connect() {
 		server.start();
-		System.out.println("Registry server listening on port " + PORT);
+		logger.debug("Registry server listening on port " + PORT);
 		this.isConnected=true;
 	}
 
@@ -91,6 +94,4 @@ public class HttpRegistry implements Server {
 	public boolean isConnected() {
 		return this.isConnected;
 	}
-	
-	
 }

@@ -13,11 +13,10 @@ import ch.ethz.inf.vs.californium.coap.registries.CodeRegistry;
 import ch.ethz.inf.vs.californium.coap.registries.OptionNumberRegistry;
 
 import emma.control.*;
-import emma.model.nodes.Network;
 
 public class CoapClient implements Client {
 
-	private static Logger logger = Logger.getLogger(Network.class);
+	private static Logger logger = Logger.getLogger(CoapClient.class);
 	private static final int BLOCK_SIZE = 64;
 	private boolean stop = false;
 	
@@ -85,8 +84,7 @@ public class CoapClient implements Client {
 				}
 				
 			} catch (IOException | InterruptedException e) {
-				System.err.println("Failed to execute request: " + e.getMessage());
-				e.printStackTrace();
+				logger.warn("Failed to execute request: " + e.getMessage());
 				stop = true;
 			}
 		}

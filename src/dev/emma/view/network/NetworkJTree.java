@@ -13,24 +13,20 @@ import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.log4j.Logger;
 
-import emma.model.nodes.Network;
-
 public class NetworkJTree extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7555400852371126749L;
+	private static Logger logger = Logger.getLogger(NetworkJTree.class);
+	
 	private DefaultMutableTreeNode network;
 	private JTree tree;
-	private static Logger logger = Logger.getLogger(Network.class);
-	
-	
-
 	private DefaultTreeModel treeModel;
+	
 	public NetworkJTree(String networkName){
 		network 	= new DefaultMutableTreeNode(networkName);
 	    treeModel 	= new DefaultTreeModel(network);
-
 	    tree 		= new JTree(treeModel);
 
 	    tree.getSelectionModel().setSelectionMode
@@ -38,11 +34,11 @@ public class NetworkJTree extends JPanel {
 	    this.add(new JScrollPane(tree));
 	    setVisible(true);
 	}	
-	
+
 	/*
 	 * NODE Management
 	 */
-		
+
 	public void addNode(String name){
 		logger.debug("[NODE] ADD " + name);
 		network.add(new DefaultMutableTreeNode(name));

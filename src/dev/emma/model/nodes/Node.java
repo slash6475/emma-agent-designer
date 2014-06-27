@@ -1,6 +1,5 @@
 package emma.model.nodes;
 
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -24,9 +23,7 @@ import emma.tools.BoundedHashMap;
 import emma.tools.BoundedSet;
 import emma.tools.Notifier;
 
-
 public class Node {
-	
 	private static int defaultsize = 5;
 	private static int COAP_PORT = 5683;
 	private static String PREFIX = "aaaa";
@@ -41,7 +38,7 @@ public class Node {
 	private ResourceServices resources;
 
 	private Notifier notifier = new Notifier();
-	private static Logger logger = Logger.getLogger(Network.class);
+	private static Logger logger = Logger.getLogger(Node.class);
 	private boolean isEntry;
 	
 	public Notifier getNotifier(){
@@ -146,13 +143,12 @@ public class Node {
 			JSONObject obj = new JSONObject(objJSONString);
 			this.fromJSON(obj);
 		} catch (IOException | ClassNotFoundException | JSONException e) {
-			System.out.println("**WARNING** Root resource unknown in " + nsURI);
-			e.printStackTrace();
+			logger.warn("**WARNING** Root resource unknown in " + nsURI+" "+e.getMessage());
 		} finally {
 			try {
 				if (br != null)br.close();
 			} catch (IOException ex) {
-				ex.printStackTrace();
+				logger.warn(ex.getMessage());
 			}
 		}
 		this.isEntry=false;
@@ -265,22 +261,20 @@ public class Node {
 			else return false;
 			
 		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
+			logger.warn(e.getMessage());
 		} catch (ClassNotFoundException e) {
-			System.out.println("**WARNING** Root resource " + type + " unknown");
+			logger.warn("**WARNING** Root resource " + type + " unknown");
 		} 
 		return false;
 	}
 		
 	public void fromJSON(JSONObject obj) throws ClassNotFoundException, JSONException{
-		
 		JSONObject properties = obj.getJSONObject("properties");
 		Iterator<?> it = properties.keys();
 		while(it.hasNext()){
 			String key = it.next().toString();
 			this.properties.put(key, properties.getString(key));
 		}
-		
 		resources   = new ResourceServices();
 		routes		= new BoundedHashMap<Node,Node>(Integer.parseInt(this.properties.get("MAX_ROUTES")));
 		neighbors	= new BoundedSet<>(Integer.parseInt(this.properties.get("MAX_NEIGHBORS")));

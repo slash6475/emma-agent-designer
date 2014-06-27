@@ -16,6 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import emma.petri.control.Player;
@@ -32,6 +33,8 @@ import emma.view.swing.petri.figure.SubnetFigure;
 import emma.view.swing.petri.figure.TransitionFigure;
 
 public class SwingController implements FigureHandler{
+	private static Logger logger = Logger.getLogger(SwingController.class);
+	
 	private boolean xml;
 	private ControlMode mode;
 	private PropertiesView properties;
@@ -60,8 +63,8 @@ public class SwingController implements FigureHandler{
 		try {
 			parser = new XMLParser();
 			xml=true;
-		} catch (TransformerConfigurationException | ParserConfigurationException e1) {
-			System.out.println(e1.getMessage());
+		} catch (TransformerConfigurationException | ParserConfigurationException e) {
+			logger.warn(e.getMessage());
 			xml=false;
 		}
 		this.fileChooser = new JFileChooser();
@@ -157,7 +160,7 @@ public class SwingController implements FigureHandler{
 				try {
 					parser.saveSubnetToXMLFile(((SubnetFigure)fig).getSubnet(), file);
 				} catch (TransformerException e) {
-					e.printStackTrace();
+					logger.warn(e.getMessage());
 				}
 			}
 			fileChooser.removeChoosableFileFilter(epnf);
@@ -170,7 +173,7 @@ public class SwingController implements FigureHandler{
 			try {
 				parser.importSubnetFigureFromXMLFile(origin.x, origin.y,(NetFigure)fig, fileChooser.getSelectedFile());
 			} catch (CorruptedFileException | SAXException | IOException e) {
-				System.out.println(e.getMessage());
+				logger.warn(e.getMessage());
 			}
 		}
 		fileChooser.removeChoosableFileFilter(epnf);

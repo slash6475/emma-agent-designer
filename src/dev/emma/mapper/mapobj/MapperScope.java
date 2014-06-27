@@ -65,8 +65,7 @@ public class MapperScope {
 		}
 		if(target.startsWith("G:")){
 			this.address="["+target+"]:6583";
-			//TODO Calculate TRUE multiplicity
-			return 3;
+			return 0;
 		}
 		try{
 			return Integer.parseInt(target);

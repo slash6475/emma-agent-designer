@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+//import org.apache.log4j.Logger;
+
 import emma.mapper.mapobj.MapperNode;
 import emma.mapper.mapobj.MapperScope;
 import emma.petri.model.Place;
@@ -22,6 +24,7 @@ import emma.petri.model.resources.UnmappedResource;
  *
  */
 public class PBSolver {
+	//private static Logger logger = Logger.getLogger(PBSolver.class);
 	//Les literaux sont des entiers (1 à ...)
 	private int counter;
 	private String pboFile;

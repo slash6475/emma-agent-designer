@@ -28,6 +28,7 @@ import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import ch.ethz.inf.vs.californium.coap.Response;
@@ -50,6 +51,7 @@ import emma.view.swing.petri.DesktopFrame;
 
 public class NetworkManager extends DesktopFrame{
 	private static final long serialVersionUID = 1L;
+	private static Logger logger = Logger.getLogger(NetworkManager.class);
 	
 	protected JTextArea payload;
     protected JComboBox<String> method;
@@ -62,7 +64,7 @@ public class NetworkManager extends DesktopFrame{
     private Network network;
     private Mapper mapper;
     private XMLParser xmlParser;
-
+    
     private JFileChooser fileChooser;
     private FileNameFilter filesFilter;
 	private FileFilter agentFilter;
@@ -162,7 +164,7 @@ public class NetworkManager extends DesktopFrame{
         try {
 			this.xmlParser=new XMLParser();
 		} catch (TransformerConfigurationException | ParserConfigurationException e) {
-			System.out.println(e.getMessage());
+			logger.warn(e.getMessage());
 		}
 		this.gson = new GsonBuilder().setPrettyPrinting().create();
 		this.jsonParser = new JsonParser();
@@ -186,7 +188,7 @@ public class NetworkManager extends DesktopFrame{
             	String dep = gson.toJson(jsonParser.parse(mapper.getMapping(network, xmlParser.getNetFromXMLFile(file)).getDeploymentAgent()));
         		payload.setText(dep);
 			} catch (MappingNotFoundException | CorruptedFileException | IOException | SAXException ex) {
-				payload.setText("ERROR :\n"+ex.getMessage());
+				logger.warn("ERROR :\n"+ex.getMessage());
 			}
         }
     	fileChooser.removeChoosableFileFilter(this.filesFilter);
@@ -210,6 +212,7 @@ public class NetworkManager extends DesktopFrame{
                 br.close();
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null, "Opening agent error : " + ex.getMessage());
+                logger.warn("Opening agent error : " + ex.getMessage());
             }
         }
     	fileChooser.removeChoosableFileFilter(this.agentFilter);
@@ -237,6 +240,7 @@ public class NetworkManager extends DesktopFrame{
               	}
               	catch (IOException ex) {
               		JOptionPane.showMessageDialog(null, "Saving agent error : " + ex.getMessage());
+              		logger.warn("Saving agent error : " + ex.getMessage());
               	} 
             }
         }
@@ -266,8 +270,8 @@ public class NetworkManager extends DesktopFrame{
 			else{
 				JOptionPane.showMessageDialog(NetworkManager.this, "No response");	
 			}
-		} catch (URISyntaxException e1) {
-			e1.printStackTrace();
+		} catch (URISyntaxException e) {
+			logger.warn(e.getMessage());
 		}
 		finally{
 			NetworkManager.this.setVisible(true);

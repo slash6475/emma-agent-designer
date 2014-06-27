@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import emma.mapper.mapobj.resources.MappedResource;
 import emma.model.nodes.Node;
 import emma.petri.model.Place;
@@ -20,11 +22,8 @@ import emma.petri.model.resources.UnmappedResource;
  *
  */
 public class Mapping extends HashMap<Node,List<MappedResource>>{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -4614938823972938264L;
-
+	private static Logger logger = Logger.getLogger(Mapping.class);
 	
 	private HashMap<Scope,List<Node>> mappedScopes;	
 	//Utilisé lorsqu'un scope à une adresse IP spécifique (Broadcast ou Multicast, pas encore implémenté)
@@ -81,7 +80,7 @@ public class Mapping extends HashMap<Node,List<MappedResource>>{
 								| IllegalArgumentException | InvocationTargetException
 								| NoSuchMethodException | SecurityException
 								| ClassNotFoundException e) {
-							e.printStackTrace();
+							logger.warn(e.getMessage());
 						}
 					}
 				}

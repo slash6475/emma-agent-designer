@@ -6,4 +6,5 @@ package emma.control;
  *
  */
 public interface Client {
+	public void stop();
 }
