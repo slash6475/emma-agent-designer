@@ -1,0 +1,22 @@
+{
+    "services": [
+        {
+            "name": "L",
+            "size": 2
+        },
+        {
+            "name": "A",
+            "size": 4
+        },
+        {
+            "name": "S",
+            "size": 6
+        }
+    ],
+    "properties": {
+        "EMMA_MAX_URI_SIZE": "18",
+        "eepromSize": "4000",
+        "MAX_ROUTES": "14",
+        "MAX_NEIGHBORS": "16"
+    }
+}
