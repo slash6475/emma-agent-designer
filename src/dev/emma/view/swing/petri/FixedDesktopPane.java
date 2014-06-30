@@ -6,6 +6,8 @@ import javax.swing.DefaultDesktopManager;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 
+import emma.view.swing.petri.figure.PlaceFigure;
+
 public class FixedDesktopPane extends JDesktopPane{
 	/**
 	 * 
@@ -40,8 +42,20 @@ public class FixedDesktopPane extends JDesktopPane{
 	}
 	
 	public void setBoundsForFrame(JComponent f, int newX, int newY, int newWidth, int newHeight) {
-		if(f instanceof DesktopFrame){
-			boolean didResize = (f.getWidth() != newWidth || f.getHeight() != newHeight);
+		boolean didResize = (f.getWidth() != newWidth || f.getHeight() != newHeight);
+		//BAD correction of the oversize of the PlaceFigure.
+		if(f instanceof PlaceFigure){
+			System.out.println("Set bounds for PlaceFigure");
+			if(!inBounds((DesktopFrame) f, newX-10, newY-10, newWidth-10, newHeight-10)){
+				int boundedX = (int) Math.min(Math.max(-10, newX), this.getWidth() - newWidth+10);
+				int boundedY = (int) Math.min(Math.max(-10, newY), this.getHeight() - newHeight+10);
+				f.setBounds(boundedX, boundedY, newWidth, newHeight);
+			}
+			else{
+				f.setBounds(newX, newY, newWidth, newHeight);
+			}
+		}
+		else if(f instanceof DesktopFrame){
 			if (!inBounds((DesktopFrame) f, newX, newY, newWidth, newHeight)) {
 				int boundedX = (int) Math.min(Math.max(0, newX), this.getWidth() - newWidth);
 				int boundedY = (int) Math.min(Math.max(0, newY), this.getHeight() - newHeight);
@@ -50,9 +64,12 @@ public class FixedDesktopPane extends JDesktopPane{
 			else {
 				f.setBounds(newX, newY, newWidth, newHeight);
 			}
-			if(didResize) {
-				f.validate();
-			}
+		}
+		else{
+			didResize=false;
+		}
+		if(didResize) {
+			f.validate();
 		}
 	}
 }

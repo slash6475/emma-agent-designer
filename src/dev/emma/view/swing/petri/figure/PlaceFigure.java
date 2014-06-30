@@ -15,7 +15,9 @@ import emma.petri.control.event.StateChangedEvent;
 import emma.petri.control.listener.PlaceListener;
 import emma.petri.model.PetriElement;
 import emma.petri.model.Place;
+import emma.view.swing.petri.FixedDesktopPane;
 import emma.view.swing.petri.SimpleElementBorder;
+import emma.view.swing.petri.SwingPetriContainer;
 import emma.view.swing.petri.SwingPetriSimpleElement;
 import emma.view.swing.petri.table.PlaceTableModel;
 
@@ -130,5 +132,11 @@ public class PlaceFigure extends SwingPetriSimpleElement implements PlaceListene
 			g.fillOval((defaultWidth/2)-5,(defaultHeight/2)-5,10,10);
 		}
 		g.drawOval(0,0,defaultWidth,defaultHeight);
+	}
+	
+	@Override
+	public void moveTo(int x, int y){
+		FixedDesktopPane fdp = (FixedDesktopPane)((SwingPetriContainer)this.getPetriParent()).getContentPane();
+		fdp.setBoundsForFrame(this, x-10, y-10, this.getWidth(), this.getHeight());
 	}
 }
