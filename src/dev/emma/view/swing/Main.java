@@ -7,12 +7,13 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.BasicConfigurator;
 
 public class Main {
 	private static Logger logger = Logger.getLogger(Main.class);
 	
 	public static void main(String[] args){
-		try {
+		try {BasicConfigurator.configure();
 			//Setting cooja (moderne) UI
 			UIManager.setLookAndFeel(new NimbusLookAndFeel());
 		} catch (UnsupportedLookAndFeelException e) {

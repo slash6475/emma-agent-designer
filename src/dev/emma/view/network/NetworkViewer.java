@@ -25,7 +25,8 @@ public class NetworkViewer extends NetworkJTree implements Listener{
 
 	@Override
 	public void changed(Object obj) {
-		if(obj instanceof Network)		networkChanged((Network) obj);
+		System.out.println("test-1");
+		if(obj instanceof Network)	networkChanged((Network) obj);
 		else if(obj instanceof Node) 	nodeChanged((Node) obj);	
 	}
 	
@@ -33,13 +34,16 @@ public class NetworkViewer extends NetworkJTree implements Listener{
 	 * Update node list of the JTree view
 	 */
 	private void networkChanged(Network net){
-		Node[] nodes = net.getNodesArray();
+		System.out.println("test-2");
+		Node[] nodes = (Node[])net.getNodesArray();System.out.println("ooo " + nodes.toString());
 		boolean found = false;
 
+		System.out.println("test-3");
 		for(int i=0; i < nodes.length; i++){
 			if(!this.isNode(nodes[i].getIp()))
 				this.addNode(nodes[i].getIp());
 		}
+		System.out.println("test-4");
 		Iterator<String> it = this.getNodes().iterator();
 		while(it.hasNext()){
 			found = false;
@@ -53,13 +57,14 @@ public class NetworkViewer extends NetworkJTree implements Listener{
 				this.removeNode(node);
 			}
 		}
+		System.out.println("test-5");
 	}
 	/*
 	 * Update resource list of the JTree view
 	 */
 	private void nodeChanged(Node node){
 		ArrayList<String> roots = node.getResourceRoots();
-		
+		System.out.println("test0");
 		// Add resource if it not exist
 		Iterator<String> it = roots.iterator();
 		while(it.hasNext()){
