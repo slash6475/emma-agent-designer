@@ -2,7 +2,7 @@
     <type>org.netbeans.modules.java.j2seproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
-            <name>JavaProject5</name>
+            <name>emma-agent-designer</name>
             <source-roots>
                 <root id="src.src.dir"/>
             </source-roots>

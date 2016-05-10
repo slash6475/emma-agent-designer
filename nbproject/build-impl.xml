@@ -629,6 +629,14 @@ is divided into following sections:
     <target depends="init" name="-pre-pre-jar">
         <dirname file="${dist.jar}" property="dist.jar.dir"/>
         <mkdir dir="${dist.jar.dir}"/>
+	 <copy todir="${dist.jar.dir}/img/">
+	    <fileset dir="${src.src.dir}/dev/emma/view/img/"/>
+	 </copy>
+
+	 <copy todir="${dist.jar.dir}/registry/">
+	    <fileset dir="registry"/>
+	 </copy>
+
     </target>
     <target name="-pre-jar">
         <!-- Empty placeholder for easier customization. -->

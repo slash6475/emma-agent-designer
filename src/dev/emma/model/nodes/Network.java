@@ -50,7 +50,7 @@ public class Network extends LocalResource {
 		String ip		= request.getPeerAddress().toString();
 
 		logger.debug("[REQUEST] PUT /"+this.getName()+" from: " +ip + " Payload length :"+payload.length());
-logger.debug("ICI " + payload);
+
 		/*
 		 * JSON Serialization and request validation
 		 */
@@ -86,14 +86,14 @@ logger.debug("ICI " + payload);
 		}
 		else {
 			node = new Node(ip, nsURI);
-			node.getNotifier().addListener(this.notifier.getListeners());System.out.println("plopo0\n");
-			this.nodes.add(node);System.out.println("plopo1\n");
-			notifier.fireListener(this);System.out.println("plopo2\n");
+			node.getNotifier().addListener(this.notifier.getListeners());
+			this.nodes.add(node);
+			notifier.fireListener(this);
 		}
 
 		/*
 		 * Resource list update
-		 */System.out.println("hello0\n");
+		 */
 		for (int i=0; i < resources.length(); i++){
 			String[] resourcePath = resources.getString(i).split("/");
 			if(resourcePath.length != 2) continue;
@@ -107,7 +107,7 @@ logger.debug("ICI " + payload);
 					continue ;
 				}
 			}
-		}System.out.println("hello1\n");
+		}
 		/*
 		 * Neighbors list update
 		 */
@@ -125,7 +125,7 @@ logger.debug("ICI " + payload);
 					logger.error("Unable to add neighbor " + ipN);
 				} 
 			}
-		}System.out.println("hello2\n");
+		}
 		/*
 		 * Routes list update 
 		 */
@@ -193,7 +193,7 @@ logger.debug("ICI " + payload);
 		return this.nodes;
 	}
 	
-	public Node[] getNodesArray(){System.out.println("Yahoo");
+	public Node[] getNodesArray(){
 		return (Node[])this.nodes.toArray(new Node[this.nodes.size()]);
 	}
 }
